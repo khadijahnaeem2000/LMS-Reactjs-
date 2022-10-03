@@ -44,7 +44,7 @@ export default function Signin() {
                           id="togBtn"
                           onChange={(e) => setisToogleOn(e.target.checked)}
                         />
-                        <div className="slider round">
+                        <div className="loginslider round">
                           <span className="on">Alumnos</span>
                           <span className="off">Prueba</span>
                         </div>

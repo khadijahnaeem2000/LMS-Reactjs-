@@ -42,7 +42,7 @@
   display: none;
 }
 
-.slider {
+.loginslider {
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -50,13 +50,13 @@
   right: 0;
   bottom: 0;
   -webkit-transition: 0.2s;
-  background:url('../img/switch_off.webp'); 
+  background:url('../img/off.webp'); 
   background-repeat: no-repeat;
   background-size: 100%;
   transition: 0.2s;
 }
 
-.slider:before {
+.loginslider:before {
   position: absolute;
   height: 20px;
   width: 20px;
@@ -67,17 +67,17 @@
   transition: 0.2s;
 }
 
-input:checked + .slider {
+input:checked + .loginslider {
   background:url('../img/switch_on.webp'); 
   background-repeat: no-repeat;
   background-size: 100%;
 }
 
-input:focus + .slider {
+input:focus + .loginslider {
   box-shadow: 0 0 1px #2196f3;
 }
 
-input:checked + .slider:before {
+input:checked + .loginslider:before {
   -webkit-transform: translateX(55px);
   -ms-transform: translateX(55px);
   transform: translateX(55px);
@@ -107,11 +107,11 @@ input:checked + .slider:before {
   font-size: 13px;
 }
 
-input:checked + .slider .on {
+input:checked + .loginslider .on {
   display: block;
 }
 
-input:checked + .slider .off {
+input:checked + .loginslider .off {
   display: none;
 }
 

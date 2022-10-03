@@ -111,7 +111,7 @@ function LoginTypeFalse() {
                 formik.setFieldValue('telephone', e.target.value)
               }
             />
-
+          </div>
             {formik.touched.telephone && formik.errors.telephone ? (
               <div className='text-red-600 text-xs'>
                 {formik.errors.telephone}
@@ -119,7 +119,7 @@ function LoginTypeFalse() {
             ) : formik.touched.email && formik.errors.email ? (
               <div className='text-red-600 text-xs'>{formik.errors.email}</div>
             ) : null}
-          </div>
+          
         </div>
 
         <div className='text-center'>

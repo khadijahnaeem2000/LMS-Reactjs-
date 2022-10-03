@@ -46,13 +46,13 @@ const SideMenu = (props) => {
 
   const classes = useStyles();
 
-  const notActive = ["Entrenamiento", "Batalla", "Entrevista"];
+  const notActive = [ "Batalla", "Entrevista"];
 
   return (
     <>
       <div
-        style={{ width: props.width }}
-        className={`shadow-5 ${classes.container}`}
+        style={{ width: props.width, height:'96vh', overflow:'auto'}}
+        className={`shadow-5 ${classes.container} ${classes.root}`}
       >
         {menu.map((x, i) => (
           <div
