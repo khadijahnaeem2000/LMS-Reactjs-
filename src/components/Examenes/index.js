@@ -9,12 +9,16 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import ansSelectImg from "../../assets/img/images/Flecha.webp";
 import Revisar from "../../assets/img/images/revisar.webp";
 import Salir from "../../assets/img/images/salirExamenes.webp";
 import Progressbar from "../ExamenesHelpers/Progressbar";
 import Conocimientos from "../../assets/img/images/conocimientos.webp";
 import inglesImg from "../../assets/img/images/ingles.webp";
+import noBtnImg from "../../assets/img/images/noBtn.webp";
+import siBtnImg from "../../assets/img/images/SiBtn.webp";
 import psicoImg from "../../assets/img/images/psicotecnicos.webp";
 import ortoImg from "../../assets/img/images/ortografia.webp";
 import correctImg from "../../assets/img/images/green.webp";
@@ -24,7 +28,9 @@ import answerImg1 from "../../assets/img/images/blue.webp";
 import noSelect from "../../assets/img/images/transparent.webp";
 import golden from "../../assets/img/images/golden.webp";
 import pauseImg from "../../assets/img/images/pause.webp";
+import correctAnswerImg from "../../assets/img/images/correctAnswer.webp";
 import stopImg from "../../assets/img/images/stop.webp";
+import Modal from "@mui/material/Modal";
 import directoryImg from "../../assets/img/images/directory.webp";
 import { getLocalUserdata } from "../../services/auth/localStorageData";
 import { Markup } from "interweave";
@@ -34,11 +40,15 @@ import useStyles from "./styles";
 import "./style.css";
 
 function Examenes1(props) {
+  let triggerTime;
+
   const Styles = useStyles();
   const [showScreen, setShowScreen] = useState(true);
   const [showScreen2, setShowScreen2] = useState(false);
+  const [resetExam, setResetExam] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [showScore, setShowScore] = useState(false);
+  const [examStatusCheck, setExamStatusCheck] = useState(false);
   const [showExam, setShowExam] = useState(false);
   const [folderData, setFolderData] = useState([]);
   const [folderData2, setFolderData2] = useState([]);
@@ -51,12 +61,15 @@ function Examenes1(props) {
   const [loading, setLoading] = useState(true);
   const [listLoading, setListLoading] = useState(true);
   const [secondsRemaining, setSecondsRemaining] = useState(0);
-  const [studentAnswer, setStudentAnswered] = useState(null);
   const [ansCheck, setAnsCheck] = useState(0);
+  const [studentExamRecId, setStudentExamRecId] = useState(0);
   const [progress, setProgress] = useState(0);
   const [ansArry, setAnsArry] = useState([]);
   const [totalLoading, setTotalLoading] = useState(0);
   const [stateRend, setStateRend] = useState(0);
+  const [folderId, setFolderId] = useState(0);
+
+  const handleModalClose = () => setResetExam(false);
 
   const data = getLocalUserdata();
   const student_type = data.type;
@@ -166,6 +179,8 @@ function Examenes1(props) {
       studentId: student_id,
       studentType: student_type,
       folderId: id,
+      examId: studentExamRecId,
+      isRestart: false,
     };
     axios
       .post(`https://neoestudio.net/api/getAllExamsOfFolder`, getExamFiles)
@@ -178,8 +193,35 @@ function Examenes1(props) {
       });
   };
 
+  const resetExamFile = () => {
+    setListLoading(true);
+    const resetExamData = {
+      studentId: student_id,
+      studentType: student_type,
+      folderId: folderId,
+      examId: studentExamRecId,
+      isRestart: true,
+    };
+    setAnsCheck(0);
+    setCurrentQuestion(0);
+    axios
+      .post(`https://neoestudio.net/api/getAllExamsOfFolder`, resetExamData)
+      .then((response) => {
+        setFilesData(response.data.data);
+        setStateRend((prev) => prev + 1);
+        setExamStatusCheck(true);
+        setExpanded(false);
+        setListLoading(false);
+        setResetExam(false);
+      })
+      .catch((error) => {
+        setListLoading(false);
+        console.log(error, "Error Loading Reset APi, Please Try Again !");
+      });
+  };
+
   const [expanded, setExpanded] = useState();
-  const handleChange = (panel) => (event, newExpanded) => {
+  const handleModalChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
 
@@ -199,10 +241,9 @@ function Examenes1(props) {
       studentId: data.id,
       studentType: student_type,
       studentAnswered: null,
-      studentAttemptId: null,
+      studentAttemptId: resetExam ? studentExamRecId : null,
       tab: null,
-      isRestart: "no",
-      studentType: student_type,
+      isRestart: examStatusCheck ? "yes" : "no",
       examId: localStorage.getItem("examID"),
       studentExamRecordId: Conocimientos
         ? Conocimientos.studentExamRecordId
@@ -212,13 +253,23 @@ function Examenes1(props) {
         ? Ortografía.studentExamRecordId
         : Psicotécnicos.studentExamRecordId,
     };
-    setSecondsRemaining(
-      Conocimientos
-        ? Conocimientos.examDuration
-        : Inglés.examDuration
-        ? Ortografía.examDuration
-        : Psicotécnicos.examDuration
-    );
+    if (examStatusCheck === true) {
+      setSecondsRemaining(
+        Conocimientos
+          ? Conocimientos.timeFrom
+          : Inglés.timeFrom
+          ? Ortografía.timeFrom
+          : Psicotécnicos.timeFrom
+      );
+    } else {
+      setSecondsRemaining(
+        Conocimientos
+          ? Conocimientos.examDuration
+          : Inglés.examDuration
+          ? Ortografía.examDuration
+          : Psicotécnicos.examDuration
+      );
+    }
     setTotalLoading(
       Conocimientos
         ? Number(Conocimientos.timeFrom)
@@ -226,6 +277,7 @@ function Examenes1(props) {
         ? Number(Ortografía.timeFrom)
         : Number(Psicotécnicos.timeFrom)
     );
+    setCurrentQuestion(0);
     axios
       .post(`https://neoestudio.net/api/startExam`, startData)
       .then((response) => {
@@ -241,7 +293,6 @@ function Examenes1(props) {
         setExamData(response.data.data);
         setLoading(false);
         setStatus(true);
-        setCurrentQuestion(0);
         setShowScreen(false);
         setShowExam(true);
       })
@@ -275,6 +326,7 @@ function Examenes1(props) {
       studentExamRecordId: examData[currentQuestion].studentExamRecordId,
       time: secondsRemaining,
     };
+    setExamStatusCheck(false);
     axios
       .post(`https://neoestudio.net/api/pauseAnswer`, pauseData)
       .then((response) => {
@@ -331,6 +383,7 @@ function Examenes1(props) {
     setShowScore(false);
     setCurrentQuestion(0);
     setExpanded(false);
+    setExamStatusCheck(false);
     setStateRend((prev) => prev + 1);
     if (props.showExam === "true") {
       props.updateView();
@@ -401,11 +454,6 @@ function Examenes1(props) {
   // NEXT QUESTION BUTTON
 
   const handleSetAnswer = (id) => {
-    setAnsCheck(currentQuestion);
-    console.log(answerClicked);
-    ansArry.splice(ansCheck, 1, {
-      answer: answerClicked,
-    });
     const startData = {
       studentId: data.id,
       studentType: student_type,
@@ -413,12 +461,9 @@ function Examenes1(props) {
       studentAttemptId: examData[currentQuestion].id,
       tab: null,
       Restart: "no",
-      studentType: student_type,
       examId: localStorage.getItem("examID"),
-      studentExamRecordId: parseInt(
-        examData[currentQuestion].studentExamRecordId
-      ),
     };
+    console.log(ansArry, "answerRRy");
     setSecondsRemaining(secondsRemaining);
     axios
       .post(`https://neoestudio.net/api/startExam`, startData)
@@ -426,6 +471,7 @@ function Examenes1(props) {
         if (currentQuestion + 1 >= examData.length) {
           endQuiz();
         } else {
+          setExamData(response.data.data);
           setLoading(false);
         }
       })
@@ -457,6 +503,41 @@ function Examenes1(props) {
                   <div className={Styles.headingText}>Ortografia</div>
                 </Grid>
               </Grid>
+              <Modal
+                open={resetExam}
+                onClose={handleModalClose}
+                aria-labelledby="reset-exam-modal"
+                aria-describedby="reset-modal-description"
+              >
+                <Box className={Styles.modalStyle}>
+                  <Typography
+                    id="reset-exam-modal"
+                    variant="h6"
+                    component="h2"
+                    sx={{ textAlign: "center" }}
+                  >
+                    ¿Quieres resetear este examen?
+                  </Typography>
+                  <div className="flex justify-between w-full">
+                    <Button
+                      size="medium"
+                      onClick={() => {
+                        resetExamFile();
+                      }}
+                    >
+                      <img src={siBtnImg} alt="" height={50} />
+                    </Button>
+                    <Button
+                      size="medium"
+                      onClick={() => {
+                        setResetExam(false);
+                      }}
+                    >
+                      <img src={noBtnImg} alt="" height={50} />
+                    </Button>
+                  </div>
+                </Box>
+              </Modal>
               {loading ? (
                 <div className="w-100 text-center">
                   <CircularProgress
@@ -519,10 +600,30 @@ function Examenes1(props) {
                                               fontFamily: "ProximaSoft-bold",
                                             }}
                                             onClick={(e) => {
-                                              return reviewExam(
-                                                e,
-                                                Conocimientos
-                                              );
+                                              if (triggerTime > 300) {
+                                                setStudentExamRecId(
+                                                  Conocimientos.studentExamRecordId
+                                                );
+                                                setFolderId(
+                                                  Conocimientos.folderId
+                                                );
+                                                setResetExam(true);
+                                              } else {
+                                                return reviewExam(
+                                                  e,
+                                                  Conocimientos
+                                                );
+                                              }
+                                            }}
+                                            onMouseDown={() => {
+                                              triggerTime =
+                                                new Date().getTime();
+                                            }}
+                                            onMouseUp={() => {
+                                              let thisMoment =
+                                                new Date().getTime();
+                                              triggerTime =
+                                                thisMoment - triggerTime;
                                             }}
                                           >
                                             {Conocimientos.name}
@@ -569,7 +670,25 @@ function Examenes1(props) {
                                               fontFamily: "ProximaSoft-bold",
                                             }}
                                             onClick={(e) => {
-                                              return reviewExam(e, Inglés);
+                                              if (triggerTime >= 300) {
+                                                setStudentExamRecId(
+                                                  Inglés.studentExamRecordId
+                                                );
+                                                setFolderId(Inglés.folderId);
+                                                setResetExam(true);
+                                              } else {
+                                                return reviewExam(e, Inglés);
+                                              }
+                                            }}
+                                            onMouseDown={() => {
+                                              triggerTime =
+                                                new Date().getTime();
+                                            }}
+                                            onMouseUp={() => {
+                                              let thisMoment =
+                                                new Date().getTime();
+                                              triggerTime =
+                                                thisMoment - triggerTime;
                                             }}
                                           >
                                             {Inglés.name}
@@ -616,10 +735,30 @@ function Examenes1(props) {
                                               fontFamily: "ProximaSoft-bold",
                                             }}
                                             onClick={(e) => {
-                                              return reviewExam(
-                                                e,
-                                                Psicotécnicos
-                                              );
+                                              if (triggerTime >= 300) {
+                                                setStudentExamRecId(
+                                                  Psicotécnicos.studentExamRecordId
+                                                );
+                                                setFolderId(
+                                                  Psicotécnicos.folderId
+                                                );
+                                                setResetExam(true);
+                                              } else {
+                                                return reviewExam(
+                                                  e,
+                                                  Psicotécnicos
+                                                );
+                                              }
+                                            }}
+                                            onMouseDown={() => {
+                                              triggerTime =
+                                                new Date().getTime();
+                                            }}
+                                            onMouseUp={() => {
+                                              let thisMoment =
+                                                new Date().getTime();
+                                              triggerTime =
+                                                thisMoment - triggerTime;
                                             }}
                                           >
                                             {Psicotécnicos.name}
@@ -666,7 +805,30 @@ function Examenes1(props) {
                                               fontFamily: "ProximaSoft-bold",
                                             }}
                                             onClick={(e) => {
-                                              return reviewExam(e, Ortografía);
+                                              if (triggerTime >= 300) {
+                                                setStudentExamRecId(
+                                                  Ortografía.studentExamRecordId
+                                                );
+                                                setFolderId(
+                                                  Ortografía.folderId
+                                                );
+                                                setResetExam(true);
+                                              } else {
+                                                return reviewExam(
+                                                  e,
+                                                  Ortografía
+                                                );
+                                              }
+                                            }}
+                                            onMouseDown={() => {
+                                              triggerTime =
+                                                new Date().getTime();
+                                            }}
+                                            onMouseUp={() => {
+                                              let thisMoment =
+                                                new Date().getTime();
+                                              triggerTime =
+                                                thisMoment - triggerTime;
                                             }}
                                           >
                                             {Ortografía.name}
@@ -706,7 +868,7 @@ function Examenes1(props) {
                         <Accordion
                           TransitionProps={{ unmountOnExit: true }}
                           expanded={expanded === data.name}
-                          onChange={handleChange(panel)}
+                          onChange={handleModalChange(panel)}
                           className={Styles.BoxWrapper1212}
                           id={data.id}
                           onClick={() => handleExamId(data.id, index)}
@@ -769,11 +931,35 @@ function Examenes1(props) {
                                                       fontFamily:
                                                         "ProximaSoft-bold",
                                                     }}
+                                                    id={
+                                                      Conocimientos.studentExamRecordId
+                                                    }
                                                     onClick={(e) => {
-                                                      return reviewExam(
-                                                        e,
-                                                        Conocimientos
-                                                      );
+                                                      if (triggerTime >= 300) {
+                                                        setStudentExamRecId(
+                                                          Conocimientos.studentExamRecordId
+                                                        );
+                                                        setFolderId(
+                                                          Conocimientos.folderId
+                                                        );
+                                                        setResetExam(true);
+                                                      } else {
+                                                        return reviewExam(
+                                                          e,
+                                                          Conocimientos
+                                                        );
+                                                      }
+                                                    }}
+                                                    onMouseDown={() => {
+                                                      triggerTime =
+                                                        new Date().getTime();
+                                                    }}
+                                                    onMouseUp={() => {
+                                                      let thisMoment =
+                                                        new Date().getTime();
+                                                      triggerTime =
+                                                        thisMoment -
+                                                        triggerTime;
                                                     }}
                                                   >
                                                     {Conocimientos.name}
@@ -827,10 +1013,30 @@ function Examenes1(props) {
                                                       "ProximaSoft-bold",
                                                   }}
                                                   onClick={(e) => {
-                                                    return reviewExam(
-                                                      e,
-                                                      Inglés
-                                                    );
+                                                    if (triggerTime >= 300) {
+                                                      setStudentExamRecId(
+                                                        Inglés.studentExamRecordId
+                                                      );
+                                                      setFolderId(
+                                                        Inglés.folderId
+                                                      );
+                                                      setResetExam(true);
+                                                    } else {
+                                                      return reviewExam(
+                                                        e,
+                                                        Inglés
+                                                      );
+                                                    }
+                                                  }}
+                                                  onMouseDown={() => {
+                                                    triggerTime =
+                                                      new Date().getTime();
+                                                  }}
+                                                  onMouseUp={() => {
+                                                    let thisMoment =
+                                                      new Date().getTime();
+                                                    triggerTime =
+                                                      thisMoment - triggerTime;
                                                   }}
                                                 >
                                                   {Inglés.name}
@@ -884,10 +1090,31 @@ function Examenes1(props) {
                                                         "ProximaSoft-bold",
                                                     }}
                                                     onClick={(e) => {
-                                                      return reviewExam(
-                                                        e,
-                                                        Psicotécnicos
-                                                      );
+                                                      if (triggerTime >= 300) {
+                                                        setStudentExamRecId(
+                                                          Psicotécnicos.studentExamRecordId
+                                                        );
+                                                        setFolderId(
+                                                          Psicotécnicos.folderId
+                                                        );
+                                                        setResetExam(true);
+                                                      } else {
+                                                        return reviewExam(
+                                                          e,
+                                                          Psicotécnicos
+                                                        );
+                                                      }
+                                                    }}
+                                                    onMouseDown={() => {
+                                                      triggerTime =
+                                                        new Date().getTime();
+                                                    }}
+                                                    onMouseUp={() => {
+                                                      let thisMoment =
+                                                        new Date().getTime();
+                                                      triggerTime =
+                                                        thisMoment -
+                                                        triggerTime;
                                                     }}
                                                   >
                                                     {Psicotécnicos.name}
@@ -941,10 +1168,30 @@ function Examenes1(props) {
                                                       "ProximaSoft-bold",
                                                   }}
                                                   onClick={(e) => {
-                                                    return reviewExam(
-                                                      e,
-                                                      Ortografía
-                                                    );
+                                                    if (triggerTime >= 300) {
+                                                      setStudentExamRecId(
+                                                        Ortografía.studentExamRecordId
+                                                      );
+                                                      setFolderId(
+                                                        Ortografía.folderId
+                                                      );
+                                                      setResetExam(true);
+                                                    } else {
+                                                      return reviewExam(
+                                                        e,
+                                                        Ortografía
+                                                      );
+                                                    }
+                                                  }}
+                                                  onMouseDown={() => {
+                                                    triggerTime =
+                                                      new Date().getTime();
+                                                  }}
+                                                  onMouseUp={() => {
+                                                    let thisMoment =
+                                                      new Date().getTime();
+                                                    triggerTime =
+                                                      thisMoment - triggerTime;
                                                   }}
                                                 >
                                                   {Ortografía.name}
@@ -1142,6 +1389,7 @@ function Examenes1(props) {
                           props.updateView();
                         } else {
                           setShowScreen(true);
+                          setExamStatusCheck(false);
                         }
                         setShowResult(false);
                         setShowScore(false);
@@ -1319,6 +1567,26 @@ function Examenes1(props) {
                           className={Styles.timerIcons}
                           onClick={endQuiz}
                         />
+                        <img
+                          src={correctAnswerImg}
+                          className={Styles.timerIcons}
+                          onClick={() => {
+                            ansArry.splice(ansCheck, 1, {
+                              answer:
+                                examData[currentQuestion].correct === "a"
+                                  ? "answer1"
+                                  : examData[currentQuestion].correct === "b"
+                                  ? "answer2"
+                                  : examData[currentQuestion].correct === "c"
+                                  ? "answer3"
+                                  : examData[currentQuestion].correct === "d"
+                                  ? "answer4"
+                                  : answerClicked,
+                              showDescript: true,
+                            });
+                            return handleSetAnswer();
+                          }}
+                        />
                       </div>
                       <div className="flex text-xl">
                         Tiempo:
@@ -1367,13 +1635,25 @@ function Examenes1(props) {
                             answerClicked = "answer1";
                             handleSetAnswer("answer1");
                           }
+                          ansArry.splice(ansCheck, 1, {
+                            answer: answerClicked,
+                            showDescript: false,
+                          });
                         }}
                         className={Styles.answerLinks}
                       >
                         <div className={Styles.answerLinksInner1}>
                           {ansArry[currentQuestion].answer == "answer1" &&
-                          currentQuestion == ansCheck ? (
+                          currentQuestion == ansCheck &&
+                          ansArry[currentQuestion].showDescript != true ? (
                             <img src={ansSelectImg} width={"80%"} />
+                          ) : ansArry[currentQuestion].showDescript === true &&
+                            examData[currentQuestion].correct == "a" ? (
+                            <img src={tick} alt="" style={{ width: "40px" }} />
+                          ) : examData[currentQuestion].studentAnswered ==
+                              "answer1" &&
+                            examData[currentQuestion].correct != "a" ? (
+                            <img src={cross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
                           )}
@@ -1400,13 +1680,25 @@ function Examenes1(props) {
                             answerClicked = "answer2";
                             handleSetAnswer("answer2");
                           }
+                          ansArry.splice(ansCheck, 1, {
+                            answer: answerClicked,
+                            showDescript: false,
+                          });
                         }}
                         className={Styles.answerLinks}
                       >
                         <div className={Styles.answerLinksInner1}>
                           {ansArry[currentQuestion].answer == "answer2" &&
-                          currentQuestion == ansCheck ? (
+                          currentQuestion == ansCheck &&
+                          ansArry[currentQuestion].showDescript != true ? (
                             <img src={ansSelectImg} width={"80%"} />
+                          ) : ansArry[currentQuestion].showDescript === true &&
+                            examData[currentQuestion].correct == "b" ? (
+                            <img src={tick} alt="" style={{ width: "40px" }} />
+                          ) : examData[currentQuestion].studentAnswered ==
+                              "answer2" &&
+                            examData[currentQuestion].correct != "b" ? (
+                            <img src={cross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
                           )}
@@ -1430,13 +1722,25 @@ function Examenes1(props) {
                             answerClicked = "answer3";
                             handleSetAnswer("answer3");
                           }
+                          ansArry.splice(ansCheck, 1, {
+                            answer: answerClicked,
+                            showDescript: false,
+                          });
                         }}
                         className={Styles.answerLinks}
                       >
                         <div className={Styles.answerLinksInner1}>
                           {ansArry[currentQuestion].answer == "answer3" &&
-                          currentQuestion == ansCheck ? (
+                          currentQuestion == ansCheck &&
+                          ansArry[currentQuestion].showDescript != true ? (
                             <img src={ansSelectImg} width={"80%"} />
+                          ) : ansArry[currentQuestion].showDescript === true &&
+                            examData[currentQuestion].correct == "c" ? (
+                            <img src={tick} alt="" style={{ width: "40px" }} />
+                          ) : examData[currentQuestion].studentAnswered ==
+                              "answer3" &&
+                            examData[currentQuestion].correct != "c" ? (
+                            <img src={cross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
                           )}
@@ -1460,13 +1764,25 @@ function Examenes1(props) {
                             answerClicked = "answer4";
                             handleSetAnswer("answer4");
                           }
+                          ansArry.splice(ansCheck, 1, {
+                            answer: answerClicked,
+                            showDescript: false,
+                          });
                         }}
                         className={Styles.answerLinks}
                       >
                         <div className={Styles.answerLinksInner1}>
                           {ansArry[currentQuestion].answer == "answer4" &&
-                          currentQuestion == ansCheck ? (
+                          currentQuestion == ansCheck &&
+                          ansArry[currentQuestion].showDescript != true ? (
                             <img src={ansSelectImg} width={"80%"} />
+                          ) : ansArry[currentQuestion].showDescript === true &&
+                            examData[currentQuestion].correct == "d" ? (
+                            <img src={tick} alt="" style={{ width: "40px" }} />
+                          ) : examData[currentQuestion].studentAnswered ==
+                              "answer4" &&
+                            examData[currentQuestion].correct != "d" ? (
+                            <img src={cross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
                           )}
@@ -1477,6 +1793,18 @@ function Examenes1(props) {
                       </button>
                     </div>
                   </div>
+                  {ansArry[currentQuestion].showDescript === true ? (
+                    <div
+                      className="m-8"
+                      style={{
+                        fontFamily: "ProximaSoft-regular",
+                      }}
+                    >
+                      <Markup content={examData[currentQuestion].description} />
+                    </div>
+                  ) : (
+                    ""
+                  )}
                   <div className={Styles.resultBtnWrapper}>
                     {ansArry.map((data, index) => {
                       return (
@@ -1489,7 +1817,6 @@ function Examenes1(props) {
                             onClick={() => {
                               setCurrentQuestion(index);
                               setAnsCheck(index);
-                              setStudentAnswered(null);
                             }}
                             className={`${Styles.resultBtn} noAnswer`}
                             style={{

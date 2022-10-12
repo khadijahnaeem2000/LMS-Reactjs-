@@ -5,10 +5,15 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@mui/material/Button";
 import Accordion from "@mui/material/Accordion";
 import LinearProgress from "@mui/material/LinearProgress";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CircularProgress from "@mui/material/CircularProgress";
+import noBtnImg from "../../assets/img/images/noBtn.webp";
+import siBtnImg from "../../assets/img/images/SiBtn.webp";
+import correctAnswerImg from "../../assets/img/images/correctAnswer.webp";
 import ansSelectImg from "../../assets/img/images/Flecha.webp";
 import Revisar from "../../assets/img/images/revisar.webp";
 import Salir from "../../assets/img/images/salirExamenes.webp";
@@ -30,6 +35,7 @@ import RepasoNotDone from "../../assets/img/images/Iconorepaso.webp";
 import RepasoDone from "../../assets/img/images/repasouncompleted.webp";
 import { getLocalUserdata } from "../../services/auth/localStorageData";
 import { Markup } from "interweave";
+import Modal from "@mui/material/Modal";
 import tick from "../../assets/img/images/tick.webp";
 import cross from "../../assets/img/images/cross.webp";
 import useStyles from "./styles";
@@ -53,10 +59,17 @@ function Repaso(props) {
   const [secondsRemaining, setSecondsRemaining] = useState(0);
   const [studentAnswer, setStudentAnswered] = useState(null);
   const [ansCheck, setAnsCheck] = useState(0);
+  const [examStatusCheck, setExamStatusCheck] = useState(false);
   const [progress, setProgress] = useState(0);
   const [ansArry, setAnsArry] = useState([]);
   const [totalLoading, setTotalLoading] = useState(0);
   const [stateRend, setStateRend] = useState(0);
+  const [studentExamRecId, setStudentExamRecId] = useState(0);
+  const [folderId, setFolderId] = useState(0);
+  const [resetExam, setResetExam] = useState(false);
+
+  const handleModalClose = () => setResetExam(false);
+  let triggerTime;
 
   const data = getLocalUserdata();
   const student_type = data.type;
@@ -77,14 +90,14 @@ function Repaso(props) {
           timeFrom: props.item.timeFrom,
         };
         const e = {
-          id:data.id,
-        }
+          id: data.id,
+        };
         if (props.item.examStatus === "end") {
-          reviewExam('', data);
+          reviewExam("", data);
         } else {
           startExams(e, data);
         }
-      } 
+      }
     }
   }, []);
 
@@ -118,11 +131,36 @@ function Repaso(props) {
       .post(`https://neoestudio.net/api/getReviewFolderExams`, getExamFiles)
       .then((response) => {
         setFilesData(response.data.data);
-        console.log(response.data.data);
         setListLoading(false);
       })
       .catch((error) => {
         console.log(error, "Error Loading, Please Try Again !");
+      });
+  };
+
+  const resetRepasoExam = () => {
+    setListLoading(true);
+    const resetExamData = {
+      studentId: student_id,
+      studentType: student_type,
+      folderId: folderId,
+      examId: studentExamRecId,
+      isRestart: true,
+    };
+    setCurrentQuestion(0);
+    setAnsCheck(0);
+    axios
+      .post(`https://neoestudio.net/api/getReviewFolderExams`, resetExamData)
+      .then((response) => {
+        setFilesData(response.data.data);
+        setStateRend((prev) => prev + 1);
+        setExamStatusCheck(true);
+        setListLoading(false);
+        setResetExam(false);
+      })
+      .catch((error) => {
+        setListLoading(false);
+        console.log(error, "Error Loading Reset Api, Please Try Again !");
       });
   };
 
@@ -134,9 +172,7 @@ function Repaso(props) {
   // START EXAM API CALL
 
   const startExams = (e, Conocimientos, Inglés, Ortografía, Psicotécnicos) => {
-    console.log(e?.target?.id);
-    console.log(Conocimientos);
-    const ExamNO = e?.target?.id?e.target.id:e.id;
+    const ExamNO = e?.target?.id ? e.target.id : e.id;
     localStorage.setItem("examID", ExamNO);
     setLoading(true);
     const startData = {
@@ -145,8 +181,7 @@ function Repaso(props) {
       studentAnswered: null,
       studentAttemptId: null,
       tab: null,
-      isRestart: "no",
-      studentType: student_type,
+      isRestart: examStatusCheck ? "yes" : "no",
       examId: localStorage.getItem("examID"),
       studentExamRecordId: Conocimientos
         ? Conocimientos.studentExamRecordId
@@ -156,13 +191,23 @@ function Repaso(props) {
         ? Ortografía.studentExamRecordId
         : Psicotécnicos.studentExamRecordId,
     };
-    setSecondsRemaining(
-      Conocimientos
-        ? Conocimientos.examDuration
-        : Inglés.examDuration
-        ? Ortografía.examDuration
-        : Psicotécnicos.examDuration
-    );
+    if (examStatusCheck === true) {
+      setSecondsRemaining(
+        Conocimientos
+          ? Conocimientos.timeFrom
+          : Inglés.timeFrom
+          ? Ortografía.timeFrom
+          : Psicotécnicos.timeFrom
+      );
+    } else {
+      setSecondsRemaining(
+        Conocimientos
+          ? Conocimientos.examDuration
+          : Inglés.examDuration
+          ? Ortografía.examDuration
+          : Psicotécnicos.examDuration
+      );
+    }
     setTotalLoading(
       Conocimientos
         ? Number(Conocimientos.timeFrom)
@@ -183,7 +228,6 @@ function Repaso(props) {
           ]);
         }
         setExamData(response.data.data);
-        console.log(response.data.data);
         setLoading(false);
         setStatus(true);
         setCurrentQuestion(0);
@@ -192,7 +236,6 @@ function Repaso(props) {
       })
       .catch((error) => {
         setLoading(false);
-        alert("Please Try Again");
         console.log(error, "Error Loading, Please Try Again !");
       });
   };
@@ -225,6 +268,7 @@ function Repaso(props) {
       .then((response) => {
         setPauseExam(response.data);
         if (response.data.data.canPause == "yes") {
+          setExamStatusCheck(false);
           setStatus(false);
           if (props.showScreen === "false") {
             props.updateView();
@@ -276,6 +320,7 @@ function Repaso(props) {
     setShowScore(false);
     setCurrentQuestion(0);
     setExpanded(false);
+    setExamStatusCheck(false);
     setStateRend((prev) => prev + 1);
     if (props.showExam === "true") {
       props.updateView();
@@ -346,11 +391,6 @@ function Repaso(props) {
   // NEXT QUESTION BUTTON
 
   const handleSetAnswer = (id) => {
-    setAnsCheck(currentQuestion);
-    console.log(answerClicked);
-    ansArry.splice(ansCheck, 1, {
-      answer: answerClicked,
-    });
     const startData = {
       studentId: data.id,
       studentType: student_type,
@@ -371,6 +411,7 @@ function Repaso(props) {
         if (currentQuestion + 1 >= examData.length) {
           endQuiz();
         } else {
+          setExamData(response.data.data);
           setLoading(false);
         }
       })
@@ -402,6 +443,41 @@ function Repaso(props) {
                   <div className={Styles.headingText}>Ortografia</div>
                 </Grid>
               </Grid>
+              <Modal
+                open={resetExam}
+                onClose={handleModalClose}
+                aria-labelledby="reset-exam-modal"
+                aria-describedby="reset-modal-description"
+              >
+                <Box className={Styles.modalStyle}>
+                  <Typography
+                    id="reset-exam-modal"
+                    variant="h6"
+                    component="h2"
+                    sx={{ textAlign: "center" }}
+                  >
+                    ¿Quieres resetear este examen?
+                  </Typography>
+                  <div className="flex justify-between w-full">
+                    <Button
+                      size="medium"
+                      onClick={() => {
+                        resetRepasoExam();
+                      }}
+                    >
+                      <img src={siBtnImg} alt="" height={50} />
+                    </Button>
+                    <Button
+                      size="medium"
+                      onClick={() => {
+                        setResetExam(false);
+                      }}
+                    >
+                      <img src={noBtnImg} alt="" height={50} />
+                    </Button>
+                  </div>
+                </Box>
+              </Modal>
               {loading ? (
                 <div className="w-100 text-center">
                   <CircularProgress
@@ -493,7 +569,25 @@ function Repaso(props) {
                                                     "ProximaSoft-bold",
                                                 }}
                                                 onClick={(e) => {
-                                                  return reviewExam(e, data);
+                                                  if (triggerTime >= 300) {
+                                                    setStudentExamRecId(
+                                                      data.studentExamRecordId
+                                                    );
+                                                    setFolderId(data.folderId);
+                                                    setResetExam(true);
+                                                  } else {
+                                                    reviewExam(e, data);
+                                                  }
+                                                }}
+                                                onMouseDown={() => {
+                                                  triggerTime =
+                                                    new Date().getTime();
+                                                }}
+                                                onMouseUp={() => {
+                                                  let thisMoment =
+                                                    new Date().getTime();
+                                                  triggerTime =
+                                                    thisMoment - triggerTime;
                                                 }}
                                               >
                                                 {data.name}
@@ -701,6 +795,7 @@ function Repaso(props) {
                         }
                         setShowResult(false);
                         setShowScore(false);
+                        setExamStatusCheck(false);
                       }}
                     >
                       Volver a Exámenes
@@ -875,6 +970,26 @@ function Repaso(props) {
                           className={Styles.timerIcons}
                           onClick={endQuiz}
                         />
+                        <img
+                          src={correctAnswerImg}
+                          className={Styles.timerIcons}
+                          onClick={() => {
+                            ansArry.splice(ansCheck, 1, {
+                              answer:
+                                examData[currentQuestion].correct === "a"
+                                  ? "answer1"
+                                  : examData[currentQuestion].correct === "b"
+                                  ? "answer2"
+                                  : examData[currentQuestion].correct === "c"
+                                  ? "answer3"
+                                  : examData[currentQuestion].correct === "d"
+                                  ? "answer4"
+                                  : answerClicked,
+                              showDescript: true,
+                            });
+                            return handleSetAnswer();
+                          }}
+                        />
                       </div>
                       <div className="flex text-xl">
                         Tiempo:
@@ -923,13 +1038,26 @@ function Repaso(props) {
                             answerClicked = "answer1";
                             handleSetAnswer("answer1");
                           }
+                          ansArry.splice(ansCheck, 1, {
+                            answer: answerClicked,
+                            showDescript: false,
+                          });
                         }}
                         className={Styles.answerLinks}
                       >
                         <div className={Styles.answerLinksInner1}>
                           {ansArry[currentQuestion].answer == "answer1" &&
-                          currentQuestion == ansCheck ? (
+                          currentQuestion == ansCheck &&
+                          ansArry[currentQuestion].showDescript != true ? (
                             <img src={ansSelectImg} width={"80%"} />
+                          ) : ansArry[currentQuestion].showDescript === true &&
+                            examData[currentQuestion].correct == "a" ? (
+                            <img src={tick} alt="" style={{ width: "40px" }} />
+                          ) : ansArry[currentQuestion].showDescript === true &&
+                            examData[currentQuestion].studentAnswered ==
+                              "answer1" &&
+                            examData[currentQuestion].correct != "a" ? (
+                            <img src={cross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
                           )}
@@ -956,13 +1084,26 @@ function Repaso(props) {
                             answerClicked = "answer2";
                             handleSetAnswer("answer2");
                           }
+                          ansArry.splice(ansCheck, 1, {
+                            answer: answerClicked,
+                            showDescript: false,
+                          });
                         }}
                         className={Styles.answerLinks}
                       >
                         <div className={Styles.answerLinksInner1}>
                           {ansArry[currentQuestion].answer == "answer2" &&
-                          currentQuestion == ansCheck ? (
+                          currentQuestion == ansCheck &&
+                          ansArry[currentQuestion].showDescript != true ? (
                             <img src={ansSelectImg} width={"80%"} />
+                          ) : ansArry[currentQuestion].showDescript === true &&
+                            examData[currentQuestion].correct == "b" ? (
+                            <img src={tick} alt="" style={{ width: "40px" }} />
+                          ) : ansArry[currentQuestion].showDescript === true &&
+                            examData[currentQuestion].studentAnswered ==
+                              "answer2" &&
+                            examData[currentQuestion].correct != "b" ? (
+                            <img src={cross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
                           )}
@@ -986,13 +1127,26 @@ function Repaso(props) {
                             answerClicked = "answer3";
                             handleSetAnswer("answer3");
                           }
+                          ansArry.splice(ansCheck, 1, {
+                            answer: answerClicked,
+                            showDescript: false,
+                          });
                         }}
                         className={Styles.answerLinks}
                       >
                         <div className={Styles.answerLinksInner1}>
                           {ansArry[currentQuestion].answer == "answer3" &&
-                          currentQuestion == ansCheck ? (
+                          currentQuestion == ansCheck &&
+                          ansArry[currentQuestion].showDescript != true ? (
                             <img src={ansSelectImg} width={"80%"} />
+                          ) : ansArry[currentQuestion].showDescript === true &&
+                            examData[currentQuestion].correct == "c" ? (
+                            <img src={tick} alt="" style={{ width: "40px" }} />
+                          ) : ansArry[currentQuestion].showDescript === true &&
+                            examData[currentQuestion].studentAnswered ==
+                              "answer3" &&
+                            examData[currentQuestion].correct != "c" ? (
+                            <img src={cross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
                           )}
@@ -1016,13 +1170,26 @@ function Repaso(props) {
                             answerClicked = "answer4";
                             handleSetAnswer("answer4");
                           }
+                          ansArry.splice(ansCheck, 1, {
+                            answer: answerClicked,
+                            showDescript: false,
+                          });
                         }}
                         className={Styles.answerLinks}
                       >
                         <div className={Styles.answerLinksInner1}>
                           {ansArry[currentQuestion].answer == "answer4" &&
-                          currentQuestion == ansCheck ? (
+                          currentQuestion == ansCheck &&
+                          ansArry[currentQuestion].showDescript != true ? (
                             <img src={ansSelectImg} width={"80%"} />
+                          ) : ansArry[currentQuestion].showDescript === true &&
+                            examData[currentQuestion].correct == "d" ? (
+                            <img src={tick} alt="" style={{ width: "40px" }} />
+                          ) : ansArry[currentQuestion].showDescript === true &&
+                            examData[currentQuestion].studentAnswered ==
+                              "answer4" &&
+                            examData[currentQuestion].correct != "d" ? (
+                            <img src={cross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
                           )}
@@ -1033,6 +1200,18 @@ function Repaso(props) {
                       </button>
                     </div>
                   </div>
+                  {ansArry[currentQuestion].showDescript === true ? (
+                    <div
+                      className="m-8"
+                      style={{
+                        fontFamily: "ProximaSoft-regular",
+                      }}
+                    >
+                      <Markup content={examData[currentQuestion].description} />
+                    </div>
+                  ) : (
+                    ""
+                  )}
                   <div className={Styles.resultBtnWrapper}>
                     {ansArry.map((data, index) => {
                       return (
@@ -1045,7 +1224,6 @@ function Repaso(props) {
                             onClick={() => {
                               setCurrentQuestion(index);
                               setAnsCheck(index);
-                              setStudentAnswered(null);
                             }}
                             className={`${Styles.resultBtn} noAnswer`}
                             style={{
