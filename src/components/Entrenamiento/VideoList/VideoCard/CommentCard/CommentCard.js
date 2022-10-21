@@ -174,30 +174,6 @@ const CommentCard = (props) => {
 
   return (
     <>
-      <div style={{position:'relative'}} className='flex'>
-        <TextField
-          inputRef={inputRef}
-          id="standard-multiline-flexible"
-          label="Agregar comentario"
-          multiline
-          maxRows={2}
-          value={value}
-          onChange={handleChange}
-          variant="standard"
-          fullWidth
-        />
-        <IconButton sx={{marginRight:'1%', zIndex:2000}} onClick={() => setShowEmojis(!showEmojis)}edge="end" aria-label="emoticonos">
-          <EmojiEmotionsIcon sx={{color:'RGB(255,222,52)'}}/>
-        </IconButton>
-        {showEmojis && (
-          <div style={{position:'absolute',zIndex:1000,top: '50px',right: '-10%',left:0,bottom: 0}}>
-            <Picker searchPosition={'none'} navPosition={'none'} perLine={6} maxFrequentRows={0} previewPosition={'none'} data={data} onEmojiSelect={addEmoji}/>
-          </div>
-        )}
-        <Button onClick={handleSubmit} sx={{marginTop:'2%', marginBottom:'2%'}} variant="contained" endIcon={<SendIcon/>}>
-          {editing?'Actualizar':'Enviar'}
-        </Button>
-      </div>
       {comments.length>0
       ?<>
         {comments.map((comment) => {
@@ -230,7 +206,37 @@ const CommentCard = (props) => {
         })
       }
       </>
-    :<div>No hay comentarios para mostrar.</div>}
+    :<div className='flex justify-center' style={{margin:5, marginTop:20}}>No hay comentarios para mostrar.</div>}  
+    <div style={{position:'sticky', bottom:0, background:'white', opacity:1, zIndex:100, marginTop:'5%'}}>
+        <div className='flex justify-between' style={{marginBottom:'2%'}}>
+          <h2><strong>Comentarios</strong></h2>
+        </div>
+        <hr/>
+        <div style={{position:'relative', marginRight:5, marginLeft:5}} className='flex'>
+          <TextField
+            inputRef={inputRef}
+            id="standard-multiline-flexible"
+            label="Agregar comentario"
+            multiline
+            maxRows={2}
+            value={value}
+            onChange={handleChange}
+            variant="standard"
+            fullWidth
+          />
+          <IconButton sx={{marginRight:'1%', zIndex:2000}} onClick={() => setShowEmojis(!showEmojis)}edge="end" aria-label="emoticonos">
+            <EmojiEmotionsIcon sx={{color:'RGB(255,222,52)'}}/>
+          </IconButton>
+          {showEmojis && (
+            <div style={{position:'absolute',zIndex:1000,top: '-30vh',right: '-10%',left:0,bottom: 0}}>
+              <Picker searchPosition={'none'} navPosition={'none'} perLine={6} maxFrequentRows={0} previewPosition={'none'} data={data} onEmojiSelect={addEmoji}/>
+            </div>
+          )}
+          <Button onClick={handleSubmit} sx={{marginTop:'2%', marginBottom:'2%'}} variant="contained" endIcon={<SendIcon/>}>
+            {editing?'Actualizar':'Enviar'}
+          </Button>
+        </div>
+      </div>
     </>
   )
 }

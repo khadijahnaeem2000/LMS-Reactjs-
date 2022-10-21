@@ -29,13 +29,14 @@ export function getLocalUserdata(value) {
   return localData;
 }
 
-export function saveLocalData(value) {
+export function saveLocalData(value,time) {
   const temp=JSON.parse(localStorage.getItem(token));
   value.openedClasses=[];
   value.openedVideos=[];
   value.openedPdfs=[];
   value.openedAudios=[];
   value.downloads=[];
+  value.time=time;
   if(temp===null){
     localStorage.setItem('neoestudio', JSON.stringify(value));
   }

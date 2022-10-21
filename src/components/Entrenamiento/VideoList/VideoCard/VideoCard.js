@@ -11,8 +11,11 @@ import ShareButton from './Buttons/ShareButton';
 import LikeButton from './Buttons/LikeButton';
 import CommentButton from './Buttons/CommentButton';
 import DownloadButton from './Buttons/DownloadButton';
+import CommentCard from './CommentCard/CommentCard';
+import useStyles from '../../../MUIScrollbar/MUIScrollbar'
 
 const VideoCard = (props) => {
+  const classes = useStyles();
     const [play, setPlay] = useState(true);
     const [mute, setMute] = useState(false);
     const [playing, setPlaying] = useState([]);
@@ -81,10 +84,10 @@ const VideoCard = (props) => {
                     </div>   
                     <CardActions sx={{display: 'flex', flexDirection: 'column', justifyContent:'end'}} disableSpacing>
                         <LikeButton videoId={props.item.id} likeCount={props.item.likeCount}/>
-                        <CommentButton videoId={props.item.id} commentCount={props.item.commentCount}/>
                         <DownloadButton item={props.item} downloadCount={props.item.downloadCount}/>
                         <ShareButton videoId={props.item.id} title={props.item.title} url={`https://neoestudio.net/${props.item.file}`} shareCount={props.item.shareCount}/>
                     </CardActions>
+                    <div className={`flex flex-col justify-between ${classes.root}`} style={{marginLeft:'10%',width:'40%',height:'80vh',overflowY:'scroll', overflowX:'hidden'}}><CommentCard  videoId={props.item.id}/></div>
                 </Card>  
             </>
         )}

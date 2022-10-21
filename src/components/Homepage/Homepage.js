@@ -4,6 +4,9 @@ import "./styles.css";
 import { getLocalUserdata } from "../../services/auth/localStorageData";
 import profilepic from "../../assets/img/images/layer_25.webp";
 import defaultrank from "../../assets/img/images/Empleo_cabo.webp";
+import Button from '@mui/material/Button';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
+
 
 const Homepage = () => {
   const classes = useStyles();
@@ -25,6 +28,9 @@ const Homepage = () => {
                 : profilepic
             }
           />
+          {/*<Button sx={{margin:5}} variant="outlined" startIcon={<PhotoCamera />}>
+            Cambiar Imagen
+          </Button>*/}
         </div>
         <div className="imgWidth3 mr-1">
           <img
@@ -45,12 +51,12 @@ const Homepage = () => {
         <div className="mr-1 imgWidth2">
           <img
             alt="Nivel"
-            src={require("assets/img/images/Nivel.webp").default}
+            src={require("assets/img/images/Tiempo.webp").default}
           />
           <h2 className={`${classes.font} text-center fontSize`}>
-            {data.experience != null ? data.experience : 0}
+            {data.time != null ? data.time : 0} h
           </h2>
-          <p className="text-center fontSize">Experiencia</p>
+          <p className="text-center fontSize">Tiempo</p>
         </div>
         <div className="mr-1 imgWidth">
           <img

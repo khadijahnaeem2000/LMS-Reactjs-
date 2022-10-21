@@ -36,9 +36,9 @@ const VideoList = (props) => {
     videos.length>0 ?
     <div className={'entramientoContainer flex flex-col'} style={{height:'96vh', overflow:'auto'}}>
         {
-            videos.map((item, index) => {
-                return <VideoCard loading={loading} updateLoading={updateLoading} index={index} item={item} updateID={props.updateID}/>
-            })
+          videos.map((item, index) => {
+              return <VideoCard loading={loading} updateLoading={updateLoading} index={index} item={item} updateID={props.updateID}/>
+          })
         }
     </div>
     :<div style={{ display:'flex', justifyContent:'center', paddingTop:'2%'}}><CircularProgress disableShrink /></div>

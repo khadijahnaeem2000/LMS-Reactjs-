@@ -38,10 +38,10 @@ const Entrenamiento = () => {
 
   return (
     <div className='flex flex-col' style={{position:'relative'}}>
-      <IconButton onClick={handleUpClick} className={classes.upButton} sx={{position:'absolute', zIndex:100, top:'50%', left:'10%', cursor:'pointer', borderRadius:'50%'}}>
+      <IconButton onClick={handleUpClick} className={classes.upButton} sx={{position:'absolute', zIndex:100, top:'40%', left:'3%', cursor:'pointer', borderRadius:'50%'}}>
         <ArrowUpwardIcon fontSize="large" sx={{ color: 'black'}}/>
       </IconButton>
-      <IconButton onClick={handleDownClick} className={classes.downButton} sx={{position:'absolute', zIndex:100, top:'50%', right:'10%', cursor:'pointer', borderRadius:'50%'}}>
+      <IconButton onClick={handleDownClick} className={classes.downButton} sx={{position:'absolute', zIndex:100, top:'50%', left:'3%', cursor:'pointer', borderRadius:'50%'}}>
         <ArrowDownwardIcon fontSize="large" sx={{ color: 'black'}}/>
       </IconButton>
       <VideoList updateTotal={updateTotal} updateID={updateID}/>

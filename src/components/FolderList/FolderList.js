@@ -5,11 +5,6 @@ import { getLocalUserdata } from '../../services/auth/localStorageData';
 import userServices from 'services/httpService/userAuth/userServices';
 import { toast } from 'react-toastify';
 import useStyles from '../MUIScrollbar/MUIScrollbar';
-import Accordion from "@mui/material/Accordion";
-import LinearProgress from "@mui/material/LinearProgress";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const FolderList = (props) => {
     const classes = useStyles();
