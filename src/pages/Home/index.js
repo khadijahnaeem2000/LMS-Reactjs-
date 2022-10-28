@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import HomeNavbar from 'components/Navbars/HomeNavbar.js';
 import SideMenu from 'components/SideMenu/SideMenu.js';
@@ -8,7 +8,7 @@ import Video from 'components/Video/Video.js'
 import Classes from 'components/Classes/Classes.js'
 import RankingGlobal from 'components/RankingGlobal/RankingGlobal.js';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
-
+import ActivitiesApi from './../../api/index';
 
 function Home() {
   const history = useNavigate();
@@ -36,16 +36,27 @@ function Home() {
 
   const renderOption = () => {
     if(currentPage==='Mi escritorio')
-      return <Homepage/> 
+      return <Homepage/>
     else if(currentPage === 'Temario')
-      return <Temario folderToggle={folderToggle}/> 
-    else if(currentPage === 'Video') 
-      return <Video />  
-    else if(currentPage === 'Classes') 
+      return <Temario folderToggle={folderToggle}/>
+    else if(currentPage === 'Video')
+      return <Video />
+    else if(currentPage === 'Classes')
       return <Classes />
     else if(currentPage === 'Ranking global')
       return <RankingGlobal />
   }
+
+  useEffect(() => {
+      ActivitiesApi.getActivities()
+        .then((response) => {
+          console.log("res in home:", response);
+        })
+        .catch((error) => {
+          console.log("error in home:",error);
+        })
+
+  }, []);
 
   return (
     <>
