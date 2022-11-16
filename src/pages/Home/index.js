@@ -1,8 +1,9 @@
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { getLocalUserdata } from "../../services/auth/localStorageData";
+import userServices from 'services/httpService/userAuth/userServices';
 import HomeNavbar from "components/Navbars/HomeNavbar.js";
 import SideMenu from "components/SideMenu/SideMenu.js";
 import Homepage from "components/Homepage/Homepage.js";
@@ -26,6 +27,44 @@ function Home() {
   const [currentPage, setCurrentPage] = useState("Mi escritorio");
   const [folderToggle, setFolderToggle] = useState("0%");
   const data = getLocalUserdata();
+
+   useEffect (() => {
+    window.addEventListener("focus", onFocus);
+    window.addEventListener("blur", onBlur);
+    // Calls onFocus when the window first loads
+    onFocus();
+    // Specify how to clean up after this effect:
+    return () => {
+        window.removeEventListener("focus", onFocus);
+        window.removeEventListener("blur", onBlur);
+    };
+   },[])
+
+   // User has switched back to the tab
+  const onFocus = () => {
+    userServices.commonPostService('/loginTime',{"user_id":data.id})
+    .then((response) =>{
+      if(response.status!==200){
+        console.log("Cannot log in time");
+      }
+    })
+    .catch((error) =>{
+      console.log(error);
+    })
+  };
+
+  // User has switched away from the tab (AKA tab is hidden)
+  const onBlur = () => {
+    userServices.commonPostService('/logoutTime',{"user_id":data.id})
+    .then((response) =>{
+      if(response.status!==200) {
+        console.log("Cannot log out time");
+      }
+    })
+    .catch((error) =>{
+      console.log(error);
+    })
+  };
 
   const toggleSideMenu = () => {
     if (toggleMenu === true) {

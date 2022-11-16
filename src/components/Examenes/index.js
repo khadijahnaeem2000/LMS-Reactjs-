@@ -581,7 +581,7 @@ function Examenes1(props) {
                                     return (
                                       <div className={Styles.examLinks}>
                                         {Conocimientos.studentExamStatus ===
-                                        "notAttempted" ? (
+                                        ("notAttempted"||"started") ? (
                                           <button
                                             id={Conocimientos.id}
                                             onClick={(e) =>
@@ -600,7 +600,13 @@ function Examenes1(props) {
                                               fontFamily: "ProximaSoft-bold",
                                             }}
                                             onClick={(e) => {
-                                              if (triggerTime > 300) {
+                                                return reviewExam(
+                                                  e,
+                                                  Conocimientos
+                                                );
+                                            }}
+                                            onMouseDown={() => {
+                                              triggerTime = setTimeout(() => {
                                                 setStudentExamRecId(
                                                   Conocimientos.studentExamRecordId
                                                 );
@@ -608,35 +614,44 @@ function Examenes1(props) {
                                                   Conocimientos.folderId
                                                 );
                                                 setResetExam(true);
-                                              } else {
-                                                return reviewExam(
-                                                  e,
-                                                  Conocimientos
-                                                );
-                                              }
-                                            }}
-                                            onMouseDown={() => {
-                                              triggerTime =
-                                                new Date().getTime();
+                                            }, 1000); //Change 1000 to number of milliseconds required for mouse hold
                                             }}
                                             onMouseUp={() => {
-                                              let thisMoment =
-                                                new Date().getTime();
-                                              triggerTime =
-                                                thisMoment - triggerTime;
+                                              clearTimeout(triggerTime);
                                             }}
                                           >
                                             {Conocimientos.name}
                                           </button>
-                                        ) : (
+                                        ) :  Conocimientos.studentExamStatus ===
+                                        "paused" ? (
                                           <button
                                             id={Conocimientos.id}
                                             onClick={(e) =>
-                                              startExams(e, Conocimientos)
+                                              startExams(
+                                                e,
+                                                Conocimientos
+                                              )
                                             }
                                             style={{
-                                              fontFamily: "ProximaSoft-regular",
+                                              fontFamily:
+                                                "ProximaSoft-regular",
                                               color: "#0A52CB",
+                                            }}
+                                          >
+                                            {Conocimientos.name}
+                                          </button>
+                                        ):(
+                                          <button
+                                            onClick={(e) =>
+                                              startExams(
+                                                e,
+                                                Conocimientos
+                                              )
+                                            }
+                                            id={Conocimientos.id}
+                                            style={{
+                                              fontFamily:
+                                                "ProximaSoft-regular",
                                             }}
                                           >
                                             {Conocimientos.name}
@@ -651,7 +666,7 @@ function Examenes1(props) {
                                     return (
                                       <div className={Styles.examLinks}>
                                         {Inglés.studentExamStatus ===
-                                        "notAttempted" ? (
+                                        "notAttempted"? (
                                           <button
                                             id={Inglés.id}
                                             onClick={(e) =>
@@ -670,38 +685,53 @@ function Examenes1(props) {
                                               fontFamily: "ProximaSoft-bold",
                                             }}
                                             onClick={(e) => {
-                                              if (triggerTime >= 300) {
+                                                return reviewExam(e, Inglés);
+                                            }}
+                                            onMouseDown={() => {
+                                              triggerTime = setTimeout(() => {
                                                 setStudentExamRecId(
                                                   Inglés.studentExamRecordId
                                                 );
                                                 setFolderId(Inglés.folderId);
                                                 setResetExam(true);
-                                              } else {
-                                                return reviewExam(e, Inglés);
-                                              }
-                                            }}
-                                            onMouseDown={() => {
-                                              triggerTime =
-                                                new Date().getTime();
+                                              }, 1000); //Change 1000 to number of milliseconds required for mouse hold
                                             }}
                                             onMouseUp={() => {
-                                              let thisMoment =
-                                                new Date().getTime();
-                                              triggerTime =
-                                                thisMoment - triggerTime;
+                                              clearTimeout(triggerTime);
                                             }}
                                           >
                                             {Inglés.name}
                                           </button>
-                                        ) : (
+                                        ) : Inglés.studentExamStatus ===
+                                        "paused" ? (
                                           <button
                                             id={Inglés.id}
                                             onClick={(e) =>
-                                              startExams(e, Inglés)
+                                              startExams(
+                                                e,
+                                                Inglés
+                                              )
                                             }
                                             style={{
-                                              fontFamily: "ProximaSoft-regular",
+                                              fontFamily:
+                                                "ProximaSoft-regular",
                                               color: "#0A52CB",
+                                            }}
+                                          >
+                                            {Inglés.name}
+                                          </button>
+                                        ):(
+                                          <button
+                                            onClick={(e) =>
+                                              startExams(
+                                                e,
+                                                Inglés
+                                              )
+                                            }
+                                            id={Inglés.id}
+                                            style={{
+                                              fontFamily:
+                                                "ProximaSoft-regular",
                                             }}
                                           >
                                             {Inglés.name}
@@ -716,7 +746,7 @@ function Examenes1(props) {
                                     return (
                                       <div className={Styles.examLinks}>
                                         {Psicotécnicos.studentExamStatus ===
-                                        "notAttempted" ? (
+                                        "notAttempted"? (
                                           <button
                                             onClick={(e) =>
                                               startExams(e, Psicotécnicos)
@@ -735,7 +765,13 @@ function Examenes1(props) {
                                               fontFamily: "ProximaSoft-bold",
                                             }}
                                             onClick={(e) => {
-                                              if (triggerTime >= 300) {
+                                                return reviewExam(
+                                                  e,
+                                                  Psicotécnicos
+                                                );                                        
+                                            }}
+                                            onMouseDown={() => {
+                                              triggerTime = setTimeout(() => {
                                                 setStudentExamRecId(
                                                   Psicotécnicos.studentExamRecordId
                                                 );
@@ -743,35 +779,44 @@ function Examenes1(props) {
                                                   Psicotécnicos.folderId
                                                 );
                                                 setResetExam(true);
-                                              } else {
-                                                return reviewExam(
-                                                  e,
-                                                  Psicotécnicos
-                                                );
-                                              }
-                                            }}
-                                            onMouseDown={() => {
-                                              triggerTime =
-                                                new Date().getTime();
+                                            }, 1000); //Change 1000 to number of milliseconds required for mouse hold
                                             }}
                                             onMouseUp={() => {
-                                              let thisMoment =
-                                                new Date().getTime();
-                                              triggerTime =
-                                                thisMoment - triggerTime;
+                                              clearTimeout(triggerTime);
                                             }}
                                           >
                                             {Psicotécnicos.name}
                                           </button>
-                                        ) : (
+                                        ) : Psicotécnicos.studentExamStatus ===
+                                        "paused" ? (
                                           <button
                                             id={Psicotécnicos.id}
                                             onClick={(e) =>
-                                              startExams(e, Psicotécnicos)
+                                              startExams(
+                                                e,
+                                                Psicotécnicos
+                                              )
                                             }
                                             style={{
-                                              fontFamily: "ProximaSoft-regular",
+                                              fontFamily:
+                                                "ProximaSoft-regular",
                                               color: "#0A52CB",
+                                            }}
+                                          >
+                                            {Psicotécnicos.name}
+                                          </button>
+                                        ):  (
+                                          <button
+                                            onClick={(e) =>
+                                              startExams(
+                                                e,
+                                                Psicotécnicos
+                                              )
+                                            }
+                                            id={Psicotécnicos.id}
+                                            style={{
+                                              fontFamily:
+                                                "ProximaSoft-regular",
                                             }}
                                           >
                                             {Psicotécnicos.name}
@@ -786,7 +831,7 @@ function Examenes1(props) {
                                     return (
                                       <div className={Styles.examLinks}>
                                         {Ortografía.studentExamStatus ===
-                                        "notAttempted" ? (
+                                        "notAttempted"? (
                                           <button
                                             id={Ortografía.id}
                                             onClick={(e) =>
@@ -805,7 +850,14 @@ function Examenes1(props) {
                                               fontFamily: "ProximaSoft-bold",
                                             }}
                                             onClick={(e) => {
-                                              if (triggerTime >= 300) {
+                                                return reviewExam(
+                                                  e,
+                                                  Ortografía
+                                                );
+                                              
+                                            }}
+                                            onMouseDown={() => {
+                                              triggerTime = setTimeout(() => {
                                                 setStudentExamRecId(
                                                   Ortografía.studentExamRecordId
                                                 );
@@ -813,35 +865,44 @@ function Examenes1(props) {
                                                   Ortografía.folderId
                                                 );
                                                 setResetExam(true);
-                                              } else {
-                                                return reviewExam(
-                                                  e,
-                                                  Ortografía
-                                                );
-                                              }
-                                            }}
-                                            onMouseDown={() => {
-                                              triggerTime =
-                                                new Date().getTime();
+                                            }, 1000); //Change 1000 to number of milliseconds required for mouse hold
                                             }}
                                             onMouseUp={() => {
-                                              let thisMoment =
-                                                new Date().getTime();
-                                              triggerTime =
-                                                thisMoment - triggerTime;
+                                              clearTimeout(triggerTime);
                                             }}
                                           >
                                             {Ortografía.name}
                                           </button>
-                                        ) : (
+                                        ) : Ortografía.studentExamStatus ===
+                                        "paused" ? (
                                           <button
                                             id={Ortografía.id}
                                             onClick={(e) =>
-                                              startExams(e, Ortografía)
+                                              startExams(
+                                                e,
+                                                Ortografía
+                                              )
                                             }
                                             style={{
-                                              fontFamily: "ProximaSoft-regular",
+                                              fontFamily:
+                                                "ProximaSoft-regular",
                                               color: "#0A52CB",
+                                            }}
+                                          >
+                                            {Ortografía.name}
+                                          </button>
+                                        ):(
+                                          <button
+                                            onClick={(e) =>
+                                              startExams(
+                                                e,
+                                                Ortografía
+                                              )
+                                            }
+                                            id={Ortografía.id}
+                                            style={{
+                                              fontFamily:
+                                                "ProximaSoft-regular",
                                             }}
                                           >
                                             {Ortografía.name}
@@ -911,12 +972,13 @@ function Examenes1(props) {
                                                 "notAttempted" ? (
                                                   <button
                                                     id={Conocimientos.id}
-                                                    onClick={(e) =>
+                                                    onClick={(e) => {
                                                       startExams(
                                                         e,
                                                         Conocimientos
-                                                      )
-                                                    }
+                                                      );
+                                                      console.log("not attempted");
+                                                    }}
                                                     style={{
                                                       fontFamily:
                                                         "ProximaSoft-regular",
@@ -935,7 +997,13 @@ function Examenes1(props) {
                                                       Conocimientos.studentExamRecordId
                                                     }
                                                     onClick={(e) => {
-                                                      if (triggerTime >= 300) {
+                                                        return reviewExam(
+                                                          e,
+                                                          Conocimientos
+                                                        );
+                                                    }}
+                                                    onMouseDown={() => {
+                                                      triggerTime = setTimeout(() => {
                                                         setStudentExamRecId(
                                                           Conocimientos.studentExamRecordId
                                                         );
@@ -943,28 +1011,16 @@ function Examenes1(props) {
                                                           Conocimientos.folderId
                                                         );
                                                         setResetExam(true);
-                                                      } else {
-                                                        return reviewExam(
-                                                          e,
-                                                          Conocimientos
-                                                        );
-                                                      }
-                                                    }}
-                                                    onMouseDown={() => {
-                                                      triggerTime =
-                                                        new Date().getTime();
+                                                    }, 1000); //Change 1000 to number of milliseconds required for mouse hold
                                                     }}
                                                     onMouseUp={() => {
-                                                      let thisMoment =
-                                                        new Date().getTime();
-                                                      triggerTime =
-                                                        thisMoment -
-                                                        triggerTime;
+                                                      clearTimeout(triggerTime);
                                                     }}
                                                   >
                                                     {Conocimientos.name}
                                                   </button>
-                                                ) : (
+                                                ) :  Conocimientos.studentExamStatus ===
+                                                "paused" ? (
                                                   <button
                                                     id={Conocimientos.id}
                                                     onClick={(e) =>
@@ -977,6 +1033,22 @@ function Examenes1(props) {
                                                       fontFamily:
                                                         "ProximaSoft-regular",
                                                       color: "#0A52CB",
+                                                    }}
+                                                  >
+                                                    {Conocimientos.name}
+                                                  </button>
+                                                ):(
+                                                  <button
+                                                    onClick={(e) =>
+                                                      startExams(
+                                                        e,
+                                                        Conocimientos
+                                                      )
+                                                    }
+                                                    id={Conocimientos.id}
+                                                    style={{
+                                                      fontFamily:
+                                                        "ProximaSoft-regular",
                                                     }}
                                                   >
                                                     {Conocimientos.name}
@@ -1013,7 +1085,13 @@ function Examenes1(props) {
                                                       "ProximaSoft-bold",
                                                   }}
                                                   onClick={(e) => {
-                                                    if (triggerTime >= 300) {
+                                                      return reviewExam(
+                                                        e,
+                                                        Inglés
+                                                      );
+                                                  }}
+                                                  onMouseDown={() => {
+                                                    triggerTime = setTimeout(() => {
                                                       setStudentExamRecId(
                                                         Inglés.studentExamRecordId
                                                       );
@@ -1021,36 +1099,44 @@ function Examenes1(props) {
                                                         Inglés.folderId
                                                       );
                                                       setResetExam(true);
-                                                    } else {
-                                                      return reviewExam(
-                                                        e,
-                                                        Inglés
-                                                      );
-                                                    }
-                                                  }}
-                                                  onMouseDown={() => {
-                                                    triggerTime =
-                                                      new Date().getTime();
+                                                  }, 1000); //Change 1000 to number of milliseconds required for mouse hold
                                                   }}
                                                   onMouseUp={() => {
-                                                    let thisMoment =
-                                                      new Date().getTime();
-                                                    triggerTime =
-                                                      thisMoment - triggerTime;
+                                                    clearTimeout(triggerTime);
                                                   }}
                                                 >
                                                   {Inglés.name}
                                                 </button>
-                                              ) : (
+                                              ) : Inglés.studentExamStatus ===
+                                              "paused" ? (
                                                 <button
                                                   id={Inglés.id}
                                                   onClick={(e) =>
-                                                    startExams(e, Inglés)
+                                                    startExams(
+                                                      e,
+                                                      Inglés
+                                                    )
                                                   }
                                                   style={{
                                                     fontFamily:
                                                       "ProximaSoft-regular",
                                                     color: "#0A52CB",
+                                                  }}
+                                                >
+                                                  {Inglés.name}
+                                                </button>
+                                              ):(
+                                                <button
+                                                  onClick={(e) =>
+                                                    startExams(
+                                                      e,
+                                                      Inglés
+                                                    )
+                                                  }
+                                                  id={Inglés.id}
+                                                  style={{
+                                                    fontFamily:
+                                                      "ProximaSoft-regular",
                                                   }}
                                                 >
                                                   {Inglés.name}
@@ -1066,7 +1152,7 @@ function Examenes1(props) {
                                             return (
                                               <div className={Styles.examLinks}>
                                                 {Psicotécnicos.studentExamStatus ===
-                                                "notAttempted" ? (
+                                                "notAttempted"? (
                                                   <button
                                                     onClick={(e) =>
                                                       startExams(
@@ -1090,7 +1176,13 @@ function Examenes1(props) {
                                                         "ProximaSoft-bold",
                                                     }}
                                                     onClick={(e) => {
-                                                      if (triggerTime >= 300) {
+                                                        return reviewExam(
+                                                          e,
+                                                          Psicotécnicos
+                                                        );
+                                                    }}
+                                                    onMouseDown={() => {
+                                                      triggerTime = setTimeout(() => {
                                                         setStudentExamRecId(
                                                           Psicotécnicos.studentExamRecordId
                                                         );
@@ -1098,28 +1190,16 @@ function Examenes1(props) {
                                                           Psicotécnicos.folderId
                                                         );
                                                         setResetExam(true);
-                                                      } else {
-                                                        return reviewExam(
-                                                          e,
-                                                          Psicotécnicos
-                                                        );
-                                                      }
-                                                    }}
-                                                    onMouseDown={() => {
-                                                      triggerTime =
-                                                        new Date().getTime();
+                                                    }, 1000); //Change 1000 to number of milliseconds required for mouse hold
                                                     }}
                                                     onMouseUp={() => {
-                                                      let thisMoment =
-                                                        new Date().getTime();
-                                                      triggerTime =
-                                                        thisMoment -
-                                                        triggerTime;
+                                                      clearTimeout(triggerTime);
                                                     }}
                                                   >
                                                     {Psicotécnicos.name}
                                                   </button>
-                                                ) : (
+                                                ) : Psicotécnicos.studentExamStatus ===
+                                                "paused" ? (
                                                   <button
                                                     id={Psicotécnicos.id}
                                                     onClick={(e) =>
@@ -1132,6 +1212,22 @@ function Examenes1(props) {
                                                       fontFamily:
                                                         "ProximaSoft-regular",
                                                       color: "#0A52CB",
+                                                    }}
+                                                  >
+                                                    {Psicotécnicos.name}
+                                                  </button>
+                                                ):(
+                                                  <button
+                                                    onClick={(e) =>
+                                                      startExams(
+                                                        e,
+                                                        Psicotécnicos
+                                                      )
+                                                    }
+                                                    id={Psicotécnicos.id}
+                                                    style={{
+                                                      fontFamily:
+                                                        "ProximaSoft-regular",
                                                     }}
                                                   >
                                                     {Psicotécnicos.name}
@@ -1168,7 +1264,14 @@ function Examenes1(props) {
                                                       "ProximaSoft-bold",
                                                   }}
                                                   onClick={(e) => {
-                                                    if (triggerTime >= 300) {
+                                                      return reviewExam(
+                                                        e,
+                                                        Ortografía
+                                                      );
+                                                    
+                                                  }}
+                                                  onMouseDown={() => {
+                                                    triggerTime = setTimeout(() => {
                                                       setStudentExamRecId(
                                                         Ortografía.studentExamRecordId
                                                       );
@@ -1176,36 +1279,44 @@ function Examenes1(props) {
                                                         Ortografía.folderId
                                                       );
                                                       setResetExam(true);
-                                                    } else {
-                                                      return reviewExam(
-                                                        e,
-                                                        Ortografía
-                                                      );
-                                                    }
-                                                  }}
-                                                  onMouseDown={() => {
-                                                    triggerTime =
-                                                      new Date().getTime();
+                                                  }, 1000); //Change 1000 to number of milliseconds required for mouse hold
                                                   }}
                                                   onMouseUp={() => {
-                                                    let thisMoment =
-                                                      new Date().getTime();
-                                                    triggerTime =
-                                                      thisMoment - triggerTime;
+                                                    clearTimeout(triggerTime);
                                                   }}
                                                 >
                                                   {Ortografía.name}
                                                 </button>
-                                              ) : (
+                                              ) :  Ortografía.studentExamStatus ===
+                                              "paused" ? (
                                                 <button
                                                   id={Ortografía.id}
                                                   onClick={(e) =>
-                                                    startExams(e, Ortografía)
+                                                    startExams(
+                                                      e,
+                                                      Ortografía
+                                                    )
                                                   }
                                                   style={{
                                                     fontFamily:
                                                       "ProximaSoft-regular",
                                                     color: "#0A52CB",
+                                                  }}
+                                                >
+                                                  {Ortografía.name}
+                                                </button>
+                                              ):(
+                                                <button
+                                                  onClick={(e) =>
+                                                    startExams(
+                                                      e,
+                                                      Ortografía
+                                                    )
+                                                  }
+                                                  id={Ortografía.id}
+                                                  style={{
+                                                    fontFamily:
+                                                      "ProximaSoft-regular",
                                                   }}
                                                 >
                                                   {Ortografía.name}

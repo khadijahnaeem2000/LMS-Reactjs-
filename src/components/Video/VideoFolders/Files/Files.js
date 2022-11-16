@@ -16,14 +16,14 @@ import useStyles from '../../../MUIScrollbar/MUIScrollbar';
 
 const Files = (props) => {
   const classes = useStyles();
-  const [offset,setOffset]=useState(1);
-  const [call, setCall] = useState(true);
-  const [isEnd, setIsEnd] =useState(false);
-  const [loading,setLoading]=useState(false);
+  //const [offset,setOffset]=useState(1);
+  //const [call, setCall] = useState(true);
+  //const [isEnd, setIsEnd] =useState(false);
+  //const [loading,setLoading]=useState(false);
   const [files, setFiles] = useState([]);
-  const [isInitialRender, setIsInitialRender] = useState(true);
+  //const [isInitialRender, setIsInitialRender] = useState(true);
 
-  useLayoutEffect(() => {
+  /*useLayoutEffect(() => {
     if((!isEnd) && !(document.getElementById('list').scrollHeight > document.getElementById('list').clientHeight) && files.length===15 ){
       if (isInitialRender) {
         setIsInitialRender(false);
@@ -32,13 +32,13 @@ const Files = (props) => {
         setCall(false);
       }
     }
-  })
+  })*/
 
 
   useEffect (() => {
-    let count=0;
+    //let count=0;
     const data=getLocalUserdata();
-    userServices.commonPostService('/getVideoFiles',{"id":props.folderId,"studentId":data.id,"offset":offset})
+    userServices.commonPostService('/getVideoFiles',{"id":props.folderId,"studentId":data.id,"offset":1})
     .then(response=>{
       if(response.data.status==='Successfull') {
         response.data.data.forEach((item)=>{
@@ -46,13 +46,13 @@ const Files = (props) => {
             title:item.title,
             url:item.url,
           }]);
-          count++;
+          //count++;
         })
-        if(count<15){
-          setIsEnd(true);
-        }
-        setCall(true);
-        setLoading(false);
+        //if(count<15){
+          //setIsEnd(true);
+        //}
+        //setCall(true);
+        //setLoading(false);
       }
       else{
         toast.error("Error fetching files.");
@@ -61,16 +61,16 @@ const Files = (props) => {
     .catch((error)=> {
       toast.error("Error fetching files");
     });
-  },[offset])
+  },[/*offset*/])
 
-  const handleScroll = (e) => {
+  /*const handleScroll = (e) => {
     const bottom = e.target.scrollHeight - e.target.scrollTop <= e.target.clientHeight + 1 ;
     if ((bottom) && (!isEnd) && (call)) { 
           setLoading(true);
           setCall(false)
           setOffset(offset+1)
     }
-  }
+  }*/
 
   const searchStorage = (title) => {
     const matchFound=getLocalUserdata().openedVideos.filter((entry) => {return entry.title===title});
@@ -87,7 +87,6 @@ const Files = (props) => {
         <Typography variant="subtitle2">Volver a las carpetas</Typography>
       </IconButton>
       <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', overflow:'auto', maxHeight:'78vh'}}
-      onScroll={handleScroll}
       className={classes.root}
       id='list'>
       {
@@ -104,7 +103,7 @@ const Files = (props) => {
         }) : <div style={{ display:'flex', justifyContent:'center'}}> <CircularProgress disableShrink/> </div>
       }
       </List>
-      {!loading ?  null : <div style={{ display:'flex', justifyContent:'center'}}> <CircularProgress disableShrink/></div>}
+      {/*!loading ?  null : <div style={{ display:'flex', justifyContent:'center'}}> <CircularProgress disableShrink/></div>*/}
     </>    
   )
 }

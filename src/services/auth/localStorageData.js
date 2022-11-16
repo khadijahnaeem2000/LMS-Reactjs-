@@ -99,7 +99,7 @@ export function getTimeStamp(arr, value) {
 export function updateLocalstoragepic(value) {
   let localData = JSON.parse(localStorage.getItem(token));
 
-  localData.pic = value;
+  localData.photo = value;
 
 
   localStorage.setItem(token, JSON.stringify(localData));

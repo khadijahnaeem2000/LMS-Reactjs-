@@ -24,6 +24,8 @@ const Folders = (props) => {
         setFolders(response.data.data);
       }
       else{
+        console.log(data);
+        console.log(response);
         toast.error("Error fetching folders.");
       }
     })
