@@ -14,6 +14,12 @@ import Root from 'routes';
 import 'tachyons';
 import { master } from './store/reducers/combineReducer';
 import { ToastContainer } from 'react-toastify';
+
+var stylesheet = document.styleSheets[0];
+stylesheet.disabled = true;
+stylesheet = document.styleSheets[1];
+stylesheet.disabled = true;
+
 const queryClient = new QueryClient();
 const store = createStore(master, composeWithDevTools(applyMiddleware(thunk)));
 ReactDOM.render(

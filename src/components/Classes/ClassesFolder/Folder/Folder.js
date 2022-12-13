@@ -7,47 +7,23 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
-import directory from '../../../../assets/img/images/directory.png';
-import { makeStyles } from "@material-ui/core/styles";
+import directory from '../../../../assets/img/images/directory.webp';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
-
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-      "&::-webkit-scrollbar": {
-        width: 7,
-      },
-      "&::-webkit-scrollbar-track": {
-        boxShadow: `inset 0 0 6px rgba(0, 0, 0, 0.3)`,
-      },
-      "&::-webkit-scrollbar-thumb": {
-        backgroundColor: "darkgrey",
-        outline: `1px solid slategrey`,
-      },
-    },
-  }));
-
+import useStyles from '../../../MUIScrollbar/MUIScrollbar'
 
 const Folder = (props) => {
   const classes = useStyles();
   const [folders, setFolders] = useState([]);
   const [loading,setLoading]=useState(true);
 
-  let count=0;
-
   useEffect (() => {
     setFolders([]);
     const data=getLocalUserdata();
-    userServices.commonPostService('/getClassTopics',JSON.stringify({"studentType":data.type,"studentId":data.id}))
+    userServices.commonPostService('/getClassTopics',{"studentType":data.type,"studentId":data.id})
     .then(response=>{
       if(response.status===200) {
-        response.data.forEach((item)=>{
-          setFolders(oldArray => [...oldArray, {
-            id:item.id,
-            name:item.name===null? '-': item.name,
-          }]);
-        })
+        setFolders(response.data);
         setLoading(false);
       }
       else{
@@ -67,23 +43,23 @@ const Folder = (props) => {
 
   return ( 
     folders.length>0 ? 
-    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', overflow: 'auto', maxHeight: '40vh' }}
+    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', overflow: 'auto', maxHeight: '85vh', marginTop:'4%' }}
       component="nav"
       aria-labelledby="nested-list-subheader"
       className={classes.root}>
       {
         folders.map((item) => {
           return (
-            <ListItemButton onClick={() => { handleClick(item.id); } }>
+            <ListItemButton className={classes.listItem} onClick={() => { handleClick(item.id); } }>
               <ListItemAvatar>
                 <Avatar alt="folder" src={directory} />
               </ListItemAvatar>
-              <ListItemText primaryTypographyProps={{ fontFamily: 'ProximaNovaSoft-regular' }} primary={`T${count++} - ${item.name}`} />
+              <ListItemText primaryTypographyProps={{ fontFamily: 'RoundedElegance-regular' }} primary={item.name===null? '-': item.name} />
             </ListItemButton>
           );
         }) }
     </List>
-    : loading ? <div><CircularProgress disableShrink /></div> : <Typography variant="subtitle2">¡No se encontraron archivos!</Typography>
+    : loading ? <div style={{ display:'flex', justifyContent:'center', marginTop:'10%'}}><CircularProgress disableShrink /></div> : <Typography variant="subtitle2">¡No se encontraron archivos!</Typography>
   
   )
 }

@@ -4,23 +4,7 @@ import CustomizedListItem from './CustomizedListItem/CustomizedListItem';
 import { getLocalUserdata } from '../../services/auth/localStorageData';
 import userServices from 'services/httpService/userAuth/userServices';
 import { toast } from 'react-toastify';
-import ErrorService from 'services/formatError/ErrorService';
-import { makeStyles } from "@material-ui/core/styles";
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-      "&::-webkit-scrollbar": {
-        width: 7,
-      },
-      "&::-webkit-scrollbar-track": {
-        boxShadow: `inset 0 0 6px rgba(0, 0, 0, 0.3)`,
-      },
-      "&::-webkit-scrollbar-thumb": {
-        backgroundColor: "darkgrey",
-        outline: `1px solid slategrey`,
-      },
-    },
-  }));
+import useStyles from '../MUIScrollbar/MUIScrollbar';
 
 const FolderList = (props) => {
     const classes = useStyles();
@@ -30,11 +14,11 @@ const FolderList = (props) => {
     useEffect (() => {
         setFolders([]);
         const data=getLocalUserdata();
-        userServices.commonPostService('/getDownloadPdfFolders',JSON.stringify({"studentType":data.type,"studentId":data.id}))
+        userServices.commonPostService('/getDownloadPdfFolders',{"studentType":data.type,"studentId":data.id})
         .then(response=>{
             if(response.data.status==='Successfull') {
                 response.data.folders.map(async (folder) => {
-                    await userServices.commonPostService('/getDownloadPdfFiles',JSON.stringify({"folderId":folder.id,"studentId":data.id}))
+                    await userServices.commonPostService('/getDownloadPdfFiles',{"folderId":folder.id,"studentId":data.id})
                     .then(response => {
                         if(response.data.message==='success') { 
                             setFolders(oldArray => [...oldArray, {
@@ -54,10 +38,8 @@ const FolderList = (props) => {
                         }
                     })
                     .catch((err) => {
-                        console.log(ErrorService.uniformError(err));
                         toast.error("Error fetching files.");
                     })
-
                 })
             }
             else {
@@ -65,7 +47,6 @@ const FolderList = (props) => {
             }
         })
         .catch((error)=> {
-            console.log(ErrorService.uniformError(error))
             toast.error("Error fetching folders.");
         });
 
@@ -97,11 +78,10 @@ const FolderList = (props) => {
                         return (         
                             <CustomizedListItem parentFolder={folder} setPdf={props.setPdf} count={count} folder={folderName} files={files2}/>
                         )
-                    }) : <div>Loading folders ...</div>
+                    }) : <div>Cargando carpetas...</div>
             }
             </List>
         </div>
     )
 }
-
 export default FolderList

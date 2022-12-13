@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import { getLocalUserdata } from '../../../../services/auth/localStorageData';
+import React, {useEffect, useState, useLayoutEffect} from 'react';
+import { getLocalUserdata, updatelocalData } from '../../../../services/auth/localStorageData';
 import userServices from 'services/httpService/userAuth/userServices';
 import { toast } from 'react-toastify';
 import List from '@mui/material/List';
@@ -7,40 +7,38 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
-import icon from '../../../../assets/img/images/video_icon.png';
-import { makeStyles } from "@material-ui/core/styles";
+import icon from '../../../../assets/img/images/video_icon.webp';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
-
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-      "&::-webkit-scrollbar": {
-        width: 7,
-      },
-      "&::-webkit-scrollbar-track": {
-        boxShadow: `inset 0 0 6px rgba(0, 0, 0, 0.3)`,
-      },
-      "&::-webkit-scrollbar-thumb": {
-        backgroundColor: "darkgrey",
-        outline: `1px solid slategrey`,
-      },
-    },
-  }));
+import useStyles from '../../../MUIScrollbar/MUIScrollbar';
 
 const Files = (props) => {
   const classes = useStyles();
   const [offset,setOffset]=useState(1);
   const [call, setCall] = useState(true);
-  let isEnd=false;
+  const [isEnd, setIsEnd] =useState(false);
   const [loading,setLoading]=useState(false);
   const [files, setFiles] = useState([]);
+  const [isInitialRender, setIsInitialRender] = useState(true);
+
+  useLayoutEffect(() => {
+    if((!isEnd) && !(document.getElementById('list').scrollHeight > document.getElementById('list').clientHeight) && files.length===15 ){
+      if (isInitialRender) {
+        setIsInitialRender(false);
+        setOffset(offset + 1);
+        setLoading(true);
+        setCall(false);
+      }
+    }
+  })
+
 
   useEffect (() => {
+    let count=0;
     const data=getLocalUserdata();
-    userServices.commonPostService('/getVideoFiles',JSON.stringify({"id":props.folderId,"studentId":data.id,"offset":offset}))
+    userServices.commonPostService('/getVideoFiles',{"id":props.folderId,"studentId":data.id,"offset":offset})
     .then(response=>{
       if(response.data.status==='Successfull') {
         response.data.data.forEach((item)=>{
@@ -48,9 +46,10 @@ const Files = (props) => {
             title:item.title,
             url:item.url,
           }]);
+          count++;
         })
-        if(files.length<15){
-          isEnd=true;
+        if(count<15){
+          setIsEnd(true);
         }
         setCall(true);
         setLoading(false);
@@ -62,7 +61,6 @@ const Files = (props) => {
     .catch((error)=> {
       toast.error("Error fetching files");
     });
-
   },[offset])
 
   const handleScroll = (e) => {
@@ -74,24 +72,33 @@ const Files = (props) => {
     }
   }
 
+  const searchStorage = (title) => {
+    const matchFound=getLocalUserdata().openedVideos.filter((entry) => {return entry.title===title});
+    if(matchFound.length===0){
+      return false;
+    }
+    return true;
+  }
+
   return (
     <>
-      <IconButton style={{justifyContent:'start'}}onClick={()=>{props.updateView('folders')}}>
+      <IconButton style={{marginTop:'10%', justifyContent:'start', display: props.folderToggle==='0%'?'none':'flex'}}onClick={()=>{props.updateView('folders')}}>
         <ArrowBackIcon/>
         <Typography variant="subtitle2">Volver a las carpetas</Typography>
       </IconButton>
-      <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', overflow:'auto', maxHeight:'40vh' }}
+      <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', overflow:'auto', maxHeight:'78vh'}}
       onScroll={handleScroll}
-      className={classes.root}>
+      className={classes.root}
+      id='list'>
       {
         files.length>0 ? 
         files.map((item) => {
           return (
-            <ListItemButton onClick={()=>{props.updateUrl(item.url)}}>
+            <ListItemButton className={classes.listItem} onClick={()=>{props.updateUrl(item.url,item.title); updatelocalData('openedVideos',{'title':item.title, 'timeStamp':0})}}>
               <ListItemAvatar>
                 <Avatar alt="videofile" src={icon} variant="square"/>
               </ListItemAvatar>
-              <ListItemText primaryTypographyProps={{fontFamily:'ProximaNovaSoft-regular'}}  primary={item.title} />
+              <ListItemText primaryTypographyProps={{fontFamily:searchStorage(item.title)?'ProximaNovaSoft-bold':'ProximaNovaSoft-regular'}}  primary={item.title} />
             </ListItemButton>
           )
         }) : <div style={{ display:'flex', justifyContent:'center'}}> <CircularProgress disableShrink/> </div>
