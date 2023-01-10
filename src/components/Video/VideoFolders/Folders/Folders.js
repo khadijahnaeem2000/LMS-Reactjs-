@@ -10,6 +10,8 @@ import Avatar from '@mui/material/Avatar';
 import directory from '../../../../assets/img/images/directory.webp';
 import CircularProgress from '@mui/material/CircularProgress';
 import useStyles from '../../../MUIScrollbar/MUIScrollbar';
+import '../styles.css'
+
 
 const Folders = (props) => {
   const classes = useStyles();
@@ -45,15 +47,15 @@ const Folders = (props) => {
     <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', overflow: 'auto', maxHeight: '85vh', marginTop:'4%' }}
       component="nav"
       aria-labelledby="nested-list-subheader"
-      className={classes.root}>
+      className={`${classes.root} listStyles`}>
       {
         folders.map((item) => {
           return (
-            <ListItemButton className={classes.listItem} onClick={() => { handleClick(item.id); } }>
+            <ListItemButton className={`listItem`} onClick={() => { handleClick(item.id); } }>
               <ListItemAvatar>
-                <Avatar alt="folder" src={directory} />
+                <Avatar className='avatarStyles' alt="folder" src={directory} />
               </ListItemAvatar>
-              <ListItemText primaryTypographyProps={{ fontFamily: 'RoundedElegance-regular' }} primary={item.name===null? '-': item.name} />
+              <ListItemText disableTypography className='avatarText' primaryTypographyProps={{ fontFamily: 'RoundedElegance-regular' }} primary={item.name===null? '-': item.name} />
             </ListItemButton>
           );
         }) }

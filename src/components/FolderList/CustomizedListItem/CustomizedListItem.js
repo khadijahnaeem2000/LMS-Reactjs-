@@ -10,6 +10,8 @@ import Avatar from "@mui/material/Avatar";
 import folder from "../../../assets/img/images/directory.webp";
 import List from "@mui/material/List";
 import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@mui/material/Typography';
+import '../styles.css';
 
 const useStyles = makeStyles((theme) =>({
   root : {
@@ -53,11 +55,11 @@ const CustomizedListItem = (props) => {
 
   return (
     <div>
-       <ListItemButton className={classes.root} onClick={handleClick}>
+       <ListItemButton className={`listItem`} onClick={handleClick}>
             <ListItemAvatar>
-                <Avatar alt="folder" src={folder} />
+                <Avatar className='avatarStyles' alt="folder" src={folder} />
             </ListItemAvatar>
-            <ListItemText primaryTypographyProps={{ fontFamily: 'RoundedElegance-regular' }} primary={props.folder} />
+            <ListItemText className='avatarText' disableTypography  primary={props.folder} />
             {open ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         <Collapse in={open} timeout="auto" unmountOnExit>
@@ -65,9 +67,12 @@ const CustomizedListItem = (props) => {
             {
                 props.files.map((file)=>{
                 return (
+                  <>
                     <ListItemButton onClick={()=>{if(!props.isVideo){openPdf(file)}; updatelocalData('openedPdfs',{'title':file})}} sx={{ pl: 4, pt: 0, pb:0 }}>
-                        <ListItemText primaryTypographyProps={{fontFamily:searchStorage(file)?'ProximaNovaSoft-bold':'ProximaNovaSoft-regular'}} primary={file} />
+                        <ListItemText className='avatarText' disableTypography primary={<Typography variant="text" style={{fontFamily:searchStorage(file)?'ProximaNovaSoft-bold':'ProximaNovaSoft-regular' }}>{file}</Typography>}/>
                     </ListItemButton>
+                    <hr/>
+                  </>
                 )
             })
             }

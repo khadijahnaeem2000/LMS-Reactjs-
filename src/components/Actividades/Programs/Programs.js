@@ -41,10 +41,14 @@ const Programs = (props) => {
       }
 
   return (
-    <div style={{height:'100vh', width:'100vw', overflowY:'auto'}} className={`${classes.root} flex justify-center`}>
+    <div style={{height:'100vh', width:'100%'}} className={`${classes.root} flex justify-center`}>
       {activities.length>0? 
             <Carousel
-                className='activities_carousel'
+                fullHeightHover={false}     // We want the nav buttons wrapper to only be as big as the button element is
+                //navButtonsWrapperProps={{
+                //    className:'carousel_navigation'
+                //}} 
+                className={`${classes.root} activities_carousel`}
                 autoPlay={false}
                 indicators={false}
                 animation={"fade"}

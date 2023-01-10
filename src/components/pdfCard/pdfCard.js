@@ -63,14 +63,14 @@ const PdfCard = (props) => {
     if(typeof fileName !== "undefined") {
         return (
             <div className='flex flex-col justify-center'>
-                <div style={{display:'flex', justifyContent:'center', overflow:'auto'}}>
-                    <div className="tc dib br3 pa3 ma2 bw2 shadow-5" style={{pointerEvents:'none'}}>
-                        <Document file={" https://whispering-chamber-21481.herokuapp.com/" + fileName}
+                <div style={{display:'flex', justifyContent:'center', overflow:'hidden'}}>
+                    <div className="tc dib br3 pa1 ma1 bw2 shadow-5" style={{pointerEvents:'none'}}>
+                        <Document file={fileName}
                         onLoadSuccess={onDocumentLoadSuccess}
                         onContextMenu={e => e.preventDefault()}
                         loading="Cargando PDF..."
                         >
-                            <Page renderMode="svg" scale={96/72} pageNumber={pageNumber} />
+                            <Page renderMode="svg" scale={96/72} pageNumber={pageNumber} size="A4" orientation="portrait" wrap/>
                         </Document>
                     </div>
                 </div>
@@ -87,7 +87,7 @@ const PdfCard = (props) => {
                         onChange={userChange}
                         ref={inputval}/> of {numPages || '--'}
                     </p>
-                    <div>
+                    <div style={{display:'flex', marginLeft:'1%'}}>
                         <button
                         className="temarioButton"
                         type="button"

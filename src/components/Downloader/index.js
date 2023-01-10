@@ -64,7 +64,7 @@ const DownloadItem = ({ name, file, filename, removeFile, callDb }) => {
       },
     };
 
-    Axios.get(`https://whispering-chamber-21481.herokuapp.com/${file}`, {
+    Axios.get(file, {
       responseType: "blob",
       ...options,
     }).then(function (response) {

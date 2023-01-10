@@ -15,7 +15,7 @@ const ClassesFolder = (props) => {
     }
 
     return (
-        <div style={{marginLeft:'2%', width:props.folderToggle}}>
+        <div style={{width:props.folderToggle}} className='folderView'>
             {                
             (view==='folders') 
             ? <Folder updateView={updateView} updateId={updateId}/> 

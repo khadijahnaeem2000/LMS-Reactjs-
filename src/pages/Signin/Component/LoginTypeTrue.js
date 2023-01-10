@@ -21,7 +21,7 @@ function LoginTypeTrue() {
       },
       onSuccess: (data) => {
         if (data.data.status === 'Sucessfull') {
-          toast.success('Has iniciado sesión con éxito');
+          //toast.success('Has iniciado sesión con éxito');
           saveLocalData(data.data.data,data.data.time);
           setToNext(true);
         } else {

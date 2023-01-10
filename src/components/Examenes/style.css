@@ -39,3 +39,8 @@
 p{
   padding: 10px 0px;
 }
+@media screen and (max-width: 490px) {
+  .timer-text {
+      font-size: 12px !important;
+  }
+}

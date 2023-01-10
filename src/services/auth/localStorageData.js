@@ -101,6 +101,13 @@ export function updateLocalstoragepic(value) {
 
   localData.photo = value;
 
+  localStorage.setItem(token, JSON.stringify(localData));
+}
+
+export function updateLocalstoragetime(value) {
+  let localData = JSON.parse(localStorage.getItem(token));
+
+  localData.time = value;
 
   localStorage.setItem(token, JSON.stringify(localData));
 }

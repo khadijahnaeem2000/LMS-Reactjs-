@@ -13,6 +13,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 import useStyles from '../../../MUIScrollbar/MUIScrollbar';
+import '../styles.css';
 
 const Files = (props) => {
   const classes = useStyles();
@@ -82,22 +83,22 @@ const Files = (props) => {
 
   return (
     <>
-      <IconButton style={{marginTop:'10%', justifyContent:'start', display: props.folderToggle==='0%'?'none':'flex'}}onClick={()=>{props.updateView('folders')}}>
+      <IconButton className='backButton' style={{display: props.folderToggle==='0%'?'none':'flex'}}onClick={()=>{props.updateView('folders')}}>
         <ArrowBackIcon/>
-        <Typography variant="subtitle2">Volver a las carpetas</Typography>
+        <p className="goBackButton">Volver a las carpetas</p>
       </IconButton>
       <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', overflow:'auto', maxHeight:'78vh'}}
-      className={classes.root}
+      className={`${classes.root} listStyles`}
       id='list'>
       {
         files.length>0 ? 
         files.map((item) => {
           return (
-            <ListItemButton className={classes.listItem} onClick={()=>{props.updateUrl(item.url,item.title); updatelocalData('openedVideos',{'title':item.title, 'timeStamp':0})}}>
+            <ListItemButton className='listItem' onClick={()=>{props.updateUrl(item.url,item.title); updatelocalData('openedVideos',{'title':item.title, 'timeStamp':0})}}>
               <ListItemAvatar>
-                <Avatar alt="videofile" src={icon} variant="square"/>
+                <Avatar className='avatarStyles' alt="videofile" src={icon} variant="square"/>
               </ListItemAvatar>
-              <ListItemText primaryTypographyProps={{fontFamily:searchStorage(item.title)?'ProximaNovaSoft-bold':'ProximaNovaSoft-regular'}}  primary={item.title} />
+              <ListItemText disableTypography primary={<Typography className="fileText" variant="text" style={{fontFamily:searchStorage(item.title)?'ProximaNovaSoft-bold':'ProximaNovaSoft-regular' }}>{item.title}</Typography>}/>
             </ListItemButton>
           )
         }) : <div style={{ display:'flex', justifyContent:'center'}}> <CircularProgress disableShrink/> </div>

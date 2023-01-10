@@ -2,12 +2,11 @@ import React , {useState} from 'react';
 import IconButton from '@mui/material/IconButton';
 import CommentIcon from '@mui/icons-material/Comment';
 import Modal from 'react-modal';
-import CancelIcon from '@mui/icons-material/Cancel';
 import CommentCard from '../CommentCard/CommentCard';
 
 const customStyles = {
   content: {
-    width:'40%',
+    width:'80%',
     maxHeight:'60%',
     top: '50%',
     left: '50%',
@@ -16,7 +15,7 @@ const customStyles = {
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
     overflowY:'scroll',
-    overflowX:'hidden'
+    overflowX:'hidden',
   },
   overlay: {
     zIndex:1000
@@ -35,7 +34,7 @@ const CommentButton = (props) => {
 
   function afterOpenModal() {
     // references are now sync'd and can be accessed.
-    subtitle.style.color = '#003466';
+    //subtitle.style.color = '#003466';
   }
 
   function closeModal() {
@@ -64,11 +63,11 @@ const CommentButton = (props) => {
         style={customStyles}
         contentLabel="Example Modal"
       >
-        <div className='flex justify-between' style={{marginBottom:'2%'}}>
+        {/*<div className='flex justify-between' style={{marginBottom:'2%'}}>
             <h2 ref={(_subtitle) => (subtitle = _subtitle)}><strong>Comentarios</strong></h2>
             <button onClick={closeModal}><CancelIcon sx={{color:'red'}}/></button>
         </div>
-        <hr/>
+  <hr/>*/}
         <CommentCard decrease={decreaseCount} increase={increaseCount} videoId={props.videoId}/>
       </Modal>
     </>

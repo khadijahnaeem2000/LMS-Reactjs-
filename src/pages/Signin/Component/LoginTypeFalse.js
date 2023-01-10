@@ -22,7 +22,7 @@ function LoginTypeFalse() {
         console.log(data.data);
 
         if (data.data.status === 'Sucessfull') {
-          toast.success('Has iniciado sesión con éxito');
+          //toast.success('Has iniciado sesión con éxito');
           saveLocalData(data.data.data);
         } else {
           setError(data.data.message);

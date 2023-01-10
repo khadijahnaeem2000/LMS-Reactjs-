@@ -15,13 +15,28 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
-import data from '@emoji-mart/data'
-import Picker from '@emoji-mart/react'
+import data from '@emoji-mart/data';
+import Picker from '@emoji-mart/react';
+import { makeStyles } from '@material-ui/core/styles';
 
 import './styles.css'
-import { handleRenderItem } from 'flatlist-react/lib/___subComponents/uiFunctions';
+
+const useStyles = makeStyles(theme => ({
+  commentPrimary: {
+    fontWeight: "bold !important",
+    "@media (max-width: 850px)": {
+      fontSize:'14px !important',
+    }
+  },
+  commentSecondary: {
+    "@media (max-width: 850px)": {
+      fontSize:'12px !important',
+    }
+  }
+}));
 
 const CommentCard = (props) => {
+    const classes = useStyles();
     const user_data=getLocalUserdata();
     const inputRef = useRef();
     const [showEmojis, setShowEmojis] = useState(false);
@@ -178,7 +193,7 @@ const CommentCard = (props) => {
       ?<>
         {comments.map((comment) => {
           return (
-            <List dense={true}>
+            <List>
               <ListItem
                 secondaryAction={  
                   Number(comment.userId)===currentUser.currentUserId 
@@ -196,9 +211,10 @@ const CommentCard = (props) => {
                 <ListItemAvatar>
                   <Avatar alt="Avatar" src={comment.avatarUrl} />
                 </ListItemAvatar>
-                <ListItemText sx={{marginRight:'5%'}}
+                <ListItemText
                   primary={comment.fullName}
                   secondary={comment.text}
+                  classes={{ primary: classes.commentPrimary, secondary: classes.commentSecondary }}
                 />
               </ListItem>
             </List>
@@ -207,7 +223,7 @@ const CommentCard = (props) => {
       }
       </>
     :<div className='flex justify-center' style={{margin:5, marginTop:20}}>No hay comentarios para mostrar.</div>}  
-    <div style={{position:'sticky', bottom:0, background:'white', opacity:1, zIndex:100, marginTop:'5%'}}>
+    <div className={'comment-field'}>
         <div className='flex justify-between' style={{marginBottom:'2%'}}>
           <h2><strong>Comentarios</strong></h2>
         </div>

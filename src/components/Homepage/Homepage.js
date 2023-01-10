@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import useStyles from "./styles";
 import "./styles.css";
-import { getLocalUserdata , updateLocalstoragepic} from "../../services/auth/localStorageData";
+import { getLocalUserdata , updateLocalstoragepic, updateLocalstoragetime} from "../../services/auth/localStorageData";
 import profilepic from "../../assets/img/images/layer_25.webp";
 import defaultrank from "../../assets/img/images/Empleo_cabo.webp";
 import SelectButton from "./SelectButton/SelectButton";
@@ -18,6 +18,7 @@ const Homepage = () => {
     .then((response) => {
       if(response.status===200) {
         setPhoto(response.data.data.photo);
+        updateLocalstoragetime(response.data.time);
         updateLocalstoragepic(response.data.data.photo);
         setTime(response.data.time);
       }
@@ -43,7 +44,7 @@ const Homepage = () => {
             alt="Profile_picture"
             src={
               data.photo != null
-                ? `https://neoestudio.net/userImage/${photo}`
+                ? `https://neoestudio.net/userImage/${data.photo}`
                 : profilepic
             }
           />

@@ -5,6 +5,20 @@ import './styles.css';
 const VideoPlayer = (props) => {
   const videoRef = useRef();
   const [duration, setDuration]=useState(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1000);
+
+  useEffect(() => {
+
+    function checkIsMobile () {
+      const ismobile = window.innerWidth < 1000;
+        if (ismobile !== isMobile) {
+          setIsMobile(ismobile);
+          console.log('it is a mobile');
+        }
+    }
+    window.addEventListener("resize",checkIsMobile);
+    return () => window.removeEventListener("resize",checkIsMobile);
+  }, [isMobile]);
 
   useEffect(() => {
     videoRef.current?.load();
@@ -17,15 +31,16 @@ const VideoPlayer = (props) => {
   }
 
   return (
-    <div className='div1'>
-            <div className='div2'>
-                <video className='check' 
+    <div className={isMobile?'mobileVideoContainer':'div1'}>
+            <div className={isMobile?'':'div2'}>
+                <video className={isMobile?'mobileContainer':'check'} 
                     width="750" 
                     height="500" 
                     controls 
                     autoPlay 
                     muted 
                     ref={videoRef} 
+                    playsInline
                     controlsList="nodownload" 
                     onProgress={onProgress}
                     onPlay={() => {

@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-export default makeStyles(() => ({
+export default makeStyles((theme) => ({
   courseWrapper: {
     padding: "30px 0px",
     overflow: "hidden",
@@ -190,6 +190,9 @@ export default makeStyles(() => ({
     cursor: "pointer",
     width: "40px",
     justifyContent: "start",
+    [theme.breakpoints.down('490')]: {
+      width: '30px',
+    },
   },
   timerHeading: {
     margin: "0px 10px",

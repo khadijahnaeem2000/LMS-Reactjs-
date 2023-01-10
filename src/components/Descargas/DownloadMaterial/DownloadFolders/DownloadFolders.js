@@ -79,7 +79,7 @@ const DownloadFolders = (props) => {
     const downloadFile = ({url}) => {
         const fileName = url.split("/").pop(); 
         (async () => {
-            let blob = await fetch(`https://whispering-chamber-21481.herokuapp.com/${url}`).then((r) => r.blob());
+            let blob = await fetch(url).then((r) => r.blob());
             saveAs(blob, fileName);
          })();
     }

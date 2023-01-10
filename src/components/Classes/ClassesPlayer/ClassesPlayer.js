@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react'
+import React, {useRef, useState, useEffect} from 'react'
 import { updateLocalStorageTimeStamp, getTimeStamp} from '../../../services/auth/localStorageData';
 import ReactPlayer from 'react-player/lazy'
 import './styles.css'
@@ -6,6 +6,21 @@ import './styles.css'
 const ClassesPlayer = (props) => {
   const videoRef = useRef();
   const [duration, setDuration]=useState(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1000);
+
+  useEffect(() => {
+
+    function checkIsMobile () {
+      const ismobile = window.innerWidth < 1000;
+        if (ismobile !== isMobile) {
+          setIsMobile(ismobile);
+          console.log('it is a mobile');
+        }
+    }
+    window.addEventListener("resize",checkIsMobile);
+    return () => window.removeEventListener("resize",checkIsMobile);
+  }, [isMobile]);
+
 
   const onProgress = (data) => {
     setDuration(videoRef.current.getCurrentTime());
@@ -13,20 +28,21 @@ const ClassesPlayer = (props) => {
   }
 
   return (
-    <div className='classescontainer' >
-        <div className='classesplayer-wrapper'> 
-        { props.url==='' ? <div style={{display:'flex', justifyContent:'center', paddingTop:'20%'}}>Selecciona un archivo para empezar.</div>
+    <div className={isMobile?'mobileClassesContainer':'classescontainer'}>
+        <div className={isMobile?'':'classesplayer-wrapper'}> 
+        { props.url==='' ? isMobile ? <></> : <div className="noSelect">Selecciona un archivo para empezar.</div>
             : <ReactPlayer
             // Disable download button
             config={{ file: { attributes: { controlsList: 'nodownload' } } }}
             // Disable right click
             onContextMenu={e => e.preventDefault()}
-            className='classesreact-player'
+            className={isMobile?'':'classesreact-player'}
             width="750" height="500"
             url={props.url}
             controls={true}
             muted={true}
             playing={true}
+            playsinline={true}
             ref={videoRef} 
             onProgress={onProgress}
             onStart={() => {

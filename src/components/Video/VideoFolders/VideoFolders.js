@@ -15,7 +15,7 @@ const VideoFolders = (props) => {
     }
 
     return (
-        <div style={{marginLeft:'2%', width:props.folderToggle}}>
+        <div style={{width:props.folderToggle}} className='folderView'>
             {
                 (view==='folders') 
                 ? <Folders updateView={updateView} updateId={updateId}/> 

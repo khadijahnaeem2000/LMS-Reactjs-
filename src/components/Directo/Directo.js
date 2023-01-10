@@ -2,6 +2,7 @@ import React, {useEffect} from 'react'
 import { ZoomMtg } from '@zoomus/websdk'
 
 import { getLocalUserdata } from "../../services/auth/localStorageData";
+import './styles.css'
 
 ZoomMtg.setZoomJSLib('https://source.zoom.us/2.5.0/lib', '/av')
 

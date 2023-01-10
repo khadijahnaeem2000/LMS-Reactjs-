@@ -11,7 +11,7 @@
     padding-bottom: 67.5%;
     height: 0;
 }
-.div2 video:not(:fullscreen) {
+.check:not(:fullscreen) {
     box-sizing: border-box;
     background: url('../../../../src/assets/img/images/mobileframe.webp') center center no-repeat;
     background-size: contain;
@@ -25,4 +25,20 @@
     left: 0;
     width: 100%;
     height: 95%;
+}
+
+.mobileContainer{
+    background: url('../../../../src/assets/img/images/mobileframe.webp') center center no-repeat !important;
+    background-size: contain !important;
+    padding:8.5%;
+    padding-bottom: 10%;
+    border-radius: 10%;
+}
+
+
+@media screen and (max-width: 1000px) {
+    .mobileVideoContainer{
+        margin:1%;
+        
+    }
 }

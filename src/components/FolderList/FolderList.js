@@ -5,6 +5,7 @@ import { getLocalUserdata } from '../../services/auth/localStorageData';
 import userServices from 'services/httpService/userAuth/userServices';
 import { toast } from 'react-toastify';
 import useStyles from '../MUIScrollbar/MUIScrollbar';
+import './styles.css';
 
 const FolderList = (props) => {
     const classes = useStyles();
@@ -53,12 +54,12 @@ const FolderList = (props) => {
     },[])
 
     return (
-        <div style={{marginLeft:'2%', width:props.folderToggle}}>
+        <div className='temarioFolderView' style={{marginLeft:'2%', width:props.folderToggle}}>
             <List 
             sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', overflow:'auto', maxHeight:'100vh' }}
             component="nav"
             aria-labelledby="nested-list-subheader"
-            className={classes.root}>  
+            className={`${classes.root} listStyles`}>  
             { 
                 folders.length>0 ?                
                     folders.map((folder) => {

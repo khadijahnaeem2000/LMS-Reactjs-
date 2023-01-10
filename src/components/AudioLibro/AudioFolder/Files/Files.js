@@ -49,19 +49,19 @@ const Files = (props) => {
       <>
         <IconButton style={{justifyContent:'start'}} onClick={()=>{props.updateView('folders')}}>
           <ArrowBackIcon/>
-          <Typography variant="subtitle2">Volver a las carpetas</Typography>
+          <p className="goBackButton">Volver a las carpetas</p>
         </IconButton>
         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', overflow:'auto', maxHeight:'80vh' }}
-        className={classes.root}>
+        className={`${classes.root} listStyles`}>
         {
           files.length>0 ? 
           files.map((item) => {
             return (
-              <ListItemButton className={classes.listItem} onClick={()=>{props.updateUrl(item.url,item.title); updatelocalData('openedAudios',{'title':item.title, 'timeStamp':0})}}>
+              <ListItemButton className='listItem' onClick={()=>{props.updateUrl(item.url,item.title); updatelocalData('openedAudios',{'title':item.title, 'timeStamp':0})}}>
                 <ListItemAvatar>
-                  <Avatar alt="videofile" src={icon} variant="square"/>
+                  <Avatar className='avatarStyles' alt="videofile" src={icon} variant="square"/>
                 </ListItemAvatar>
-                <ListItemText primaryTypographyProps={{fontFamily:searchStorage(item.title)?'ProximaNovaSoft-bold':'ProximaNovaSoft-regular'}}  primary={item.title} />
+                <ListItemText disableTypography primary={<Typography className="fileText" variant="text" style={{fontFamily:searchStorage(item.title)?'ProximaNovaSoft-bold':'ProximaNovaSoft-regular' }}>{item.title}</Typography>}/>
               </ListItemButton>
             )
           }) : (!loading&&files.length===0) ? <Typography variant="subtitle2">¡No se encontraron archivos!</Typography> : <div style={{ display:'flex', justifyContent:'center'}}> <CircularProgress disableShrink/> </div>

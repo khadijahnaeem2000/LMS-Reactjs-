@@ -12,7 +12,8 @@ import LikeButton from './Buttons/LikeButton';
 import CommentButton from './Buttons/CommentButton';
 import DownloadButton from './Buttons/DownloadButton';
 import CommentCard from './CommentCard/CommentCard';
-import useStyles from '../../../MUIScrollbar/MUIScrollbar'
+import useStyles from '../../../MUIScrollbar/MUIScrollbar';
+import './styles.css';
 
 const VideoCard = (props) => {
   const classes = useStyles();
@@ -61,8 +62,8 @@ const VideoCard = (props) => {
     }}>
         {({ inView, ref, entry }) => (
             <>
-                <Card className="entrenamientoChild flex justify-center" style={{boxShadow:'none',paddingTop:'1%',paddingBottom:'1%', overflow:'unset', marginLeft:'2%'}}>
-                    <div style={{position:'relative', height:'80vh'}}>
+                <Card className="entrenamientoChild flex justify-center changeLayout" style={{boxShadow:'none',paddingTop:'1%',paddingBottom:'1%', overflow:'unset', marginLeft:'2%'}}>
+                    <div style={{position:'relative', height:'80vh'}} className='flex justify-center'>
                         <video
                             ref={ref}
                             id={`${props.index}`}
@@ -72,6 +73,9 @@ const VideoCard = (props) => {
                             className={'videodiv'}
                             onLoadStart={() => {if(Number(props.index)===0){props.updateLoading()}}}
                             loop
+                            playsInline
+                            autoPlay
+                            muted
                         />
                         <div className='buttondiv flex flex-col'>
                             <IconButton sx={{ cursor:'pointer'}} onClick={handlePlayPause}>
@@ -82,12 +86,13 @@ const VideoCard = (props) => {
                             </IconButton>  
                         </div>  
                     </div>   
-                    <CardActions sx={{display: 'flex', flexDirection: 'column', justifyContent:'end'}} disableSpacing>
+                    <CardActions className='actionLayout' sx={{display: 'flex', flexDirection: 'column', justifyContent:'end'}} disableSpacing>
                         <LikeButton videoId={props.item.id} likeCount={props.item.likeCount}/>
                         <DownloadButton item={props.item} downloadCount={props.item.downloadCount}/>
+                        <span className="commentButton"><CommentButton videoId={props.item.id} commentCount={props.item.commentCount}/></span>
                         <ShareButton videoId={props.item.id} title={props.item.title} url={`https://neoestudio.net/${props.item.file}`} shareCount={props.item.shareCount}/>
                     </CardActions>
-                    <div className={`flex flex-col justify-between ${classes.root}`} style={{marginLeft:'10%',width:'40%',height:'80vh',overflowY:'scroll', overflowX:'hidden'}}><CommentCard  videoId={props.item.id}/></div>
+                    <div className={`flex flex-col justify-between ${classes.root} commentCard`}><CommentCard  videoId={props.item.id}/></div>
                 </Card>  
             </>
         )}

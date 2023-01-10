@@ -38,6 +38,7 @@ import tick from "../../assets/img/images/tick.webp";
 import cross from "../../assets/img/images/cross.webp";
 import useStyles from "./styles";
 import "./style.css";
+import { display } from "@mui/system";
 
 function Examenes1(props) {
   let triggerTime;
@@ -1357,6 +1358,7 @@ function Examenes1(props) {
                       src={examReviewData[currentQuestion].image}
                       alt=""
                       width="50%"
+                      style={{display:examReviewData[currentQuestion].image === "https://neoestudio.net/" ? 'none': 'block'}}
                     />
                   </div>
                   <div className={Styles.Options}>
@@ -1667,8 +1669,9 @@ function Examenes1(props) {
                   <div className={Styles.timerWrapper}>
                     {/* Timer STARTS HERE                      */}
                     <div className={Styles.timerWrapper}>
-                      <div className="flex mx-5">
+                      <div className="flex">
                         <img
+                          alt=""
                           src={pauseImg}
                           className={Styles.timerIcons}
                           onClick={handleStart}
@@ -1677,8 +1680,10 @@ function Examenes1(props) {
                           src={stopImg}
                           className={Styles.timerIcons}
                           onClick={endQuiz}
+                          alt=""
                         />
                         <img
+                          alt=""
                           src={correctAnswerImg}
                           className={Styles.timerIcons}
                           onClick={() => {
@@ -1699,7 +1704,7 @@ function Examenes1(props) {
                           }}
                         />
                       </div>
-                      <div className="flex text-xl">
+                      <div className="flex text-xl timer-text">
                         Tiempo:
                         <h2
                           className={Styles.timerHeading}
@@ -1726,6 +1731,7 @@ function Examenes1(props) {
                         }
                         alt=""
                         width="50%"
+                        style={{display:examData[currentQuestion].image === "https://neoestudio.net/" ? 'none': 'block'}}
                       />
                     </div>
                     <div className={Styles.Options}>
@@ -1763,7 +1769,7 @@ function Examenes1(props) {
                             <img src={tick} alt="" style={{ width: "40px" }} />
                           ) : examData[currentQuestion].studentAnswered ==
                               "answer1" &&
-                            examData[currentQuestion].correct != "a" ? (
+                            examData[currentQuestion].correct != "a" && ansArry[currentQuestion].showDescript === true? (
                             <img src={cross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
@@ -1808,7 +1814,7 @@ function Examenes1(props) {
                             <img src={tick} alt="" style={{ width: "40px" }} />
                           ) : examData[currentQuestion].studentAnswered ==
                               "answer2" &&
-                            examData[currentQuestion].correct != "b" ? (
+                            examData[currentQuestion].correct != "b" && ansArry[currentQuestion].showDescript === true ? (
                             <img src={cross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
@@ -1850,7 +1856,7 @@ function Examenes1(props) {
                             <img src={tick} alt="" style={{ width: "40px" }} />
                           ) : examData[currentQuestion].studentAnswered ==
                               "answer3" &&
-                            examData[currentQuestion].correct != "c" ? (
+                            examData[currentQuestion].correct != "c" && ansArry[currentQuestion].showDescript === true? (
                             <img src={cross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
@@ -1892,7 +1898,7 @@ function Examenes1(props) {
                             <img src={tick} alt="" style={{ width: "40px" }} />
                           ) : examData[currentQuestion].studentAnswered ==
                               "answer4" &&
-                            examData[currentQuestion].correct != "d" ? (
+                            examData[currentQuestion].correct != "d" && ansArry[currentQuestion].showDescript === true? (
                             <img src={cross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
