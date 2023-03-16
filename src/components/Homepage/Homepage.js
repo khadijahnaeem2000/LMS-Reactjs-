@@ -1,22 +1,41 @@
 import React, {useEffect, useState} from "react";
+import { differenceInSeconds, sub, parseISO } from 'date-fns';
+import { toast } from 'react-toastify';
+import { Navigate } from "react-router";
+
 import useStyles from "./styles";
 import "./styles.css";
-import { getLocalUserdata , updateLocalstoragepic, updateLocalstoragetime} from "../../services/auth/localStorageData";
 import profilepic from "../../assets/img/images/layer_25.webp";
 import defaultrank from "../../assets/img/images/Empleo_cabo.webp";
 import SelectButton from "./SelectButton/SelectButton";
 import userServices from 'services/httpService/userAuth/userServices';
+import tiempo from '../../assets/img/images/Tiempo.png';
+import medallas from '../../assets/img/images/Medallas.png';
+import percentil from '../../assets/img/images/Porcentaje2.png';
+import puntos from '../../assets/img/images/Recurso3Pestaaprueba.png';
+import { getLocalUserdata , updateLocalstoragepic, updateLocalstoragetime} from "../../services/auth/localStorageData";
 
 const Homepage = () => {
   const classes = useStyles();
   const data = getLocalUserdata();
+  let temp=differenceInSeconds(new Date(data.expiry_date),new Date());
+  const [userInfo, setUserInfo] = useState([]); 
   const [photo,setPhoto] = useState('');
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState('');
+  const [showTimer, setShowTimer] = useState(false);
+  const [hours, setHours] = useState(Number(Math.floor(temp / 3600).toString().padStart(2,'0'))+Number(5));
+  const [minutes, setMinutes] = useState(Math.floor(temp % 3600 / 60).toString().padStart(2,'0'));
+  const [seconds, setSeconds] = useState(Math.floor(temp % 60).toString().padStart(2,'0'));
+  const [logout, setLogout] = useState(false);
 
   useEffect (() => {
     userServices.commonPostService('/user',{"id":data.id})
     .then((response) => {
       if(response.status===200) {
+        if(response.data.data.expiry_date!==null){
+          setShowTimer(true);
+        }
+        setUserInfo(response.data);
         setPhoto(response.data.data.photo);
         updateLocalstoragetime(response.data.time);
         updateLocalstoragepic(response.data.data.photo);
@@ -29,11 +48,53 @@ const Homepage = () => {
     .catch((error) => {
       console.log(error);
     })
-
   },[])
 
+  useEffect (() => {
+    let interval = setInterval(() => {
+      if (seconds > 0) {
+        setSeconds((prevState) => prevState - 1);
+      }
+      if (seconds === 0) {
+        if (minutes === 0) {
+          if(hours===0) {
+            clearInterval(interval);
+            setLogout(true);
+            localStorage.clear();
+            toast.error('Su prueba de un día ha expirado, compre un plan para continuar.');
+          }
+          else {
+            setHours((prevState) => (prevState) - 1);
+            setMinutes(59);
+            setSeconds(59);
+          }
+        } else {
+          setMinutes((prevState) => (prevState) - 1);
+          setSeconds(59);
+        }
+      } 
+    }, 1000);
+    return ()=> {
+      clearInterval(interval);
+    };
+  })
+  
   return (
     <div className={classes.container}>
+      {showTimer?
+      <div style={{display:'flex', marginLeft:'5%'}}>
+        <div className={`${classes.wrapper} flex flex-col justify-between mr-1 w-1/4 lg:w-2/12 h-2/5 lg:ml-24`}>
+          <h4 style={{fontWeight:'bold'}}>
+            Preuba
+          </h4>
+          <h4 style={{fontWeight:'bold',color:'red'}}>
+            {hours}:{minutes}:{seconds}
+          </h4>
+          <br/>
+        </div>
+        </div>:
+        <></>
+      }
       <div className={`${classes.wrapper} flex justify-between`}>
         <div
           style={{ marginLeft: "0" }}
@@ -60,16 +121,17 @@ const Homepage = () => {
             }
           />
           <h2 className={`${classes.font} text-center fontSize`}>
-            {data.rank_name != null ? data.rank_name : "-"}
+            {userInfo?.data?.rank_name != null ? userInfo.data.rank_name : "-"}
           </h2>
           <p className="text-center fontSize">
-            {data.userName != null ? data.userName : "-"}
+            {userInfo?.data?.userName != null ? userInfo.data.userName : "-"}
           </p>
         </div>
         <div className="mr-1 imgWidth2">
           <img
-            alt="Nivel"
+            alt="Tiempo"
             src={require("assets/img/images/Tiempo.webp").default}
+            srcSet={tiempo}
           />
           <h2 className={`${classes.font} text-center fontSize`}>
             {time != null ? time : 0} h
@@ -80,9 +142,10 @@ const Homepage = () => {
           <img
             alt="Medellas"
             src={require("assets/img/images/Medallas.webp").default}
+            srcSet={medallas}
           />
           <h2 className={`${classes.font} text-center fontSize`}>
-            {data.aptos != null ? data.aptos : 0}
+            {userInfo?.data?.aptos != null ? userInfo.data.aptos : 0}
           </h2>
           <p className="text-center fontSize">Aptos</p>
         </div>
@@ -91,9 +154,10 @@ const Homepage = () => {
             style={{ paddingBottom: "25%" }}
             alt="Puntos"
             src={require("assets/img/images/Recurso3Pestaaprueba.webp").default}
+            srcSet={puntos}
           />
           <h2 className={`${classes.font} text-center fontSize`}>
-            {data.points != null ? data.points : 0}
+            {userInfo?.data?.points != null ? userInfo.data.points : 0}
           </h2>
           <p className="text-center fontSize">Puntos</p>
         </div>
@@ -102,13 +166,15 @@ const Homepage = () => {
             style={{ paddingBottom: "25%" }}
             alt="Percentil"
             src={require("assets/img/images/Porcentaje2.webp").default}
+            srcSet={percentil}
           />
           <h2 className={`${classes.font} text-center fontSize`}>
-            {data.percentage != null ? data.percentage : 0}
+            {userInfo?.data?.percentage != null ? userInfo.data.percentage : 0}
           </h2>
           <p className="text-center fontSize">Percentil</p>
         </div>
       </div>
+      {logout ? <Navigate to="/" /> : null}
     </div>
   );
 };

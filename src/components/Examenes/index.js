@@ -39,6 +39,27 @@ import cross from "../../assets/img/images/cross.webp";
 import useStyles from "./styles";
 import "./style.css";
 import { display } from "@mui/system";
+import iosDirectoryImg from "../../assets/img/images/directory.png";
+import iosAnsSelectImg from "../../assets/img/images/Flecha.png";
+import iosRevisar from "../../assets/img/images/revisar.png";
+import iosSalir from "../../assets/img/images/salirExamenes.png";
+import iosConocimientos from "../../assets/img/images/conocimientos.png";
+import iosInglesImg from "../../assets/img/images/ingles.png";
+import iosNoBtnImg from "../../assets/img/images/noBtn.png";
+import iosSiBtnImg from "../../assets/img/images/SiBtn.png";
+import iosPsicoImg from "../../assets/img/images/psicotecnicos.png";
+import iosOrtoImg from "../../assets/img/images/ortografia.png";
+import iosCorrectImg from "../../assets/img/images/green.png";
+import iosWrongImg from "../../assets/img/images/red.png";
+import iosNullImg from "../../assets/img/images/grey.png";
+import iosAnswerImg1 from "../../assets/img/images/blue.png";
+import iosNoSelect from "../../assets/img/images/transparent.png";
+import iosGolden from "../../assets/img/images/golden.png";
+import iosPauseImg from "../../assets/img/images/pause.png";
+import iosCorrectAnswerImg from "../../assets/img/images/correctAnswer.png";
+import iosStopImg from "../../assets/img/images/stop.png";
+import iosTick from "../../assets/img/images/tick.png";
+import iosCross from "../../assets/img/images/cross.png";
 
 function Examenes1(props) {
   let triggerTime;
@@ -229,6 +250,17 @@ function Examenes1(props) {
   // START EXAM API CALL
 
   const startExams = (e, Conocimientos, Inglés, Ortografía, Psicotécnicos) => {
+    const examStatus =  Conocimientos
+    ? Conocimientos.studentExamStatus
+    : Inglés
+    ? Inglés.studentExamStatus
+    : Ortografía
+    ? Ortografía.studentExamStatus
+    : Psicotécnicos.studentExamStatus;
+    let isReset;
+    if(examStatus==="started") {
+      isReset=true;
+    }
     const ExamNO = Conocimientos
       ? Conocimientos.id
       : Inglés
@@ -244,7 +276,7 @@ function Examenes1(props) {
       studentAnswered: null,
       studentAttemptId: resetExam ? studentExamRecId : null,
       tab: null,
-      isRestart: examStatusCheck ? "yes" : "no",
+      isRestart: isReset ? "yes" : "no",
       examId: localStorage.getItem("examID"),
       studentExamRecordId: Conocimientos
         ? Conocimientos.studentExamRecordId
@@ -254,7 +286,7 @@ function Examenes1(props) {
         ? Ortografía.studentExamRecordId
         : Psicotécnicos.studentExamRecordId,
     };
-    if (examStatusCheck === true) {
+    if (isReset === true) {
       setSecondsRemaining(
         Conocimientos
           ? Conocimientos.timeFrom
@@ -337,7 +369,12 @@ function Examenes1(props) {
           if (props.showScreen === "false") {
             props.updateView();
           } else {
+            setAnsCheck(0);
+            setCurrentQuestion(0);
             setShowScreen(true);
+            setStateRend((prev) => prev + 1);
+            setExpanded(false);
+            setLoading(true);
           }
         } else {
           alert("You Cannot Pause This Exam");
@@ -488,19 +525,19 @@ function Examenes1(props) {
             <Container maxWidth="lg">
               <Grid container spacing={2}>
                 <Grid item xs={3} md={3} className={Styles.topImgHeadWrapper}>
-                  <img src={Conocimientos} alt="" height={150} />
+                  <img src={Conocimientos} srcSet={iosConocimientos} alt="" height={150} />
                   <div className={Styles.headingText}>Conocimientos</div>
                 </Grid>
                 <Grid item xs={3} md={3} className={Styles.topImgHeadWrapper}>
-                  <img src={inglesImg} alt="" height={150} />
+                  <img src={inglesImg} srcSet={iosInglesImg} alt="" height={150} />
                   <div className={Styles.headingText}>Ingles</div>
                 </Grid>
                 <Grid item xs={3} md={3} className={Styles.topImgHeadWrapper}>
-                  <img src={psicoImg} alt="" height={150} />
+                  <img src={psicoImg} srcSet={iosPsicoImg} alt="" height={150} />
                   <div className={Styles.headingText}>Psicotecnicos</div>
                 </Grid>
                 <Grid item xs={3} md={3} className={Styles.topImgHeadWrapper}>
-                  <img src={ortoImg} alt="" height={150} />
+                  <img src={ortoImg} srcSet={iosOrtoImg} alt="" height={150} />
                   <div className={Styles.headingText}>Ortografia</div>
                 </Grid>
               </Grid>
@@ -526,7 +563,7 @@ function Examenes1(props) {
                         resetExamFile();
                       }}
                     >
-                      <img src={siBtnImg} alt="" height={50} />
+                      <img src={siBtnImg} srcSet={iosSiBtnImg} alt="" height={50} />
                     </Button>
                     <Button
                       size="medium"
@@ -534,7 +571,7 @@ function Examenes1(props) {
                         setResetExam(false);
                       }}
                     >
-                      <img src={noBtnImg} alt="" height={50} />
+                      <img src={noBtnImg} srcSet={iosNoBtnImg} alt="" height={50} />
                     </Button>
                   </div>
                 </Box>
@@ -567,6 +604,7 @@ function Examenes1(props) {
                               <div>
                                 <img
                                   src={directoryImg}
+                                  srcSet={iosDirectoryImg}
                                   alt=""
                                   className={Styles.headingImg}
                                 />
@@ -942,6 +980,7 @@ function Examenes1(props) {
                             <div>
                               <img
                                 src={directoryImg}
+                                srcSet={iosDirectoryImg}
                                 alt=""
                                 className={Styles.headingImg}
                               />
@@ -1366,22 +1405,22 @@ function Examenes1(props) {
                       <div className={Styles.answerLinksInner3}>
                         {examReviewData[currentQuestion].status == "correct" &&
                         examReviewData[currentQuestion].correct == "a" ? (
-                          <img src={tick} alt="" style={{ width: "40px" }} />
+                          <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].correct == "a" ? (
-                          <img src={tick} alt="" style={{ width: "40px" }} />
+                          <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].studentAnswered ==
                             "a" ? (
-                          <img src={cross} alt="" style={{ width: "40px" }} />
+                          <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status ==
                             "notAttempted" &&
                           examReviewData[currentQuestion].correct == "a" ? (
-                          <img src={tick} alt="" style={{ width: "40px" }} />
+                          <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].studentAnswered ==
                             "answer1" ? (
-                          <img src={cross} alt="" style={{ width: "40px" }} />
+                          <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                         ) : (
                           ""
                         )}
@@ -1397,22 +1436,22 @@ function Examenes1(props) {
                       <div className={Styles.answerLinksInner3}>
                         {examReviewData[currentQuestion].status == "correct" &&
                         examReviewData[currentQuestion].correct == "b" ? (
-                          <img src={tick} alt="" style={{ width: "40px" }} />
+                          <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].correct == "b" ? (
-                          <img src={tick} alt="" style={{ width: "40px" }} />
+                          <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].studentAnswered ==
                             "b" ? (
-                          <img src={cross} alt="" style={{ width: "40px" }} />
+                          <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status ==
                             "notAttempted" &&
                           examReviewData[currentQuestion].correct == "b" ? (
-                          <img src={tick} alt="" style={{ width: "40px" }} />
+                          <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].studentAnswered ==
                             "answer2" ? (
-                          <img src={cross} alt="" style={{ width: "40px" }} />
+                          <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                         ) : (
                           ""
                         )}
@@ -1427,22 +1466,22 @@ function Examenes1(props) {
                       <div className={Styles.answerLinksInner3}>
                         {examReviewData[currentQuestion].status == "correct" &&
                         examReviewData[currentQuestion].correct == "c" ? (
-                          <img src={tick} alt="" style={{ width: "40px" }} />
+                          <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].correct == "c" ? (
-                          <img src={tick} alt="" style={{ width: "40px" }} />
+                          <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].studentAnswered ==
                             "c" ? (
-                          <img src={cross} alt="" style={{ width: "40px" }} />
+                          <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status ==
                             "notAttempted" &&
                           examReviewData[currentQuestion].correct == "c" ? (
-                          <img src={tick} alt="" style={{ width: "40px" }} />
+                          <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].studentAnswered ==
                             "answer3" ? (
-                          <img src={cross} alt="" style={{ width: "40px" }} />
+                          <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                         ) : (
                           ""
                         )}
@@ -1457,22 +1496,22 @@ function Examenes1(props) {
                       <div className={Styles.answerLinksInner3}>
                         {examReviewData[currentQuestion].status == "correct" &&
                         examReviewData[currentQuestion].correct == "d" ? (
-                          <img src={tick} alt="" style={{ width: "40px" }} />
+                          <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].correct == "d" ? (
-                          <img src={tick} alt="" style={{ width: "40px" }} />
+                          <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].studentAnswered ==
                             "d" ? (
-                          <img src={cross} alt="" style={{ width: "40px" }} />
+                          <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status ==
                             "notAttempted" &&
                           examReviewData[currentQuestion].correct == "d" ? (
-                          <img src={tick} alt="" style={{ width: "40px" }} />
+                          <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].studentAnswered ==
                             "answer4" ? (
-                          <img src={cross} alt="" style={{ width: "40px" }} />
+                          <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                         ) : (
                           ""
                         )}
@@ -1528,12 +1567,12 @@ function Examenes1(props) {
                           style={{
                             backgroundImage:
                               currentQuestion == index
-                                ? `url(${golden})`
+                                ? `url(${golden}),url(${iosGolden})`
                                 : data.status == "notAttempted"
-                                ? `url(${nullImg})`
+                                ? `url(${nullImg}), url(${iosNullImg})`
                                 : data.status == "wrong"
-                                ? `url(${wrongImg})`
-                                : `url(${correctImg})`,
+                                ? `url(${wrongImg}), url(${iosWrongImg})`
+                                : `url(${correctImg}), url(${iosCorrectImg})`,
                           }}
                         >
                           {index + 1}
@@ -1604,14 +1643,14 @@ function Examenes1(props) {
                     bgcolor={`linear-gradient(to bottom, rgba(17,148,47,1), rgba(106,170,101,1))`}
                     progress={endExam.correctPercentage.toFixed(1)}
                   />
-                  <img src={tick} style={{ width: "40px" }} />
+                  <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                 </div>
                 <div className={Styles.progressBarWrapper}>
                   <Progressbar
                     bgcolor={`linear-gradient(to bottom, rgba(206,8,17,1), rgba(222,110,81,1))`}
                     progress={endExam.wrongPercentage.toFixed(1)}
                   />
-                  <img src={cross} style={{ width: "40px" }} />
+                  <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                 </div>
                 <div className={Styles.progressBarWrapper}>
                   <Progressbar
@@ -1624,10 +1663,10 @@ function Examenes1(props) {
               <Grid item xs={12} md={4} className={Styles.ResultWrappers}>
                 <div className={Styles.resultBtnMain}>
                   <button className={Styles.revisarBtn} onClick={reviewExam}>
-                    <img src={Revisar} alt="Revisar Button" width={"350px"} />
+                    <img src={Revisar} srcSet={iosRevisar} alt="Revisar Button" width={"350px"} />
                   </button>
                   <button className={Styles.salirBtn} onClick={SalirBtn}>
-                    <img src={Salir} alt="Salir Button" width={"350px"} />
+                    <img src={Salir} srcSet={iosSalir} alt="Salir Button" width={"350px"} />
                   </button>
                 </div>
               </Grid>
@@ -1673,11 +1712,13 @@ function Examenes1(props) {
                         <img
                           alt=""
                           src={pauseImg}
+                          srcSet={iosPauseImg}
                           className={Styles.timerIcons}
                           onClick={handleStart}
                         />
                         <img
                           src={stopImg}
+                          srcSet={iosStopImg}
                           className={Styles.timerIcons}
                           onClick={endQuiz}
                           alt=""
@@ -1685,6 +1726,7 @@ function Examenes1(props) {
                         <img
                           alt=""
                           src={correctAnswerImg}
+                          srcSet={iosCorrectAnswerImg}
                           className={Styles.timerIcons}
                           onClick={() => {
                             ansArry.splice(ansCheck, 1, {
@@ -1763,14 +1805,14 @@ function Examenes1(props) {
                           {ansArry[currentQuestion].answer == "answer1" &&
                           currentQuestion == ansCheck &&
                           ansArry[currentQuestion].showDescript != true ? (
-                            <img src={ansSelectImg} width={"80%"} />
+                            <img src={ansSelectImg} srcSet={iosAnsSelectImg} alt="" width={"80%"} />
                           ) : ansArry[currentQuestion].showDescript === true &&
                             examData[currentQuestion].correct == "a" ? (
-                            <img src={tick} alt="" style={{ width: "40px" }} />
+                            <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                           ) : examData[currentQuestion].studentAnswered ==
                               "answer1" &&
                             examData[currentQuestion].correct != "a" && ansArry[currentQuestion].showDescript === true? (
-                            <img src={cross} alt="" style={{ width: "40px" }} />
+                            <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
                           )}
@@ -1808,14 +1850,14 @@ function Examenes1(props) {
                           {ansArry[currentQuestion].answer == "answer2" &&
                           currentQuestion == ansCheck &&
                           ansArry[currentQuestion].showDescript != true ? (
-                            <img src={ansSelectImg} width={"80%"} />
+                            <img src={ansSelectImg} srcSet={iosAnsSelectImg} alt='' width={"80%"} />
                           ) : ansArry[currentQuestion].showDescript === true &&
                             examData[currentQuestion].correct == "b" ? (
-                            <img src={tick} alt="" style={{ width: "40px" }} />
+                            <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                           ) : examData[currentQuestion].studentAnswered ==
                               "answer2" &&
                             examData[currentQuestion].correct != "b" && ansArry[currentQuestion].showDescript === true ? (
-                            <img src={cross} alt="" style={{ width: "40px" }} />
+                            <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
                           )}
@@ -1850,14 +1892,14 @@ function Examenes1(props) {
                           {ansArry[currentQuestion].answer == "answer3" &&
                           currentQuestion == ansCheck &&
                           ansArry[currentQuestion].showDescript != true ? (
-                            <img src={ansSelectImg} width={"80%"} />
+                            <img src={ansSelectImg} srcSet={iosAnsSelectImg} alt='' width={"80%"} />
                           ) : ansArry[currentQuestion].showDescript === true &&
                             examData[currentQuestion].correct == "c" ? (
-                            <img src={tick} alt="" style={{ width: "40px" }} />
+                            <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                           ) : examData[currentQuestion].studentAnswered ==
                               "answer3" &&
                             examData[currentQuestion].correct != "c" && ansArry[currentQuestion].showDescript === true? (
-                            <img src={cross} alt="" style={{ width: "40px" }} />
+                            <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
                           )}
@@ -1892,14 +1934,14 @@ function Examenes1(props) {
                           {ansArry[currentQuestion].answer == "answer4" &&
                           currentQuestion == ansCheck &&
                           ansArry[currentQuestion].showDescript != true ? (
-                            <img src={ansSelectImg} width={"80%"} />
+                            <img src={ansSelectImg} srcSet={iosAnsSelectImg} alt="" width={"80%"} />
                           ) : ansArry[currentQuestion].showDescript === true &&
                             examData[currentQuestion].correct == "d" ? (
-                            <img src={tick} alt="" style={{ width: "40px" }} />
+                            <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                           ) : examData[currentQuestion].studentAnswered ==
                               "answer4" &&
                             examData[currentQuestion].correct != "d" && ansArry[currentQuestion].showDescript === true? (
-                            <img src={cross} alt="" style={{ width: "40px" }} />
+                            <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
                           )}
@@ -1939,10 +1981,10 @@ function Examenes1(props) {
                             style={{
                               backgroundImage:
                                 currentQuestion == index
-                                  ? `url(${golden})`
+                                  ? `url(${golden}),url(${iosGolden})`
                                   : data.answer == null || data.answer == "null"
-                                  ? `url(${noSelect})`
-                                  : `url(${answerImg1})`,
+                                  ? `url(${noSelect}), url(${iosNoSelect})`
+                                  : `url(${answerImg1}), url(${iosAnswerImg1})`,
                             }}
                           >
                             {index + 1}

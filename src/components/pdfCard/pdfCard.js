@@ -93,14 +93,14 @@ const PdfCard = (props) => {
                         type="button"
                         disabled={pageNumber <= 1}
                         onClick={previousPage}>
-                            <img src={require(`assets/img/images/atras.webp`).default} alt="atras"/>
+                            <img src={require(`assets/img/images/atras.webp`).default} srcSet={require(`assets/img/images/atras.png`).default} alt="atras"/>
                         </button>
                         <button
                         className="temarioButton"
                         type="button"
                         disabled={pageNumber >= numPages}
                         onClick={nextPage}>
-                            <img src={require(`assets/img/images/siguiente.webp`).default} alt="atras"/>
+                            <img src={require(`assets/img/images/siguiente.webp`).default} srcSet={require(`assets/img/images/siguiente.png`).default} alt="atras"/>
                         </button>
                     </div>
                 </div> 

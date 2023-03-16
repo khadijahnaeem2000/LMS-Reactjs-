@@ -8,6 +8,7 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import downloadIcon from '../../../../assets/img/images/Flecha descarga azul.webp';
+import iosDownloadIcon from '../../../../assets/img/images/Flechadescargaazul.png';
 import { makeStyles } from "@material-ui/core/styles";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import IconButton from '@mui/material/IconButton';
@@ -98,7 +99,7 @@ const DownloadFiles = (props) => {
             return (
               <ListItemButton className={classes.listItem} onClick={()=>{updatelocalData('downloads',{'title':item.title}); downloadFile(item); setReload(true);}}>
                 <ListItemAvatar>
-                  <Avatar alt="videofile" src={downloadIcon} variant="square"/>
+                  <Avatar alt="videofile" src={downloadIcon} srcSet={iosDownloadIcon} variant="square"/>
                 </ListItemAvatar>
                 <ListItemText primaryTypographyProps={{fontFamily:searchStorage(item.title)?'ProximaNovaSoft-bold':'ProximaNovaSoft-regular'}}  primary={item.title}/>
               </ListItemButton>

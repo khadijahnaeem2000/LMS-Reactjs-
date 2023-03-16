@@ -9,6 +9,8 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import directory from '../../../../assets/img/images/directory.webp';
 import downloadIcon from '../../../../assets/img/images/Flecha descarga azul.webp';
+import iosDirectory from '../../../../assets/img/images/directory.png';
+import iosDownloadIcon from '../../../../assets/img/images/Flechadescargaazul.png';
 import { makeStyles } from "@material-ui/core/styles";
 import CircularProgress from '@mui/material/CircularProgress';
 import { saveAs } from 'file-saver';
@@ -103,7 +105,7 @@ const DownloadFolders = (props) => {
                 return (
                     <ListItemButton className={classes.listItem} onClick={() => { handleClick(item.id); } }>
                         <ListItemAvatar>
-                            <Avatar alt="folder" src={directory} />
+                            <Avatar alt="folder" src={directory} srcSet={iosDirectory}/>
                         </ListItemAvatar>
                         <ListItemText primaryTypographyProps={{ fontFamily: 'RoundedElegance-regular' }} primary={item.name} />
                     </ListItemButton>
@@ -114,7 +116,7 @@ const DownloadFolders = (props) => {
                 return (
                 <ListItemButton className={classes.listItem} onClick={()=>{downloadFile(item); updatelocalData('downloads',{'title':item.title})}}>
                     <ListItemAvatar>
-                        <Avatar alt="videofile" src={downloadIcon} variant="square"/>
+                        <Avatar alt="videofile" src={downloadIcon} srcSet={iosDownloadIcon} variant="square"/>
                     </ListItemAvatar>
                     <ListItemText primaryTypographyProps={{fontFamily:searchStorage(item.title)?'ProximaNovaSoft-bold':'ProximaNovaSoft-regular'}}  primary={item.title}/>
                 </ListItemButton>

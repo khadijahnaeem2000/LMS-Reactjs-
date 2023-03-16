@@ -1,6 +1,8 @@
 import React, { useState, Suspense, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { compareAsc, add } from 'date-fns';
 
 import { getLocalUserdata } from "../../services/auth/localStorageData";
 import userServices from 'services/httpService/userAuth/userServices';
@@ -26,19 +28,41 @@ function Home() {
   const [toggleMenu, setToggleMenu] = useState(false);
   const [currentPage, setCurrentPage] = useState("Mi escritorio");
   const [folderToggle, setFolderToggle] = useState("0%");
+  const [logout, setLogout] = useState(false);
   const data = getLocalUserdata();
 
    useEffect (() => {
+    let timerInterval = setInterval(() => {
+      if(data.type === 'Alumno'&&data.expiry_date!==null) {
+        let {expiry_date} = data;
+        expiry_date = new Date(expiry_date);
+        const trial_ended=compareAsc(new Date(), expiry_date);
+        if(trial_ended===1) {
+          setLogout(true);
+          localStorage.clear();
+          toast.error('Su prueba de un día ha expirado, compre un plan para continuar.');
+        }
+      }
+    },1000*60);
     window.addEventListener("focus", onFocus);
     window.addEventListener("blur", onBlur);
+    window.addEventListener('beforeunload', handleWindowClose);
+
     // Calls onFocus when the window first loads
     onFocus();
     // Specify how to clean up after this effect:
     return () => {
-        window.removeEventListener("focus", onFocus);
-        window.removeEventListener("blur", onBlur);
+      clearInterval(timerInterval);
+      onBlur();
+      window.removeEventListener("focus", onFocus);
+      window.removeEventListener("blur", onBlur);
+      window.removeEventListener('beforeunload', handleWindowClose);
     };
    },[])
+
+   const handleWindowClose = (ev) => {
+      onBlur();
+   }
 
    // User has switched back to the tab
   const onFocus = () => {
@@ -93,7 +117,7 @@ function Home() {
       return <Navigate to="/" />;
     } else if (currentPage === "Videos")
       return <Video folderToggle={folderToggle} />;
-    else if (currentPage === "Classes")
+    else if (currentPage === "Clases")
       return <Classes folderToggle={folderToggle} />;
     else if (currentPage === "Ranking global") return <RankingGlobal />;
     else if (currentPage === "Descargas") return <Descargas />;
@@ -132,6 +156,7 @@ function Home() {
         <SideMenu width={wid} updatePage={updatePage} />
         {renderOption()}
       </div>
+      {logout ? <Navigate to="/" /> : null}
     </>
   );
 }

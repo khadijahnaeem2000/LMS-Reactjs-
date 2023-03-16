@@ -8,6 +8,7 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import directory from '../../../../assets/img/images/directory.webp';
+import iosDirectory from '../../../../assets/img/images/directory.png';
 import CircularProgress from '@mui/material/CircularProgress';
 import useStyles from '../../../MUIScrollbar/MUIScrollbar';
 import '../styles.css'
@@ -46,14 +47,14 @@ const Folders = (props) => {
     folders.length>0 ? 
     <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper', overflow: 'auto', maxHeight: '85vh', marginTop:'4%' }}
       component="nav"
-      aria-labelledby="nested-list-subheader"
+      aria-labelledby=""
       className={`${classes.root} listStyles`}>
       {
         folders.map((item) => {
           return (
             <ListItemButton className={`listItem`} onClick={() => { handleClick(item.id); } }>
               <ListItemAvatar>
-                <Avatar className='avatarStyles' alt="folder" src={directory} />
+                <Avatar className='avatarStyles' alt="folder" src={directory} srcSet={iosDirectory}/>
               </ListItemAvatar>
               <ListItemText disableTypography className='avatarText' primaryTypographyProps={{ fontFamily: 'RoundedElegance-regular' }} primary={item.name===null? '-': item.name} />
             </ListItemButton>

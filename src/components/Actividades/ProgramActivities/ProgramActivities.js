@@ -22,6 +22,14 @@ import orto_icon from '../../../assets/img/images/ortografia.webp';
 import psico_icon from '../../../assets/img/images/psicotecnicos.webp';
 import coco_icon from '../../../assets/img/images/conocimientos.webp';
 import audio_icon from '../../../assets/img/images/90100015.webp';
+import ios_video_icon from '../../../assets/img/images/video_icon.png';
+import ios_pdf_icon from '../../../assets/img/images/4-Icono-archivos-PDF.png';
+import ios_english_icon from '../../../assets/img/images/ingles.png';
+import ios_repaso_icon from '../../../assets/img/images/Icono-repaso.png';
+import ios_orto_icon from '../../../assets/img/images/ortografia.png';
+import ios_psico_icon from '../../../assets/img/images/psicotecnicos.png';
+import ios_coco_icon from '../../../assets/img/images/conocimientos.png';
+import ios_audio_icon from '../../../assets/img/images/90100015.png';
 
 const ProgramActivities = (props) => {
     const classes = useStyles();
@@ -196,7 +204,8 @@ const ProgramActivities = (props) => {
                         <ListItemButton className={classes.listItem} onClick={()=>{showActivity(item)}}>
                             <ListItemAvatar>
                                 <img alt="icon" src={item.type==='video'?video_icon:item.type==='pdf'?pdf_icon:item.type==='repaso'?repaso_icon:item.type==='orto'?orto_icon:item.type==='english'?english_icon:item.type==='psico'?psico_icon:item.type==='audio'?audio_icon:item.type==='conocimiento'?coco_icon:item.type==='gramatica'?orto_icon:''} 
-                                style={{width:'40px'}}
+                                    srcSet={item.type==='video'?ios_video_icon:item.type==='pdf'?ios_pdf_icon:item.type==='repaso'?ios_repaso_icon:item.type==='orto'?ios_orto_icon:item.type==='english'?ios_english_icon:item.type==='psico'?ios_psico_icon:item.type==='audio'?ios_audio_icon:item.type==='conocimiento'?ios_coco_icon:item.type==='gramatica'?ios_orto_icon:''}
+                                    style={{width:'40px'}}
                                 />
                             </ListItemAvatar>
                             <ListItemText primaryTypographyProps={{fontFamily:decideFont(item)}}  primary={item.activityName} />

@@ -13,7 +13,7 @@ const SideMenu = (props) => {
     "Actividades",
     "Entrenamiento",
     "En Directo",
-    "Classes",
+    "Clases",
     "Exámenes",
     "Temario",
     "Videos",
@@ -30,7 +30,7 @@ const SideMenu = (props) => {
     "Calendario",
     "Actividades",
     "Entrenamiento",
-    "Directo Module",
+    "Directo",
     "clases",
     "examen",
     "Temario",
@@ -68,6 +68,7 @@ const SideMenu = (props) => {
               alt="..."
               className="w-1/5 menuItem"
               src={require(`assets/img/images/${fileNames[i]}.webp`).default}
+              srcSet={`${require(`assets/img/images/${fileNames[i]}.png`).default}`}
             />
             <div
               className="fSize"

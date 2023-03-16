@@ -3,6 +3,7 @@ import {AppBar, Toolbar, Typography} from '@material-ui/core';
 import useStyles from './styles.js'
 import icon from '../../assets/img/images/icons-menu-white.svg'
 import logo from '../../assets/img/images/logo.webp'
+import iosLogo from '../../assets/img/images/logo.png'
 import { withStyles } from "@material-ui/core/styles";
 
 const WhiteTextTypography = withStyles({
@@ -27,7 +28,7 @@ const HomeNavbar = (props) => {
                 Menu
             </WhiteTextTypography>
             <div className={classes.logoHorizontallyCenter}>
-                <img src={logo} className={`${classes.logo} logo`} alt="logo"/>
+                <img src={logo} srcSet={iosLogo} className={`${classes.logo} logo`} alt="logo"/>
             </div>
             <div className={classes.grow} />
         </Toolbar>

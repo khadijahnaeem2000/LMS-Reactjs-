@@ -8,6 +8,10 @@ import { useFormik } from 'formik';
 import ErrorService from 'services/formatError/ErrorService';
 import { Navigate } from 'react-router';
 
+import iosUser from '../../../assets/img/user.png'
+import iosPassword from '../../../assets/img/password.png'
+import iosBtn2 from '../../../assets/img/images/Botón Iniciar Sesión.png'
+
 
 function LoginTypeTrue() {
 
@@ -53,8 +57,8 @@ function LoginTypeTrue() {
       <form onSubmit={formik.handleSubmit}>
         <div className='relative w-full mb-2'>
           <div className='relative flex w-full flex-wrap items-stretch mb-3'>
-            <span className='z-10 h-full leading-snug font-normal absolute text-center text-black absolute bg-transparent rounded text-base items-center justify-center w-8 pl-3 py-3'>
-            <img alt='studentcode_icon' src={require('assets/img/user.webp').default} className='w-full h-full py-2'/>
+            <span className='z-10 h-full leading-snug font-normal absolute text-center text-black absolute bg-transparent rounded text-base items-center justify-center w-8 pl-3 py-3 ml-2'>
+            <img alt='studentcode_icon' src={require('assets/img/user.webp').default} srcSet={iosUser} className='w-full h-full py-2'/>
             </span>
             <input
               type='text'
@@ -105,9 +109,9 @@ function LoginTypeTrue() {
                     >
                       Password
                     </label> */}
-          <div className='relative flex w-full flex-wrap items-stretch mb-3'>
-            <span className='z-10 h-full leading-snug font-normal absolute text-center text-black absolute bg-transparent rounded text-base items-center justify-center w-8 pl-3 py-3'>
-            <img alt='password_icon' src={require('assets/img/password.webp').default} className='w-full h-full py-1.5 px-0.5'/>
+          <div className='relative flex w-full flex-wrap items-stretch'>
+            <span className='z-10 h-full leading-snug font-normal absolute text-center text-black absolute bg-transparent rounded text-base items-center justify-center w-8 pl-3 py-3 ml-2'>
+            <img alt='password_icon' src={require('assets/img/password.webp').default} srcSet={iosPassword} className='w-full h-full py-1.5 px-0.5'/>
             </span>
             <input
               type='password'
@@ -136,7 +140,8 @@ function LoginTypeTrue() {
             <img
               alt='...'
               className='w-full h-full mr-1'
-              src={require('assets/img/btn2.webp').default}
+              src={require('assets/img/images/Botón-Iniciar-Sesión.webp').default}
+              srcSet={iosBtn2}
             />
             {toNext ? <Navigate to="/home" /> : null}
           </button>

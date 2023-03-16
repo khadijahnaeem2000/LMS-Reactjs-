@@ -8,6 +8,7 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import directory from '../../../../assets/img/images/directory.webp';
+import ios_directory from '../../../../assets/img/images/directory.png';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import useStyles from '../../../MUIScrollbar/MUIScrollbar'
@@ -53,7 +54,7 @@ const Folder = (props) => {
           return (
             <ListItemButton className={`listItem`} onClick={() => { handleClick(item.id); } }>
               <ListItemAvatar>
-                <Avatar className='avatarStyles' alt="folder" src={directory} />
+                <Avatar className='avatarStyles' alt="folder" src={directory} srcSet={ios_directory}/>
               </ListItemAvatar>
               <ListItemText disableTypography className='avatarText' primaryTypographyProps={{ fontFamily: 'RoundedElegance-regular' }} primary={item.name===null? '-': item.name} />
             </ListItemButton>

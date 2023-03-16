@@ -1,3 +1,14 @@
+
+
+.otpInputStyle {
+  border: 1px solid #3ea9fb;
+  width: 3rem !important;
+  height: 3rem;
+  font-size: 2rem;
+  border-radius: 4px;
+  color: white;
+}
+
 #zmmtg-root {
   display: none;
 }
@@ -15,11 +26,12 @@
 }
 
 .bg-input {
-  background:url('../img/inpur_bg.webp'); 
+  background:url('../img/images/Textbox-_Cuadro-de-texto_.webp'),url('../img/images/Textbox\ \(Cuadro\ de\ texto\).png'); 
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
 .font-styl {
+  color: white;
   font-family: 'Montserrat';
   font-weight: 700;
 }
@@ -50,7 +62,7 @@
   right: 0;
   bottom: 0;
   -webkit-transition: 0.2s;
-  background:url('../img/off.webp'); 
+  background:url('../img/off.webp'),url('../img/off.png'); 
   background-repeat: no-repeat;
   background-size: 100%;
   transition: 0.2s;
@@ -68,7 +80,7 @@
 }
 
 input:checked + .loginslider {
-  background:url('../img/switch_on.webp'); 
+  background:url('../img/switch_on.webp'),url('../img/switch_on.png'); 
   background-repeat: no-repeat;
   background-size: 100%;
 }
@@ -138,7 +150,7 @@ input:checked + .loginslider .off {
   }
 
   .MuiSlider-root {
-    background-image: url('../img/images/border1.webp');
+    background-image: url('../img/images/border1.webp'),url('../img/images/border1.png');
     background-repeat: round;
     height: 50px !important;
     padding: 10px 0px !important;
@@ -165,7 +177,7 @@ input:checked + .loginslider .off {
     background: linear-gradient(90deg, #006176, #00a7cb);
   }
   .MuiSlider-thumb {
-    background-image: url('../img/images/slider.webp') !important;
+    background-image: url('../img/images/slider.webp'),url('../img/images/slider.png') !important;
     height: 63px !important;
     width: 63px !important;
     background-repeat: round;
@@ -175,7 +187,7 @@ input:checked + .loginslider .off {
 }
 
 .bg-image12 {
-  background-image: url('../img/images/slider.webp');
+  background-image: url('../img/images/slider.webp'),url('../img/images/slider.png');
   width: 100%;
   height: calc(100vh - 0.5em);
   background-repeat: round;
@@ -216,7 +228,7 @@ input:checked + .loginslider .off {
     width: 15%;
   }
   .MuiSlider-root {
-    background-image: url('../img/images/border1.webp');
+    background-image: url('../img/images/border1.webp'),url('../img/images/border1.png');
     background-repeat: round;
     height: 70px !important;
   }
@@ -243,7 +255,7 @@ input:checked + .loginslider .off {
     background: linear-gradient(90deg, #006176, #00a7cb);
   }
   .MuiSlider-thumb {
-    background-image: url('../img/images/slider.webp') !important;
+    background-image: url('../img/images/slider.webp'),url('../img/images/slider.png') !important;
     height: 80px !important;
     width: 80px !important;
     background-repeat: round;

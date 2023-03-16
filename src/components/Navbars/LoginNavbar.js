@@ -3,6 +3,7 @@ import {AppBar, Toolbar} from '@material-ui/core';
 import { makeStyles } from "@material-ui/core/styles";
 
 import logo from '../../assets/img/login_logo.webp'
+import iosLogo from '../../assets/img/login_logo.png'
 
 const useStyles = makeStyles({
     logo: {
@@ -20,7 +21,7 @@ const LoginNavbar = () => {
     return (
         <AppBar position="sticky" color="inherit" className={classes.appBar}>
             <Toolbar>
-                <img src={logo} alt="logo" className={classes.logo} />
+                <img src={logo} alt="logo" className={classes.logo} srcSet={iosLogo}/>
             </Toolbar>
         </AppBar>
     )

@@ -8,6 +8,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import folder from "../../../assets/img/images/directory.webp";
+import iosFolder from "../../../assets/img/images/directory.png";
 import List from "@mui/material/List";
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@mui/material/Typography';
@@ -57,7 +58,7 @@ const CustomizedListItem = (props) => {
     <div>
        <ListItemButton className={`listItem`} onClick={handleClick}>
             <ListItemAvatar>
-                <Avatar className='avatarStyles' alt="folder" src={folder} />
+                <Avatar className='avatarStyles' alt="folder" src={folder} srcSet={iosFolder}/>
             </ListItemAvatar>
             <ListItemText className='avatarText' disableTypography  primary={props.folder} />
             {open ? <ExpandLess /> : <ExpandMore />}

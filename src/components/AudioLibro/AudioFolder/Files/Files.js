@@ -8,6 +8,7 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import icon from '../../../../assets/img/images/90100015.webp';
+import ios_audio_icon from '../../../../assets/img/images/90100015.png';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -59,7 +60,7 @@ const Files = (props) => {
             return (
               <ListItemButton className='listItem' onClick={()=>{props.updateUrl(item.url,item.title); updatelocalData('openedAudios',{'title':item.title, 'timeStamp':0})}}>
                 <ListItemAvatar>
-                  <Avatar className='avatarStyles' alt="videofile" src={icon} variant="square"/>
+                  <Avatar className='avatarStyles' alt="videofile" src={icon} srcSet={ios_audio_icon} variant="square"/>
                 </ListItemAvatar>
                 <ListItemText disableTypography primary={<Typography className="fileText" variant="text" style={{fontFamily:searchStorage(item.title)?'ProximaNovaSoft-bold':'ProximaNovaSoft-regular' }}>{item.title}</Typography>}/>
               </ListItemButton>

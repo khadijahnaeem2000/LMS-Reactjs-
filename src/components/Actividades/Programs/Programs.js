@@ -64,7 +64,7 @@ const Programs = (props) => {
                                 className="actividadesButton"
                                 type="button"
                                 disabled={activities.length>0}>
-                                <img src={require(`assets/img/images/siguiente.webp`).default} alt="atras" onClick={() => {handleClick(activity.id)}}/>
+                                <img src={require(`assets/img/images/siguiente.webp`).default} srcSet={require(`assets/img/images/siguiente.png`).default} alt="atras" onClick={() => {handleClick(activity.id)}}/>
                             </button>  
                         </div>          
                     ))}

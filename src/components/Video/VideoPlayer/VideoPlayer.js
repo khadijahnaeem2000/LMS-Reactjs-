@@ -4,16 +4,15 @@ import './styles.css';
 
 const VideoPlayer = (props) => {
   const videoRef = useRef();
+  //const hlsRef = useRef();
   const [duration, setDuration]=useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1000);
 
   useEffect(() => {
-
     function checkIsMobile () {
       const ismobile = window.innerWidth < 1000;
         if (ismobile !== isMobile) {
           setIsMobile(ismobile);
-          console.log('it is a mobile');
         }
     }
     window.addEventListener("resize",checkIsMobile);
@@ -24,6 +23,22 @@ const VideoPlayer = (props) => {
     videoRef.current?.load();
   }, [props.url]);
 
+  /*useEffect(() => {
+    console.log(hlsRef);
+    if (Hls.isSupported() && hlsRef) {
+      const video = hlsRef;
+      console.log(video);
+      const hls = new Hls();
+      hls.loadSource(
+        "https://cdn.bitmovin.com/content/assets/art-of-motion_drm/m3u8s/11331.m3u8"
+      );
+      hls.attachMedia(video.current);
+      hls.on(Hls.Events.MANIFEST_PARSED, function() {
+        video.current?.play();
+      });
+    }
+  },[])*/
+
 
   const onProgress = (data) => {
     setDuration(videoRef.current.currentTime);
@@ -32,31 +47,37 @@ const VideoPlayer = (props) => {
 
   return (
     <div className={isMobile?'mobileVideoContainer':'div1'}>
-            <div className={isMobile?'':'div2'}>
-                <video className={isMobile?'mobileContainer':'check'} 
-                    width="750" 
-                    height="500" 
-                    controls 
-                    autoPlay 
-                    muted 
-                    ref={videoRef} 
-                    playsInline
-                    controlsList="nodownload" 
-                    onProgress={onProgress}
-                    onPlay={() => {
-                      if(videoRef.current?.videoWidth + videoRef.current?.videoHeight === 0) {
-                        alert('El video no es compatible con su navegador, intente usar Safari o IE.');
-                      }
-                    }}
-                    onLoadStart={() => {
-                      const timeToStart = getTimeStamp('openedVideos',props.title);
-                      videoRef.current.currentTime=timeToStart;
-                      }}
-                    onContextMenu={e => e.preventDefault()}>
-                    <source type="video/mp4" src={props.url}/>
-                    Your browser doesn't support video, Choose a better browser!
-                </video>
-            </div>
+      <div className={isMobile?'':'div2'}>
+           { /*<video
+            className={isMobile?'mobileContainer':'check'}
+            style={{zIndex:'10000', opacity:'0.5'}}
+            ref={hlsRef}
+            autoPlay={true}
+            />*/}
+        <video className={isMobile?'mobileContainer':'check'} 
+          width="750" 
+          height="500" 
+          controls 
+          autoPlay 
+          muted 
+          ref={videoRef} 
+          playsInline
+          controlsList="nodownload" 
+          onProgress={onProgress}
+          onPlay={() => {
+            if(videoRef.current?.videoWidth + videoRef.current?.videoHeight === 0) {
+              alert('El video no es compatible con su navegador, intente usar Safari o IE.');
+            }
+          }}
+          onLoadStart={() => {
+            const timeToStart = getTimeStamp('openedVideos',props.title);
+            videoRef.current.currentTime=timeToStart;
+          }}
+          onContextMenu={e => e.preventDefault()}>
+          <source type="video/mp4" src={props.url}/>
+          Your browser doesn't support video, Choose a better browser!
+        </video>
+      </div>
     </div> 
   )
 }
