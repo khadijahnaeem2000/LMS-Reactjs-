@@ -33,7 +33,7 @@ const Activity = (props) => {
     
   return (
     (props.item.type==='video') ?
-    <div className='flex flex-col'>
+    <div className='flex flex-col justify-center items-center'>
         <IconButton style={{marginTop:'2%'}} onClick={()=>{props.updateView('ProgramActivities',props.programId)}}>
             <ArrowBackIcon/>
             <Typography variant="subtitle2">Volver a actividades</Typography>
@@ -42,7 +42,7 @@ const Activity = (props) => {
             <VideoPlayer url={`https://neoestudio.net/${props.item.video_url}`} title={props.item.activityName}/>
         </div>
     </div> : (props.item.type==='pdf') 
-    ? <div className='flex flex-col'>
+    ? <div className='flex flex-col items-center justify-center'>
         <IconButton style={{marginTop:'2%'}} onClick={()=>{props.updateView('ProgramActivities',props.programId)}}>
             <ArrowBackIcon/>
             <Typography variant="subtitle2">Volver a actividades</Typography>
@@ -55,7 +55,7 @@ const Activity = (props) => {
     <div style={{marginLeft:'5%'}}><Repaso item={props.item} showExam='true' showScreen='false' updateView={updateView}/></div>
     : (props.item.type==='english'||props.item.type==='orto'||props.item.type==='psico'||props.item.type==='conocimiento'||props.item.type==='gramatica') 
     ? <><Examenes1 item={props.item} showExam='true' showScreen='false' updateView={updateView}/></> 
-    : (props.item.type==='audio') ?  <div className='flex flex-col'>
+    : (props.item.type==='audio') ?  <div className='flex flex-col justify-center items-center'>
     <IconButton style={{marginTop:'1%'}} onClick={()=>{props.updateView('ProgramActivities',props.programId)}}>
         <ArrowBackIcon/>
         <Typography variant="subtitle2">Volver a actividades</Typography>

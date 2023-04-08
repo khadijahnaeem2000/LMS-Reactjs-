@@ -131,15 +131,15 @@ function LoginTypeFalse(props) {
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
-        <div className='relative w-full mb-2'>
-          <div className='relative flex w-full flex-wrap items-stretch mb-3'>
-            <span className='z-10 h-full leading-snug font-normal absolute text-center text-black absolute bg-transparent rounded text-base items-center justify-center w-8 pl-3 py-3 ml-2'>
+        <div className='relative w-full mb-1'>
+          <div className='relative flex w-full flex-wrap items-stretch'>
+            <span className='z-10 h-full leading-snug font-normal absolute text-center text-black absolute bg-transparent rounded text-base items-center justify-center w-8 pl-3 py-5 ml-2'>
               <img alt='email_icon' src={require('assets/img/email.webp').default} srcSet={iosEmail} className='w-full h-full py-1'/>
             </span>
             <input
               type='text'
               placeholder='Email'
-              className='px-3 py-5 placeholder-blueGray-800 text-blueGray-1600 relative bg-input rounded text-sm outline-none focus:outline-none focus:shadow-outline w-full pl-10'
+              className='px-3 py-7 placeholder-blueGray-800 text-blueGray-1600 relative bg-input rounded text-sm outline-none focus:outline-none focus:shadow-outline w-full pl-10'
               name='email'
               id='email'
               style={{lineHeight:'10%'}}
@@ -157,7 +157,7 @@ function LoginTypeFalse(props) {
                       Password
                     </label> */}
           <div className='relative flex w-full flex-wrap items-stretch'>
-            <span className='z-10 h-full leading-snug font-normal absolute text-center text-black absolute bg-transparent rounded text-base items-center justify-center w-8 pl-3 py-3 ml-2'>
+            <span className='z-10 h-full leading-snug font-normal absolute text-center text-black absolute bg-transparent rounded text-base items-center justify-center w-8 pl-3 py-5 ml-2'>
               <img alt='telephone_icon' src={require('assets/img/telephone.webp').default} srcSet={iosTelephone} className='w-full h-full py-1'/>
             </span>
             <Input
@@ -165,7 +165,7 @@ function LoginTypeFalse(props) {
               international
               withCountryCallingCode
               placeholder='+34 Teléfono Movil'
-              className='px-3 py-5 placeholder-blueGray-900 text-blueGray-600 relative bg-input rounded text-sm outline-none focus:outline-none focus:shadow-outline w-full pl-10'
+              className='px-3 py-7 placeholder-blueGray-900 text-blueGray-600 relative bg-input rounded text-sm outline-none focus:outline-none focus:shadow-outline w-full pl-10'
               name='telephone'
               id='telephone'
               value={formik.values.password}
@@ -193,7 +193,7 @@ function LoginTypeFalse(props) {
 
         <div className='text-center'>
           <button
-            className='text-white text-sm font-bold uppercase px-6 py-1 outline-none focus:outline-none  '
+            className='text-white text-sm font-bold uppercase py-1 outline-none focus:outline-none  '
             type='submit'
           >
             <img

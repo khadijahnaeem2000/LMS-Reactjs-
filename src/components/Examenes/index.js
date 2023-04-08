@@ -331,6 +331,7 @@ function Examenes1(props) {
       })
       .catch((error) => {
         setLoading(false);
+        console.log(startData);
         alert("Please Try Again");
         console.log(error, "Error Loading, Please Try Again !");
       });

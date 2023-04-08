@@ -24,11 +24,15 @@ const Actividades = () => {
     }
 
     return (
-        <div className={`flex justify-center`}>
+        <>
         {
-            (view==='Programs') ? <Programs updateView={updateView} updateId={updateId}/> : (view==='ProgramActivities') ? <ProgramActivities updateActivity={updateActivity} updateView={updateView} programId={programId}/> :<Activity programId={programId} updateView={updateView} item={item}/>
+            (view==='Programs') ? 
+            <Programs updateView={updateView} updateId={updateId}/> : 
+                (view==='ProgramActivities') ? 
+                <ProgramActivities updateActivity={updateActivity} updateView={updateView} programId={programId}/> :
+                <Activity programId={programId} updateView={updateView} item={item}/>
         }
-        </div>
+        </>
     )
 }
 export default Actividades

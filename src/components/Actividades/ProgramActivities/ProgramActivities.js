@@ -117,11 +117,13 @@ const ProgramActivities = (props) => {
                 }
             }
             else {
-                toast.error("Error fetching programs.");
+                console.log("Error fetching programs.");
+                setLoading(false);
             }
         })
         .catch((error)=> {
-            toast.error('Error fetching programs');
+            console.log('Error fetching programs');
+            setLoading(false);
         });
     },[page])
 
@@ -181,41 +183,43 @@ const ProgramActivities = (props) => {
     }
 
   return (
-    <div className='flex flex-col'>
-        <IconButton style={{marginTop:'5%', justifyContent:'start', display: props.folderToggle==='0%'?'none':'flex'}}onClick={()=>{props.updateView('Programs')}}>
-            <ArrowBackIcon/>
-            <Typography variant="subtitle2">Volver a actividades</Typography>
-        </IconButton>
-        <List sx={{ width: '100%', maxWidth: 600, bgcolor: 'background.paper', overflow:'auto', maxHeight:'90vh'}}
-        className={classes.root}
-        id='list'>
-        {
-            list.length>0 ? 
-            list.map((item) => {
-                return (
-                    <ListItem
-                    id={item.id}
-                    secondaryAction={
-                        <IconButton edge="end" aria-label="delete">
-                            <DeleteIcon onClick={(e) => {deleteActivity(item.id);}}/>
-                        </IconButton>
-                    }
-                    >
-                        <ListItemButton className={classes.listItem} onClick={()=>{showActivity(item)}}>
-                            <ListItemAvatar>
-                                <img alt="icon" src={item.type==='video'?video_icon:item.type==='pdf'?pdf_icon:item.type==='repaso'?repaso_icon:item.type==='orto'?orto_icon:item.type==='english'?english_icon:item.type==='psico'?psico_icon:item.type==='audio'?audio_icon:item.type==='conocimiento'?coco_icon:item.type==='gramatica'?orto_icon:''} 
-                                    srcSet={item.type==='video'?ios_video_icon:item.type==='pdf'?ios_pdf_icon:item.type==='repaso'?ios_repaso_icon:item.type==='orto'?ios_orto_icon:item.type==='english'?ios_english_icon:item.type==='psico'?ios_psico_icon:item.type==='audio'?ios_audio_icon:item.type==='conocimiento'?ios_coco_icon:item.type==='gramatica'?ios_orto_icon:''}
-                                    style={{width:'40px'}}
-                                />
-                            </ListItemAvatar>
-                            <ListItemText primaryTypographyProps={{fontFamily:decideFont(item)}}  primary={item.activityName} />
-                        </ListItemButton>
-                    </ListItem>
-                )
-            }) : <div style={{ display:'flex', justifyContent:'center'}}>  </div>
-        }
-      </List>
-      {!loading ?  null : <div style={{ display:'flex', justifyContent:'center'}}> <CircularProgress disableShrink/></div>}
+    <div className='flex justify-center'>
+        <div className='flex flex-col'>
+            <IconButton style={{marginTop:'5%', justifyContent:'start', display: props.folderToggle==='0%'?'none':'flex'}}onClick={()=>{props.updateView('Programs')}}>
+                <ArrowBackIcon/>
+                <Typography variant="subtitle2">Volver a actividades</Typography>
+            </IconButton>
+            <List sx={{ width: '100%', maxWidth: 600, bgcolor: 'background.paper', overflow:'auto', maxHeight:'90vh'}}
+            className={classes.root}
+            id='list'>
+            {
+                list.length>0 ? 
+                list.map((item) => {
+                    return (
+                        <ListItem
+                        id={item.id}
+                        secondaryAction={
+                            <IconButton edge="end" aria-label="delete">
+                                <DeleteIcon onClick={(e) => {deleteActivity(item.id);}}/>
+                            </IconButton>
+                        }
+                        >
+                            <ListItemButton className={classes.listItem} onClick={()=>{showActivity(item)}}>
+                                <ListItemAvatar>
+                                    <img alt="icon" src={item.type==='video'?video_icon:item.type==='pdf'?pdf_icon:item.type==='repaso'?repaso_icon:item.type==='orto'?orto_icon:item.type==='english'?english_icon:item.type==='psico'?psico_icon:item.type==='audio'?audio_icon:item.type==='conocimiento'?coco_icon:item.type==='gramatica'?orto_icon:''} 
+                                        srcSet={item.type==='video'?ios_video_icon:item.type==='pdf'?ios_pdf_icon:item.type==='repaso'?ios_repaso_icon:item.type==='orto'?ios_orto_icon:item.type==='english'?ios_english_icon:item.type==='psico'?ios_psico_icon:item.type==='audio'?ios_audio_icon:item.type==='conocimiento'?ios_coco_icon:item.type==='gramatica'?ios_orto_icon:''}
+                                        style={{width:'40px'}}
+                                    />
+                                </ListItemAvatar>
+                                <ListItemText primaryTypographyProps={{fontFamily:decideFont(item)}}  primary={item.activityName} />
+                            </ListItemButton>
+                        </ListItem>
+                    )
+                }) : <div style={{ display:'flex', justifyContent:'center'}}>  </div>
+            }
+        </List>
+        {!loading ?  null : <div style={{ display:'flex', justifyContent:'center'}}> <CircularProgress disableShrink/></div>}
+        </div>
     </div>
   )
 }

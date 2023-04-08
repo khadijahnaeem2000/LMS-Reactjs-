@@ -70,7 +70,7 @@ const PdfCard = (props) => {
                         onContextMenu={e => e.preventDefault()}
                         loading="Cargando PDF..."
                         >
-                            <Page renderMode="svg" scale={96/72} pageNumber={pageNumber} size="A4" orientation="portrait" wrap/>
+                            <Page renderMode="canvas" scale={1.5} pageNumber={pageNumber} size="A4" orientation="portrait" wrap/>
                         </Document>
                     </div>
                 </div>
