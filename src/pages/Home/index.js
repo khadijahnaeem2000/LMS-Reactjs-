@@ -25,6 +25,7 @@ const Directo = React.lazy(() => import("../../components/Directo/Directo.js"));
 function Home() {
   const history = useNavigate();
   const [wid, setWid] = useState("0%");
+  const [wid, setWid] = useState("0%");
   const [toggleMenu, setToggleMenu] = useState(false);
   const [currentPage, setCurrentPage] = useState("Mi escritorio");
   const [folderToggle, setFolderToggle] = useState("0%");
@@ -94,16 +95,24 @@ function Home() {
     if (toggleMenu === true) {
       setWid("0%");
       setFolderToggle("0%");
+    if (toggleMenu === true) {
+      setWid("0%");
+      setFolderToggle("0%");
       setToggleMenu(false);
+    } else if (toggleMenu === false) {
+      setWid("20%");
+      setFolderToggle("35%");
     } else if (toggleMenu === false) {
       setWid("20%");
       setFolderToggle("35%");
       setToggleMenu(true);
     }
   };
+  };
 
   const updatePage = (option) => {
     setCurrentPage(option);
+  };
   };
 
   const renderOption = () => {
@@ -152,7 +161,9 @@ function Home() {
   return (
     <>
       <HomeNavbar toggleSideMenu={toggleSideMenu} />
+      <HomeNavbar toggleSideMenu={toggleSideMenu} />
       <div>
+        <SideMenu width={wid} updatePage={updatePage} />
         <SideMenu width={wid} updatePage={updatePage} />
         {renderOption()}
       </div>

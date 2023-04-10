@@ -23,28 +23,6 @@ const VideoPlayer = (props) => {
     videoRef.current?.load();
   }, [props.url]);
 
-  /*useEffect(() => {
-    console.log(hlsRef);
-    if (Hls.isSupported() && hlsRef) {
-      const video = hlsRef;
-      console.log(video);
-      const hls = new Hls();
-      hls.loadSource(
-        "https://cdn.bitmovin.com/content/assets/art-of-motion_drm/m3u8s/11331.m3u8"
-      );
-      hls.attachMedia(video.current);
-      hls.on(Hls.Events.MANIFEST_PARSED, function() {
-        video.current?.play();
-      });
-    }
-  },[])*/
-
-
-  const onProgress = (data) => {
-    setDuration(videoRef.current.currentTime);
-    updateLocalStorageTimeStamp('openedVideos',props.title,duration);
-  }
-
   return (
     <div className={isMobile?'mobileVideoContainer':'div1'}>
       <div className={isMobile?'':'div2'}>

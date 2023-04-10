@@ -30,6 +30,34 @@ const CustomizedListItem = (props) => {
   const handleClick = () => {
     setOpen(!open);
   };
+  const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
+  const handleClick = () => {
+    setOpen(!open);
+  };
+
+  const openPdf = (fileName) => {
+    let id = 0;
+    props.parentFolder.files.forEach((file) => {
+      if (file.name === fileName) {
+        id = file.id;
+      }
+    });
+    const info = {
+      folderId: props.parentFolder.id,
+      fileId: id,
+    };
+
+    props.setPdf(info);
+  };
+
+  const searchStorage = (title) => {
+    const matchFound=getLocalUserdata().openedPdfs.filter((entry) => {return entry.title===title});
+    if(matchFound.length===0){
+      return false;
+    }
+    return true;
+  }
 
   const openPdf = (fileName) => {
     let id = 0;
@@ -80,6 +108,9 @@ const CustomizedListItem = (props) => {
             </List>
         </Collapse>
     </div>
+  );
+};
+export default CustomizedListItem;
   );
 };
 export default CustomizedListItem;

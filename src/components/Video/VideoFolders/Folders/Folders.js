@@ -22,8 +22,10 @@ const Folders = (props) => {
     setFolders([]);
     const data=getLocalUserdata();
     userServices.commonPostService('/getTopics',{"studentType":data.type,"studentId":data.id,"type":'video'})
+    userServices.commonPostService('/getTopics',{"studentType":data.type,"studentId":data.id,"type":'video'})
     .then(response=>{
       if(response.data.status==='Successfull') {
+        setFolders(response.data.data);
         setFolders(response.data.data);
       }
       else{

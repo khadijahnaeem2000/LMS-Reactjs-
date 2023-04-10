@@ -8,7 +8,11 @@ const Video = (props) => {
   const [title,setTitle]=useState('');
   
   const updateUrl = (val,title) => {
+  const [title,setTitle]=useState('');
+  
+  const updateUrl = (val,title) => {
     setUrl(val);
+    setTitle(title);
     setTitle(title);
   }
 

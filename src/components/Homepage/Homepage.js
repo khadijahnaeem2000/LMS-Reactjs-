@@ -14,6 +14,11 @@ import medallas from '../../assets/img/images/Medallas.png';
 import percentil from '../../assets/img/images/Porcentaje2.png';
 import puntos from '../../assets/img/images/Recurso3Pestaaprueba.png';
 import { getLocalUserdata , updateLocalstoragepic, updateLocalstoragetime} from "../../services/auth/localStorageData";
+import Button from '@mui/material/Button';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import Timeslot from "components/calendar/Calendar";
+import  Calendar  from "components/calendar/Calendar";
+
 
 const Homepage = () => {
   const classes = useStyles();
@@ -175,6 +180,9 @@ const Homepage = () => {
         </div>
       </div>
       {logout ? <Navigate to="/" /> : null}
+      <Calendar studentId={
+        data.id != null ? data.id : 0
+      } />
     </div>
   );
 };
