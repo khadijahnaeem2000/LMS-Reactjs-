@@ -36,6 +36,23 @@
 
 .rbc-today {
     background-color: #FFF44F;
-    ;
 }
-    
+   
+.calendar-container {
+    display:flex;
+    width:96%;
+    margin:2%;
+}
+
+.calendar-container-child {
+    flex-grow: 1;
+}
+
+.calendar-event-cell {
+    display:flex;
+}
+
+.calendar-event-cell-image {
+    max-width:3em;
+    border-radius:3%;
+}
