@@ -143,7 +143,6 @@ function LoginTypeFalse(props) {
               name='email'
               id='email'
               style={{lineHeight:'10%'}}
-              style={{lineHeight:'10%'}}
               value={formik.values.studentCode}
               onChange={(e) => formik.setFieldValue('email', e.target.value)}
             />
@@ -170,7 +169,6 @@ function LoginTypeFalse(props) {
               name='telephone'
               id='telephone'
               value={formik.values.password}
-              style={{lineHeight:'10%'}}
               style={{lineHeight:'10%'}}
               onChange={(e) =>
                 formik.setFieldValue('telephone', e)

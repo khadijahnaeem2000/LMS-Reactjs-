@@ -9,11 +9,33 @@ const PdfCard = (props) => {
     const [pageNumber, setPageNumber] = useState(1);
     const [numPages, setNumPages] = useState(null);
     const [fileName, setFileName] = useState(props.fileName);
+    const [title, setTitle] = useState('');
+    const data=getLocalUserdata();
     const inputval=useRef();
+
+    const addToSchedule = () => {
+        userServices.commonPostService('/SendSchedule',{"studentId":data.id, "task":`Temario: ${title}`, "type":'pdf'})
+        .then((response) => {
+          if(response.status===200) {
+            if(response.data.status==='Successfull') {
+              console.log('added to schedule');
+            }
+            else {
+              console.log('Couldnt add to schedule');
+            }
+          }
+          else {
+            console.log('Could not add to user schedule');
+          }
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
 
     function onDocumentLoadSuccess({ numPages }) {
         setNumPages(numPages);
         setPageNumber(1);
+        addToSchedule();
     }
 
     function changePage(offset) {
@@ -39,13 +61,13 @@ const PdfCard = (props) => {
 
     useEffect (() => {
         if(props.fileName!=='' && typeof props.pdf !== "undefined" ) {
-            const data=getLocalUserdata();
             userServices.commonPostService('/getDownloadPdfFiles',JSON.stringify({"folderId":props.pdf.folderId,"studentId":data.id}))
             .then(resp => {
                 if(resp.data.message==='success') { 
                     resp.data.files.forEach((file)=> {
                         if(file.id===props.pdf.fileId){
                             setFileName(file.file);
+                            setTitle(file.title);
                             inputval.current.value='';
                         }
                     })

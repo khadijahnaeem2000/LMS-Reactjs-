@@ -1,5 +1,6 @@
 import React, {useRef, useState, useEffect} from 'react';
 import { updateLocalStorageTimeStamp, getTimeStamp} from '../../../services/auth/localStorageData';
+import userServices from 'services/httpService/userAuth/userServices';
 import './styles.css';
 
 const VideoPlayer = (props) => {
@@ -7,6 +8,25 @@ const VideoPlayer = (props) => {
   //const hlsRef = useRef();
   const [duration, setDuration]=useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1000);
+
+  const addToSchedule = () => {
+    userServices.commonPostService('/SendSchedule',{"studentId":props.userId, "task":`Video: ${props.title}`, "type":'video'})
+    .then((response) => {
+      if(response.status===200) {
+        if(response.data.status==='Successfull') {
+          console.log('added to schedule');
+        }
+        else {
+          console.log('COuldnt add to schedule');
+        }
+      }
+      else {
+        console.log('Could not add to user schedule');
+      }
+    }).catch((err) => {
+        console.log(err);
+    });
+  }
 
   useEffect(() => {
     function checkIsMobile () {
@@ -22,6 +42,28 @@ const VideoPlayer = (props) => {
   useEffect(() => {
     videoRef.current?.load();
   }, [props.url]);
+
+  /*useEffect(() => {
+    console.log(hlsRef);
+    if (Hls.isSupported() && hlsRef) {
+      const video = hlsRef;
+      console.log(video);
+      const hls = new Hls();
+      hls.loadSource(
+        "https://cdn.bitmovin.com/content/assets/art-of-motion_drm/m3u8s/11331.m3u8"
+      );
+      hls.attachMedia(video.current);
+      hls.on(Hls.Events.MANIFEST_PARSED, function() {
+        video.current?.play();
+      });
+    }
+  },[])*/
+
+
+  const onProgress = (data) => {
+    setDuration(videoRef.current.currentTime);
+    updateLocalStorageTimeStamp('openedVideos',props.title,duration);
+  }
 
   return (
     <div className={isMobile?'mobileVideoContainer':'div1'}>
@@ -45,6 +87,9 @@ const VideoPlayer = (props) => {
           onPlay={() => {
             if(videoRef.current?.videoWidth + videoRef.current?.videoHeight === 0) {
               alert('El video no es compatible con su navegador, intente usar Safari o IE.');
+            }
+            else {
+              addToSchedule();
             }
           }}
           onLoadStart={() => {

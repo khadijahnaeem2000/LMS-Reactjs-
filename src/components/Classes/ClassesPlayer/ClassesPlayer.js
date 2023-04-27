@@ -1,12 +1,32 @@
 import React, {useRef, useState, useEffect} from 'react'
 import { updateLocalStorageTimeStamp, getTimeStamp} from '../../../services/auth/localStorageData';
 import ReactPlayer from 'react-player/lazy'
+import userServices from 'services/httpService/userAuth/userServices';
 import './styles.css'
 
 const ClassesPlayer = (props) => {
   const videoRef = useRef();
   const [duration, setDuration]=useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1000);
+
+  const addToSchedule = () => {
+    userServices.commonPostService('/SendSchedule',{"studentId":props.userId, "task":`Clase: ${props.title}`, "type":'class'})
+    .then((response) => {
+      if(response.status===200) {
+        if(response.data.status==='Successfull') {
+          console.log('added to schedule');
+        }
+        else {
+          console.log('COuldnt add to schedule');
+        }
+      }
+      else {
+        console.log('Could not add to user schedule');
+      }
+    }).catch((err) => {
+        console.log(err);
+    });
+  }
 
   useEffect(() => {
 
@@ -48,6 +68,9 @@ const ClassesPlayer = (props) => {
             onStart={() => {
               const timeToStart = getTimeStamp('openedClasses',props.title);
               videoRef.current.seekTo(timeToStart,'seconds');
+            }}
+            onPlay={() => {
+                addToSchedule();
             }}
             />  
         }

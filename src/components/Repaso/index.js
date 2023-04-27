@@ -274,6 +274,18 @@ function Repaso(props) {
       .then((response) => {
         setEndExam(response.data);
         setShowScore(true);
+        axios
+          .post(`https://neoestudio.net/api/SendSchedule`,{"studentId":data.id,"task":`Repaso: ${response.data.examName}`,"type":"repaso"})
+          .then((response) => {
+            if(response.data.status==='Successfull') {
+              console.log('added to schedule');
+            }
+            else {
+              console.log('Could not add to schedule');
+            }
+          }).catch((err) => {
+            console.log(err);
+          });
       })
       .catch((error) => {
         console.log(error, "Error Loading, Please Try Again !");

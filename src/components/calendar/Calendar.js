@@ -1,382 +1,148 @@
-import React from 'react'
-import FullCalendar, { formatDate } from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from '@fullcalendar/interaction'
-import { INITIAL_EVENTS, createEventId } from './Events'
+import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
+import format from 'date-fns/format'
+import parse from 'date-fns/parse'
+import startOfWeek from 'date-fns/startOfWeek'
+import getDay from 'date-fns/getDay'
+import 'react-big-calendar/lib/css/react-big-calendar.css'
+import {useMemo, useEffect, useState} from 'react';
+import { es } from 'date-fns/locale';
+import toDate from 'date-fns/toDate'
+import parseISO from 'date-fns/parseISO'
+import { endPoint } from '../../config/config';
+
+
+import './styles.css'
+import { getLocalUserdata } from 'services/auth/localStorageData'
 import userServices from 'services/httpService/userAuth/userServices';
-import './calendar.css'
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
-import { Grid, TextField } from '@mui/material'
 
-export default class Calendar extends React.Component {
-  calendarComponentRef = React.createRef();
+require('globalize/lib/cultures/globalize.culture.es');
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      weekendsVisible: true,
-      calendarEvents: [],
-      bookingsList: [],
-      calendarWeekends: true,
-      open: false,
-      studentId: "",
-      task: "",
-      type: "",
-
-
-
-    }
-  }
-  style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 500,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-  };
-  componentDidMount() {
-    userServices.weeklySchedule(`/GetSchedule`, {
-      studentId: this.props.studentId, date:
-        Date.now()
-
-    })
-      .then((res) => {
-        console.table("confirmed", res.data.data);
-        let filter = this.getEvents(res.data.data);
-        console.log("filter:", filter)
-        this.setState({
-          bookingsList: res.data.Data,
-          calendarEvents: filter,
-        })
-      }).catch((error) => {
-        console.log(error);
-      });
-
-  }
-
-  addSlot = () => {
-    userServices.addSlots(`/SendSchedule`, { studentId: this.state.studentId, task: this.state.task, type: this.state.type })
-      .then((res) => {
-        console.table("confirmed", res.data.data);
-        let filter = this.getEvents(res.data.data);
-        console.log("filter:", filter)
-        this.setState({
-          bookingsList: res.data.Data,
-          calendarEvents: filter,
-        })
-        this.setState({ open: false })
-      }).catch((error) => {
-        console.log(error);
-      });
-  }
-
-
-
-
-  eventClick = (event) => {
-    console.log("console:", event.event.startStr);
-    let filter = this.state.bookingsList.filter((item) => {
-      return item.Date === event.event.startStr
-    }
-    )
-    console.log("filter:", filter);
-
-
-  };
-
-  getEvents = (dataList) => {
-    let filters = [];
-    dataList.map((item) => {
-      console.log("getEvents:", item)
-      filters.push({
-        title: item.Task,
-        start: item.Date,
-        // end: item.endTime,
-        id: item.user_id,
-        allDay: false,
-        color: 'green'
-      })
-    }
-    )
-    return filters;
-  };
-  handleShowModal = () => {
-    this.setState({ open: true, checked: !this.state.checked });
-  };
-  handleClose = () => this.setState({ open: false })
-
-  render() {
-
-    console.log("bookingsList", this.state.bookingsList);
-    console.log("calendarList", this.state.calendarEvents);
-    return (
-      <>
-        <div className='demo-app-main'>
-          <div className="button" style={{ display: "flex", justifyContent: "center" }}>
-            <Button variant="contained" onClick={this.handleShowModal}>Add Slot</Button>
-          </div>
-
-          <FullCalendar
-            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            headerToolbar={{
-              left: 'prev,next today',
-              center: 'title',
-              right: 'dayGridMonth,timeGridWeek,timeGridDay'
-            }}
-            ref={this.calendarComponentRef}
-            weekends={this.state.calendarWeekends}
-            events={
-              this.state.calendarEvents
-            }
-            dateClick={this.handleDateClick}
-            eventClick={this.eventClick}
-          />
-        </div>
-        {
-          this.state.open ? (
-            <Modal
-              open={this.state.open}
-              onClose={this.handleClose}
-              aria-labelledby="modal-modal-title"
-              aria-describedby="modal-modal-description"
-            >
-              <Grid
-                container
-                direction="column"
-                justifyContent="center"
-                alignItems="center"
-
-              >
-                <Box sx={this.style}>
-                  <Typography id="modal-modal-title" variant="h6" component="h2">
-                    Add Slot
-                  </Typography>
-                  <Typography id="modal-modal-description" sx={{ mt: 2 }} style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-                    <TextField id="outlined-basic" label="StudentId" variant="standard" style={{ height: "3rem" }}
-                      value={this.state.studentId}
-                      onChange={(e) => this.setState({ studentId: e.target.value })}
-                    />
-                    <TextField id="outlined-basic" label="Task" variant="standard" style={{ height: "3rem" }}
-
-                      value={this.state.task}
-                      onChange={(e) => this.setState({ task: e.target.value })}
-                    />
-                    <TextField id="outlined-basic" label="Type" variant="standard" style={{ height: "3rem" }}
-
-                      value={this.state.type}
-                      onChange={(e) => this.setState({ type: e.target.value })}
-
-                    />
-
-                  </Typography>
-                  <Button variant="contained" onClick={this.addSlot}>Add</Button>
-                </Box>
-              </Grid>
-
-
-
-
-
-
-            </Modal>
-          ) : null
-
-
-
-        }
-
-      </>
-
-    )
-  }
-
+const locales = {
+  'es': es,
 }
 
-// import React from "react";
-// import "./calendar.css";
-// import { BiChevronRight, BiChevronLeft } from "react-icons/bi";
-// import userServices from 'services/httpService/userAuth/userServices';
-// function Timeslot(props) {
-//   console.log("sdfuhds",props);
-//   const [timeslot, setTimeslot] = React.useState([]);
-//   const [date, setDate] = React.useState(new Date());
+const localizer = dateFnsLocalizer({
+  format,
+  parse,
+  startOfWeek,
+  getDay,
+  locales,
+})
 
-//   //weekly schedule for the user
-//   React.useEffect(() => {
-//     userServices.weeklySchedule(`/GetSchedule`, {date: date, studentId: props.studentId})
-//       .then((res) => {
-//         console.log(res.data);
-//         setTimeslot(res.data.data);
-//       }
-//     )
-//   }, [date]);
-//   return (
-//     <div className=" container-fulldiv">
-//       <div className="colordivallcolor">
-//         <div className="center">
-//           <BiChevronLeft className="colordivall" />
-//           <p className="centerdivAll">
-//             <input type="date" className="dateinput"
-//               onChange={(e) => { setDate(e.target.value) }}
-//               value={date}
-//             />
-//           </p>
-//           <BiChevronRight className="colordivall" />
-//         </div>
-//       </div>
-//       <div className="days">
-//         <div className="day">
-//           <div className="datelabel">
-//             <strong>Lunes</strong>
-//             <br />
-//             <div className="timeslot">{
-//               timeslot.map((item) => {
-//                 if (item.Day === "Mon") {
-//                   return (
-//                     <p className="timeslotp">{item.Date}</p>
-//                   )
-//                 } else {
-//                   return null;
-//                 }
-//               }
-//               )
-//             }
-//             </div>
-//           </div>
-//         </div>
-//         <div className="day">
-//           <div className="datelabel">
-//             <strong>Jueves</strong>
-//             <br />
-//           </div>
-//           <div className="timeslot">{
-//               timeslot.map((item) => {
-//                 if (item.Day === "Tue") {
-//                   return (
-//                     <p className="timeslotp">{item.Date}</p>
-//                   )
-//                 } else {
-//                   return null;
+const MyCalendar = (props) => {
+  const [schedule, setSchedule] = useState([]);
 
-//                 }
-//               }
-//               )
-//             }</div>
-//         </div>
-//         <div className="day">
-//           <div className="datelabel">
-//             <strong>Miércoles</strong>
-//             <br />
-//           </div>
-//           <div className="timeslot">{
-//               timeslot.map((item) => {
-//                 if (item.Day === "Wed") {
-//                   return (
-//                     <p className="timeslotp">{item.Date}</p>
-//                   )
-//                 } else {
-//                   return null;
+  useEffect(() => {
+    const data = getLocalUserdata();
 
-//                 }
-//               }
-//               )
-//             }</div>
+    userServices.commonPostService('/GetSchedule',{"studentId":data.id,"month":(new Date().getMonth()+1)})
+    .then((response) => {
+      if(response.data.status==='Successfull')
+      {
+        response.data.data.forEach((task) => {
+          const date=toDate(parseISO(task.Date));
+          setSchedule(oldArray => [...oldArray, {
+            id:task.id,
+            title:task.Task,
+            start:date,
+            end:date,
+            bgColor:task.bgcolor,
+            image:task.image,
+          }]);
+        })
+      }
+      else {
+        console.log('Some error came fetching schedule');
+      }
+    }).catch((err) => {
+      console.log(err)
+    });
+  },[])
 
-//         </div>
-//         <div className="day">
-//           <div className="datelabel">
-//             <strong>Martes</strong>
-//             <br />
-//           </div>
-//           <div className="timeslot">{
-//               timeslot.map((item) => {
-//                 if (item.Day === "Thu") {
-//                   return (
-//                     <p className="timeslotp">{item.Date}</p>
-//                   )
-//                 } else {
-//                   return null;
+  const lang = {
+    es: {
+      week: 'Semana',
+      work_week: 'Semana de trabajo',
+      day: 'Día',
+      month: 'Mes',
+      previous: 'Atrás',
+      next: 'Siguiente',
+      today: 'Hoy',
+      agenda: 'El Diario',
+      
+      showMore: (total) => `+${total} más`,
+    }}
 
-//                 }
-//               }
-//               )
-//             }</div>
-//         </div>
-//         <div className="day">
-//           <div className="datelabel">
-//             <strong>Viernes</strong>
-//             <br />
-//           </div>
-//           <div className="timeslot">{
-//               timeslot.map((item) => {
+    {/*const d = new Date();
+    const localTime = d.getTime();
+    const localOffset = d.getTimezoneOffset() * 60000;
 
-//                 if (item.Day === "Fri") {
-//                   return (
-//                     <p className="timeslotp">{item.Date}</p>
-//                   )
-//                 } else {
-//                   return null;
+    const utc = localTime + localOffset;
+    const offset = 2; // UTC of Dubai is +04.00
+    const dubai = utc + (3600000 * offset);
 
-//                 }
-//               }
-//               )
-//             }</div>
-//         </div>
-//         <div className="day">
-//           <div className="datelabel">
-//             <strong>Sábado</strong>
-//             <br />
-//           </div>
-//           <div className="timeslot">{
-//               timeslot.map((item) => {
-//                 if (item.Day === "Sat") {
-//                   return (
-//                     <p className="timeslotp">{item.Date}</p>
-//                   )
-//                 } else {
-//                   return null;
+    const spainTimeNow = new Date(dubai).toLocaleString();
+    console.log(new Date(spainTimeNow));*/}
 
-//                 }
-//               }
-//               )
-//             }</div>
-//         </div>
-//         <div className="day">
-//           <div className="datelabel">
-//             <strong>Domingo</strong>
-//             <br />
-//           </div>
-//           <div className="timeslot">{
-//               timeslot.map((item) => {
-//                 if (item.Day === "Sun") {
-//                   return (
-//                     <p className="timeslotp">{item.Date}</p>
-//                   )
-//                 } else {
-//                   return null;
+    const { defaultDate, messages, views, formats } = useMemo(() => ({
+      defaultDate: new Date(),
+      messages: lang['es'],
+      views : {
+        month: true,
+        week: true
+      },
+      formats: {
+        dayRangeHeaderFormat: ({ start, end }, culture, localizer) =>
+          localizer.format(start, 'dd', culture) +
+          ' - ' +
+          localizer.format(end, 'dd LLLL yyyy', culture),
+        dayHeaderFormat: (date, culture, localizer) =>
+          localizer.format(date, 'EEEE, dd MMMM yyyy', culture),
+      },
+    }),[])
 
-//                 }
-//               }
-//               )
-//             }</div>
-//         </div>
-//       </div>
+    const eventStyleGetter = (event, start, end, isSelected) => {
+      var style = {
+          backgroundColor: event?.bgColor,
+      };
+      return {
+          style: style
+      };
+  }
+  
+  return(
+    <div style={{display:'flex', width:'96%', margin:'2%'}}>
+      <div style={{flexGrow:1}}>
+      <Calendar
+        localizer={localizer}
+        events={schedule}
+        startAccessor="start"
+        endAccessor="end"
+        style={{ height: 550 }}
+        culture={'es'}
+        messages={messages}
+        defaultDate={defaultDate}
+        views={views}
+        popup
+        components={{
+          week: {
+            header: ({ date, localizer }) => localizer.format(date, 'EEEE dd')
+          },
+        }}
+        formats={formats}
+        eventPropGetter={(eventStyleGetter)}
+        titleAccessor={function(e){return <span style={{display:'flex'}}>
+          {e?.image?
+            <img style={{maxWidth:'3em', borderRadius:'3%'}} src={`https://neoestudio.net/${e?.image}`}/>
+            :null}
+                      <span>{e.title}</span>
+            </span>;
+          }}
 
-//       <button type="button" className="btnDivALL"
-//       >
-//         Semana siguiente
-//       </button>
-//     </div>
-//     // </div>
-//   );
-// }
+      />
+      </div>
+    </div>
+  )
+}
 
-// export default Timeslot;
+    export default MyCalendar

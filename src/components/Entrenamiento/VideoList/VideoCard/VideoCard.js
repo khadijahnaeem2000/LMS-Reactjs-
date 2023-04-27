@@ -76,6 +76,7 @@ const VideoCard = (props) => {
                             playsInline
                             autoPlay
                             muted
+                            onContextMenu={e => e.preventDefault()}
                         />
                         <div className='buttondiv flex flex-col'>
                             <IconButton sx={{ cursor:'pointer'}} onClick={handlePlayPause}>
@@ -88,9 +89,9 @@ const VideoCard = (props) => {
                     </div>   
                     <CardActions className='actionLayout' sx={{display: 'flex', flexDirection: 'column', justifyContent:'end'}} disableSpacing>
                         <LikeButton videoId={props.item.id} likeCount={props.item.likeCount}/>
-                        <DownloadButton item={props.item} downloadCount={props.item.downloadCount}/>
+                        {props.item.IsDownloadable!=='False'?<DownloadButton item={props.item} downloadCount={props.item.downloadCount}/>:<></>}
                         <span className="commentButton"><CommentButton videoId={props.item.id} commentCount={props.item.commentCount}/></span>
-                        <ShareButton videoId={props.item.id} title={props.item.title} url={`https://neoestudio.net/${props.item.file}`} shareCount={props.item.shareCount}/>
+                        {props.item.IsShareable!=='False'?<ShareButton videoId={props.item.id} title={props.item.title} url={`https://neoestudio.net/${props.item.file}`} shareCount={props.item.shareCount}/>:<></>}
                     </CardActions>
                     <div className={`flex flex-col justify-between ${classes.root} commentCard`}><CommentCard  videoId={props.item.id}/></div>
                 </Card>  

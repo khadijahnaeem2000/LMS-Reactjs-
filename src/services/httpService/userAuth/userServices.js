@@ -17,7 +17,7 @@ class userService {
   }
 
   commonDeleteService(route, data) {
-    return http.delete(route, data);
+    return http.delete(route,data);
   }
 
   //   update(id, data) {
@@ -46,8 +46,7 @@ class userService {
   addSlots(route, data) {
     return http.post(route, data);
   }
-
-
+  
 }
 
 export default new userService();

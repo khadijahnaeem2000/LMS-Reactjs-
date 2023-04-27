@@ -13,7 +13,6 @@ const Temario = (props) => {
         <div className='stackStyle' >
             <FolderList folderToggle={props.folderToggle} setPdf={updatePdf}/>
             <PdfCard pdf={pdf} load={false}/>
-            <PdfCard pdf={pdf} load={false}/>
         </div>
   )
 }

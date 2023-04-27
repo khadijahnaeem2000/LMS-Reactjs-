@@ -23,6 +23,8 @@ const Files = (props) => {
   //const [isEnd, setIsEnd] =useState(false);
   //const [loading,setLoading]=useState(false);
   const [files, setFiles] = useState([]);
+  const data=getLocalUserdata();
+
   //const [isInitialRender, setIsInitialRender] = useState(true);
 
   /*useLayoutEffect(() => {
@@ -39,7 +41,6 @@ const Files = (props) => {
 
   useEffect (() => {
     //let count=0;
-    const data=getLocalUserdata();
     userServices.commonPostService('/getVideoFiles',{"id":props.folderId,"studentId":data.id,"offset":1})
     .then(response=>{
       if(response.data.status==='Successfull') {
@@ -95,7 +96,7 @@ const Files = (props) => {
         files.length>0 ? 
         files.map((item) => {
           return (
-            <ListItemButton className='listItem' onClick={()=>{props.updateUrl(item.url,item.title); updatelocalData('openedVideos',{'title':item.title, 'timeStamp':0})}}>
+            <ListItemButton className='listItem' onClick={()=>{props.updateUrl(item.url,item.title,data.id); updatelocalData('openedVideos',{'title':item.title, 'timeStamp':0})}}>
               <ListItemAvatar>
                 <Avatar className='avatarStyles' alt="videofile" src={icon} srcSet={iosIcon} variant="square"/>
               </ListItemAvatar>

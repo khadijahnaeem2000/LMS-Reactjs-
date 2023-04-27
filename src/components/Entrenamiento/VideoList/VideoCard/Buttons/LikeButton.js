@@ -34,11 +34,13 @@ const LikeButton = (props) => {
       like_ref.current.style.color='red';
       userServices.commonPostService('/videoLike',{"studentId":data.id,'videoId':props.videoId,'like':1})
       .then(response=>{
-        if(response.status===200) {
+        console.log(response)
+        if(response.status===200||response.status===201) {
           setLikeCount((Count) => Number(Count) + 1); 
           setLiked(true);
         }
         else{
+
           console.log("Error liking.");
           like_ref.current.style.color='';
         }

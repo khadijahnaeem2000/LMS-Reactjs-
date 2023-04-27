@@ -20,6 +20,7 @@ const Files = (props) => {
   const classes = useStyles();
   const [files, setFiles] = useState([]);
   const [loading,setLoading]=useState(true);
+  const data=getLocalUserdata();
 
   useEffect (() => {
     userServices.commonPostService('/getClassTopicsMaterial',{"type":"video","topicId":props.folderId})
@@ -58,7 +59,7 @@ const Files = (props) => {
         files.length>0 ? 
         files.map((item) => {
           return (
-            <ListItemButton className='listItem' onClick={()=>{props.updateUrl(item.material,item.name); updatelocalData('openedClasses',{'title':item.name, 'timeStamp':0})}}>
+            <ListItemButton className='listItem' onClick={()=>{props.updateUrl(item.material,item.name,data.id); updatelocalData('openedClasses',{'title':item.name, 'timeStamp':0})}}>
               <ListItemAvatar>
                 <Avatar className='avatarStyles' alt="videofile" src={icon} srcSet={ios_icon} variant="square"/>
               </ListItemAvatar>

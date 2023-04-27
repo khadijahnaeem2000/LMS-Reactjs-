@@ -67,7 +67,6 @@ function LoginTypeTrue() {
               name='studentCode'
               id='studentCode'
               style={{lineHeight:'10%'}}
-              style={{lineHeight:'10%'}}
               value={formik.values.studentCode}
               onChange={(e) =>
                 formik.setFieldValue('studentCode', e.target.value)
@@ -120,7 +119,6 @@ function LoginTypeTrue() {
               className='px-3 py-7 placeholder-blueGray-800 text-blueGray-600 relative bg-input rounded text-sm outline-none focus:outline-none focus:shadow-outline w-full pl-10'
               name='password'
               id='password'
-              style={{lineHeight:'10%'}}
               style={{lineHeight:'10%'}}
               value={formik.values.password}
               onChange={(e) => formik.setFieldValue('password', e.target.value)}

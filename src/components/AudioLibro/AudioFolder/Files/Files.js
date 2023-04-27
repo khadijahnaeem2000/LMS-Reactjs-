@@ -19,10 +19,10 @@ const Files = (props) => {
     const classes = useStyles();
     const [files, setFiles] = useState([]);
     const [loading,setLoading]=useState(true);
+    const data = getLocalUserdata();
   
     useEffect (() => {
       setFiles([]);
-      const data = getLocalUserdata();
       userServices.commonPostService(`/getAudioFiles`, {"id":props.folderId,"studentId":data.id})
       .then(response=>{
         if(response.data.status==='Successfull') {  
@@ -58,7 +58,7 @@ const Files = (props) => {
           files.length>0 ? 
           files.map((item) => {
             return (
-              <ListItemButton className='listItem' onClick={()=>{props.updateUrl(item.url,item.title); updatelocalData('openedAudios',{'title':item.title, 'timeStamp':0})}}>
+              <ListItemButton className='listItem' onClick={()=>{props.updateUrl(item.url,item.title,data.id); updatelocalData('openedAudios',{'title':item.title, 'timeStamp':0})}}>
                 <ListItemAvatar>
                   <Avatar className='avatarStyles' alt="videofile" src={icon} srcSet={ios_audio_icon} variant="square"/>
                 </ListItemAvatar>

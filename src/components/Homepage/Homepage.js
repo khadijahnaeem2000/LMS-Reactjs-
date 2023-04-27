@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
-import { differenceInSeconds, sub, parseISO } from 'date-fns';
+import { differenceInSeconds } from 'date-fns';
 import { toast } from 'react-toastify';
 import { Navigate } from "react-router";
-
+import MyCalendar from "components/Calendar/Calendar";
 import useStyles from "./styles";
 import "./styles.css";
 import profilepic from "../../assets/img/images/layer_25.webp";
@@ -14,11 +14,6 @@ import medallas from '../../assets/img/images/Medallas.png';
 import percentil from '../../assets/img/images/Porcentaje2.png';
 import puntos from '../../assets/img/images/Recurso3Pestaaprueba.png';
 import { getLocalUserdata , updateLocalstoragepic, updateLocalstoragetime} from "../../services/auth/localStorageData";
-import Button from '@mui/material/Button';
-import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import Timeslot from "components/calendar/Calendar";
-import  Calendar  from "components/calendar/Calendar";
-
 
 const Homepage = () => {
   const classes = useStyles();
@@ -85,7 +80,7 @@ const Homepage = () => {
   })
   
   return (
-    <div className={classes.container}>
+    <div className={classes.container} style={{display:'flex', flexDirection:'column'}}>
       {showTimer?
       <div style={{display:'flex', marginLeft:'5%'}}>
         <div className={`${classes.wrapper} flex flex-col justify-between mr-1 w-1/4 lg:w-2/12 h-2/5 lg:ml-24`}>
@@ -180,9 +175,7 @@ const Homepage = () => {
         </div>
       </div>
       {logout ? <Navigate to="/" /> : null}
-      <Calendar studentId={
-        data.id != null ? data.id : 0
-      } />
+      <MyCalendar />
     </div>
   );
 };

@@ -14,18 +14,12 @@
 .check:not(:fullscreen) {
     box-sizing: border-box;
     background: url('../../../../src/assets/img/images/mobileframe.webp') center center no-repeat;
-    background: url('../../../../src/assets/img/images/mobileframe.webp') center center no-repeat;
     background-size: contain;
     padding-top:7.7%;
     padding-bottom: 9.75%;
     padding-left: 8%;
     padding-right: 7.9%;
-    padding-top:7.7%;
-    padding-bottom: 9.75%;
-    padding-left: 8%;
-    padding-right: 7.9%;
     position: absolute;
-    border-radius: 12%;
     border-radius: 12%;
     top: 0;
     left: 0;

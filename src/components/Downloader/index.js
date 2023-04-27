@@ -130,4 +130,3 @@ const DownloadItem = ({ name, file, filename, removeFile, callDb }) => {
 };
 
 export default Downloader;
-export default Downloader;

@@ -3,11 +3,6 @@ import useStyles from "./styles.js";
 import "./styles.css";
 import { useNavigate } from "react-router-dom";
 import { Link, useLocation } from "react-router-dom";
-import React, { useState } from "react";
-import useStyles from "./styles.js";
-import "./styles.css";
-import { useNavigate } from "react-router-dom";
-import { Link, useLocation } from "react-router-dom";
 
 const SideMenu = (props) => {
   const history = useNavigate();
@@ -87,8 +82,8 @@ const SideMenu = (props) => {
             </div>
           </div>
         ))}
-        </div>
-      </> 
-  )
-}
+      </div>
+    </>
+  );
+};
 export default SideMenu;

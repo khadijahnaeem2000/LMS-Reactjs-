@@ -12,7 +12,9 @@ import reportWebVitals from './reportWebVitals';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import Root from 'routes';
 import 'tachyons';
+
 import { master } from './store/reducers/combineReducer';
+
 import { ToastContainer } from 'react-toastify';
 
 var stylesheet = document.styleSheets[0];
