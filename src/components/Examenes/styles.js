@@ -294,7 +294,8 @@ export default makeStyles((theme) => ({
   resultBtnWrapper: {
     margin: "10px auto",
     display: "flex",
-    justifyContent: "space-evenly",
+    justifyContent: "flex-start",
+    justifySelf:"center",
     alignItems: "center",
     width: "100%",
     overflowX: "auto",

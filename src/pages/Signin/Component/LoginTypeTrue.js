@@ -1,12 +1,14 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import * as Yup from 'yup';
 import { saveLocalData } from 'services/auth/localStorageData';
 import { useMutation } from 'react-query';
 import userServices from 'services/httpService/userAuth/userServices';
 import { toast } from 'react-toastify';
 import { useFormik } from 'formik';
+import { isDesktop, isMobile, mobileModel, deviceDetect } from 'react-device-detect';
 import ErrorService from 'services/formatError/ErrorService';
 import { Navigate } from 'react-router';
+import { Device } from '@capacitor/device';
 
 import iosUser from '../../../assets/img/user.png'
 import iosPassword from '../../../assets/img/password.png'
@@ -14,7 +16,6 @@ import iosBtn2 from '../../../assets/img/images/Botón Iniciar Sesión.png'
 
 
 function LoginTypeTrue() {
-
   const [toNext, setToNext] = useState(false)
 
   const LoginApiTrue = useMutation(
@@ -25,9 +26,13 @@ function LoginTypeTrue() {
       },
       onSuccess: (data) => {
         if (data.data.status === 'Sucessfull') {
-          //toast.success('Has iniciado sesión con éxito');
-          saveLocalData(data.data.data,data.data.time);
-          setToNext(true);
+          if(data.data.data.IsBlocked==="True") {
+            toast.error('¡Estás bloqueado, por favor contacta al administrador!');
+          }
+          else {
+            saveLocalData(data.data.data,data.data.time);
+            setToNext(true);
+          }
         } else {
           toast.error(
             <div dangerouslySetInnerHTML={{ __html: data.data.message }} />
@@ -42,6 +47,7 @@ function LoginTypeTrue() {
       type: 'true',
       studentCode: '',
       password: '',
+      smartphone:'',
     },
     validationSchema: Yup.object().shape({
       studentCode: Yup.string().required('necesario'),
@@ -51,6 +57,24 @@ function LoginTypeTrue() {
       LoginApiTrue.mutate(values);
     },
   });
+
+  useEffect (() => {
+    console.log(navigator.userAgent);
+    console.log(navigator.connection);
+    console.log(navigator.hardwareConcurrency);
+
+    checkDevice();
+  },[])
+
+  const checkDevice = async () => {
+    if(isDesktop) {
+      const info = await Device.getInfo();
+      formik.setFieldValue('smartphone', deviceDetect().browserName +" on "+ info.model);
+    }
+    else {
+      formik.setFieldValue('smartphone', mobileModel)
+    }
+  }
 
   return (
     <>

@@ -571,11 +571,11 @@ function Repaso(props) {
                                       <div>
                                         <div className={Styles.examLinks}>
                                           {data.studentExamStatus ===
-                                          "notAttempted" ? (
+                                          ("notAttempted"||"started") ? (
                                             <>
                                               <img
                                                 src={RepasoNotDone}
-                                                srcSet={iosRepasoDone}
+                                                srcSet={iosRepasoNotDone}
                                                 alt=""
                                                 className={Styles.headingImg}
                                               />
@@ -607,25 +607,40 @@ function Repaso(props) {
                                                     "ProximaSoft-bold",
                                                 }}
                                                 onClick={(e) => {
-                                                  if (triggerTime >= 300) {
-                                                    setStudentExamRecId(
-                                                      data.studentExamRecordId
-                                                    );
-                                                    setFolderId(data.folderId);
-                                                    setResetExam(true);
-                                                  } else {
                                                     reviewExam(e, data);
-                                                  }
                                                 }}
                                                 onMouseDown={() => {
-                                                  triggerTime =
-                                                    new Date().getTime();
+                                                  triggerTime = setTimeout(() => {
+                                                      setStudentExamRecId(data.studentExamRecordId);
+                                                      setFolderId(data.folderId);
+                                                      setResetExam(true);
+                                                  }, 1000); //Change 1000 to number of milliseconds required for mouse hold
                                                 }}
                                                 onMouseUp={() => {
-                                                  let thisMoment =
-                                                    new Date().getTime();
-                                                  triggerTime =
-                                                    thisMoment - triggerTime;
+                                                  clearTimeout(triggerTime);
+                                                }}
+                                              >
+                                                {data.name}
+                                              </button>
+                                            </>
+                                          ) : data.studentExamStatus === "paused" ?(
+                                            <>
+                                              <img
+                                                src={RepasoNotDone}
+                                                srcSet={iosRepasoNotDone}
+                                                alt=""
+                                                className={Styles.headingImg}
+                                              />
+                                              <button
+                                                id={data.id}
+                                                onClick={(e) =>
+                                                  startExams(e, data)
+                                                }
+                                                style={{
+                                                  fontFamily:
+                                                    "ProximaSoft-regular",
+                                                  color: "#0A52CB",
+                                                  display: "flex",
                                                 }}
                                               >
                                                 {data.name}
@@ -647,7 +662,6 @@ function Repaso(props) {
                                                 style={{
                                                   fontFamily:
                                                     "ProximaSoft-regular",
-                                                  color: "#0A52CB",
                                                   display: "flex",
                                                 }}
                                               >
@@ -1257,34 +1271,36 @@ function Repaso(props) {
                   ) : (
                     ""
                   )}
-                  <div className={Styles.resultBtnWrapper}>
-                    {ansArry.map((data, index) => {
-                      return (
-                        <div
-                          style={{
-                            margin: "3px",
-                          }}
-                        >
-                          <button
-                            onClick={() => {
-                              setCurrentQuestion(index);
-                              setAnsCheck(index);
-                            }}
-                            className={`${Styles.resultBtn} noAnswer`}
+                  <div style={{display:'grid', justifyContent:'center'}}>
+                    <div className={Styles.resultBtnWrapper}>
+                      {ansArry.map((data, index) => {
+                        return (
+                          <div
                             style={{
-                              backgroundImage:
-                                currentQuestion == index
-                                  ? `url(${golden}),url(${iosGolden})`
-                                  : data.answer == null || data.answer == "null"
-                                  ? `url(${noSelect}),url(${iosNoSelect})`
-                                  : `url(${answerImg1}),url(${iosAnswerImg1})`,
+                              margin: "3px",
                             }}
                           >
-                            {index + 1}
-                          </button>
-                        </div>
-                      );
-                    })}
+                            <button
+                              onClick={() => {
+                                setCurrentQuestion(index);
+                                setAnsCheck(index);
+                              }}
+                              className={`${Styles.resultBtn} noAnswer`}
+                              style={{
+                                backgroundImage:
+                                  currentQuestion == index
+                                    ? `url(${golden}),url(${iosGolden})`
+                                    : data.answer == null || data.answer == "null"
+                                    ? `url(${noSelect}),url(${iosNoSelect})`
+                                    : `url(${answerImg1}),url(${iosAnswerImg1})`,
+                              }}
+                            >
+                              {index + 1}
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                   <div>
                     <LinearProgress

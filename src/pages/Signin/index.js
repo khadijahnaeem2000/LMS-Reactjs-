@@ -95,7 +95,7 @@ export default function Signin() {
             className="absolute top-0 w-full h-full bg-white-800 bg-no-repeat bg-full bg-fixed"
             style={isMobile?{zIndex:-989898,visibility:'visible', backgroundImage:`url(${require("assets/img/bottom.webp").default}),url(${require("assets/img/bottom.png").default})`}:{visibility:'hidden'}}
         ></div>
-        <video style={isMobile?{position:'absolute',height:'100vh', objectFit:'fill', marginTop:'1%', zIndex:-1}:{position: 'fixed',right: 0,bottom: 0,minWidth: '100%',minHeight: '100%', objectFit:'fill', zIndex:-1}} alt="alt video" autoPlay loop muted controls='' playsInline>
+        <video className={isMobile?'4xs:w-full 3xs:w-10/12':''} style={isMobile?{position:'absolute',height:'100vh', objectFit:'fill', zIndex:-1}:{position: 'fixed',right: 0,bottom: 0,minWidth: '100%',minHeight: '100%', objectFit:'fill', zIndex:-1}} alt="alt video" autoPlay loop muted controls='' playsInline>
           <source src={isMobile?'':WebLoginVideo} type="video/mp4"/>
           <source src={isMobile?androidMobileLoginVideo:''} type="video/webm"/>
           <source src={isMobile?iosMobileLoginVideo:''} type="video/mp4"/>
@@ -106,7 +106,7 @@ export default function Signin() {
             <img style={isMobile?{visibility:'hidden'}:{visibility:'visible', maxWidth:'18%'}} className='7xl:w-15 sm:w-1/5' alt='logo' src={require('assets/img/login_logo.webp').default} srcSet={iosLogo}/>
           </div>
           {verified? 
-          <div className={`flex flex-col items-center justify-center px-4 lg:px-10 py-2 ${isMobile?"sm:w-40 xs:w-80 2xs:w-7/12 3xs:w-4/6 4xs:w-11/12":"7xl:w-1/12 6xl:w-15 5xl:w-2/12 4xl:w-1/5 3xl:w-28 desktop:w-2/6 laptop:w-2/5 xs:w-7/12"}`}>
+          <div className={`flex flex-col items-center justify-center lg:px-10 pb-2 ${isMobile?"sm:w-2/5 xs:w-80 2xs:w-7/12 3xs:w-4/6 4xs:w-11/12":"7xl:w-1/12 6xl:w-15 5xl:w-2/12 4xl:w-1/5 3xl:w-28 desktop:w-2/6 laptop:w-2/5 xs:w-7/12"}`}>
             <div className="flex text-black mb-3 font-bold"style={{ justifyContent: "center" }}>
               <label className="switch">
                 <input type="checkbox" id="togBtn" onChange={(e) => setisToogleOn(e.target.checked)}/>
@@ -122,7 +122,7 @@ export default function Signin() {
               <LoginTypeFalse updateData={updateData} updateVerified={updateVerified}/>
             )}
           </div> : 
-          <div className={`flex flex-col items-center justify-center px-4 lg:px-10 py-2 ${isMobile?"sm:w-40 xs:w-80 2xs:w-7/12 3xs:w-4/6 4xs:w-11/12":"7xl:w-1/12 6xl:w-15 5xl:w-2/12 4xl:w-1/5 3xl:w-28 desktop:w-2/6 laptop:w-2/5 xs:w-7/12"}`}>
+          <div className={`flex flex-col items-center justify-center lg:px-10 pb-2 ${isMobile?"sm:w-2/5 xs:w-80 2xs:w-7/12 3xs:w-4/6 4xs:w-11/12":"7xl:w-1/12 6xl:w-15 5xl:w-2/12 4xl:w-1/5 3xl:w-28 desktop:w-2/6 laptop:w-2/5 xs:w-7/12"}`}>
             <div className="flex flex-col items-center mb-3 font-bold">
               <div className='font-styl '>Verificación de tu teléfono</div>
               <div style={{color:'#3ea9fb', marginTop:'1%'}}>Introduce el código del sms</div>

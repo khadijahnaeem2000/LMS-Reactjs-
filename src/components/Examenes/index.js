@@ -1977,34 +1977,36 @@ function Examenes1(props) {
                   ) : (
                     ""
                   )}
-                  <div className={Styles.resultBtnWrapper}>
-                    {ansArry.map((data, index) => {
-                      return (
-                        <div
-                          style={{
-                            margin: "3px",
-                          }}
-                        >
-                          <button
-                            onClick={() => {
-                              setCurrentQuestion(index);
-                              setAnsCheck(index);
-                            }}
-                            className={`${Styles.resultBtn} noAnswer`}
+                  <div style={{display:'grid', justifyContent:'center'}}>
+                    <div className={Styles.resultBtnWrapper}>
+                      {ansArry.map((data, index) => {
+                        return (
+                          <div
                             style={{
-                              backgroundImage:
-                                currentQuestion == index
-                                  ? `url(${golden}),url(${iosGolden})`
-                                  : data.answer == null || data.answer == "null"
-                                  ? `url(${noSelect}), url(${iosNoSelect})`
-                                  : `url(${answerImg1}), url(${iosAnswerImg1})`,
+                              margin: "3px",
                             }}
                           >
-                            {index + 1}
-                          </button>
-                        </div>
-                      );
-                    })}
+                            <button
+                              onClick={() => {
+                                setCurrentQuestion(index);
+                                setAnsCheck(index);
+                              }}
+                              className={`${Styles.resultBtn} noAnswer`}
+                              style={{
+                                backgroundImage:
+                                  currentQuestion == index
+                                    ? `url(${golden}),url(${iosGolden})`
+                                    : data.answer == null || data.answer == "null"
+                                    ? `url(${noSelect}), url(${iosNoSelect})`
+                                    : `url(${answerImg1}), url(${iosAnswerImg1})`,
+                              }}
+                            >
+                              {index + 1}
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                   <div>
                     <LinearProgress

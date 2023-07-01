@@ -3,6 +3,7 @@ import { differenceInSeconds } from 'date-fns';
 import { toast } from 'react-toastify';
 import { Navigate } from "react-router";
 import MyCalendar from "components/Calendar/Calendar";
+
 import useStyles from "./styles";
 import "./styles.css";
 import profilepic from "../../assets/img/images/layer_25.webp";
@@ -32,14 +33,25 @@ const Homepage = () => {
     userServices.commonPostService('/user',{"id":data.id})
     .then((response) => {
       if(response.status===200) {
-        if(response.data.data.expiry_date!==null){
-          setShowTimer(true);
+        if(response.data.data.IsBlocked==="True") {
+          setLogout(true);
+          localStorage.clear();
+          toast.error('¡Estás bloqueado, por favor contacta al administrador!');
         }
-        setUserInfo(response.data);
-        setPhoto(response.data.data.photo);
-        updateLocalstoragetime(response.data.time);
-        updateLocalstoragepic(response.data.data.photo);
-        setTime(response.data.time);
+        else {
+          if(response.data.data.smartcount>=3) {
+            toast.error('¡Se han registrado 3 o más dispositivos! Si más de una persona usa la cuenta, su cuenta puede ser prohibida.');
+          }
+
+          if(response.data.data.expiry_date!==null){
+            setShowTimer(true);
+          }
+          setUserInfo(response.data);
+          setPhoto(response.data.data.photo);
+          updateLocalstoragetime(response.data.time);
+          updateLocalstoragepic(response.data.data.photo);
+          setTime(response.data.time);
+        }
       }
       else {
         console.log('Cannot get updated info');

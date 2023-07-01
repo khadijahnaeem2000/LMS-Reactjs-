@@ -30,3 +30,6 @@
     }
 }
 
+.videodiv {
+    width: unset !important;
+}

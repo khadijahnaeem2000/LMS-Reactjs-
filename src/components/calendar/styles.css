@@ -39,6 +39,7 @@
 }
    
 .calendar-container {
+    overflow-x: auto;
     display:flex;
     width:96%;
     margin:2%;

@@ -83,8 +83,13 @@ function LoginTypeFalse(props) {
                 setExpired(true);
               }
               else {
-                saveLocalData(data.data.data,data.data.time);
-                setToNext(true);
+                if(data.data.data.IsBlocked==="True") {
+                  toast.error('¡Estás bloqueado, por favor contacta al administrador!');
+                }
+                else {
+                  saveLocalData(data.data.data,data.data.time);
+                  setToNext(true);
+                }
               }
             } else {
               sendOtp(data.data.data);
