@@ -12,6 +12,7 @@ import Homepage from "components/Homepage/Homepage.js";
 import Temario from "components/Temario/Temario.js";
 import Classes from "components/Classes/Classes.js";
 import ExamenesPage from "pages/Examenes/index";
+import Entrevista from "pages/Entrevista/index";
 import Repaso from "components/Repaso/index.js";
 import RankingGlobal from "components/RankingGlobal/RankingGlobal.js";
 import { Navigate } from "react-router";
@@ -110,6 +111,8 @@ function Home() {
     if (currentPage === "Mi escritorio") return <Homepage />;
     else if (currentPage === "Temario")
       return <Temario folderToggle={folderToggle} />;
+    else if(currentPage ==="Entrevista")
+      return <Entrevista />
     else if (currentPage === "Exámenes") return <ExamenesPage />;
     else if (currentPage === "Repaso") return <Repaso />;
     else if (currentPage === "Salir") {

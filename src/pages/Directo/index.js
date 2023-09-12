@@ -1,7 +1,8 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import { ZoomMtg } from '@zoomus/websdk'
+import { useSearchParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-import { getLocalUserdata } from "../../services/auth/localStorageData";
 import './styles.css'
 
 ZoomMtg.setZoomJSLib('https://source.zoom.us/2.12.0/lib', '/av')
@@ -14,17 +15,14 @@ ZoomMtg.i18n.load('es-ES')
 ZoomMtg.i18n.reload('es-ES')
 
 const Directo = () => {
-  const data = getLocalUserdata();
 
+  const [searchParams] = useSearchParams();
+  const [userName, setUserName] = useState('-');
   var signatureEndpoint = 'https://neoestudio.net/api/JwtToken'
   var sdkKey = 'ejMUC7sZJxrReEZ4iLrllWD4iYqM9W6tOqpS'
   var meetingNumber = '4269760334'
   var role = 0
-  var leaveUrl = window.location.href
-  var userName= '-'
-  if(data.userName!==null){
-    userName=data.userName
-  }
+  var leaveUrl = window.location.origin
   var userEmail = ''
   var passWord = 'Ehkuc2'
   // pass in the registrant's token if meeting or webinar requires registration.
@@ -71,7 +69,6 @@ const wait = ( callback, seconds) => {
 }
 
   function getSignature() {
-
     fetch(signatureEndpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -87,55 +84,8 @@ const wait = ( callback, seconds) => {
     })
   };
 
-  const listenForAudioButtonNode = (params, callback) => {
-
-    new MutationObserver(function(mutations) {
-      const el = document.querySelector(params.className);
-  
-      if (el) {
-        this.disconnect();
-        callback(el);
-      }
-    }).observe(params.parent || document, {
-      subtree: true,
-      childList: true,
-    });
-  }
-
-  const autoAudioJoin = (audioButton) => {
-
-    const config = {
-      attributes: true,
-      childList: true,
-      attributeOldValue: true,
-      subtree: true
-    };
-
-    const canClick = oldValue => {
-      return oldValue ===
-        "zm-btn join-audio-by-voip__join-btn zm-btn--primary zm-btn__outline--white zm-btn--lg";
-    }
-
-    const isJoined = oldValue => {
-      return oldValue === 'display: inline-block;';
-    }
-    const observer = new MutationObserver(mutations => {
-      mutations.forEach(mutation => {
-        if (canClick(mutation.oldValue)) {
-          // When join button becomes clickable.
-          audioButton.click();
-        } else if (isJoined(mutation.oldValue)) {
-          // When connected to audio.
-          observer.disconnect();
-        }
-      });
-    });
-
-    observer.observe(audioButton, config);
-  }
-
   function startMeeting(signature) {
-    document.getElementsByTagName('header')[0].style.display='none';
+    //document.getElementsByTagName('header')[0].style.display='none';
     document.getElementById('zmmtg-root').style.display = 'block';
 
     ZoomMtg.init({
@@ -171,15 +121,30 @@ const wait = ( callback, seconds) => {
     })
   }
 
+  const decryptUser = () => {
+    const userId = searchParams.get('id'); // "testCode"
+    
+    fetch('https://neoestudio.net/api/user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: userId,
+        })
+      }).then(res => res.json())
+      .then(response => {
+        if(response.status==='Successfull') {
+            setUserName(response.data.userName);
+        } else {
+            window.location.replace(window.location.origin);
+            alert('No se puede unir a la clase en vivo, el usuario no está registrado.');
+        }
+      }).catch(error => {
+        console.error(error)
+      })
+  }
+
   useEffect(() => {
-    {/*listenForAudioButtonNode(
-      {
-        className: '.zm-btn.zm-btn--primary.zm-btn__outline--white.zm-btn--lg',
-        parent: document.getElementById('zmmtg-root'),  // SETUP your own zoom root DOM element name here
-        recursive: false
-      },
-      element => autoAudioJoin(element)
-    );*/}
+    decryptUser();
     getSignature();
   },[])
 

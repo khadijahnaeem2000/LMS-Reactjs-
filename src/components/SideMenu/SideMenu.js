@@ -17,7 +17,6 @@ const SideMenu = (props) => {
     "Exámenes",
     "Temario",
     "Videos",
-    "Batalla",
     "Ranking global",
     "Audiolibro",
     "Repaso",
@@ -35,7 +34,6 @@ const SideMenu = (props) => {
     "examen",
     "Temario",
     "Video",
-    "Batalla",
     "ranking",
     "audiolibro",
     "repaso",
@@ -46,7 +44,7 @@ const SideMenu = (props) => {
 
   const classes = useStyles();
 
-  const notActive = [ "Batalla", "Entrevista"];
+  const notActive = [];
 
   return (
     <>

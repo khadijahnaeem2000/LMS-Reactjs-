@@ -1,16 +1,12 @@
-import React, { useState, useEffect, useRef, useReducer } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Button from "@mui/material/Button";
-import Accordion from "@mui/material/Accordion";
 import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CircularProgress from "@mui/material/CircularProgress";
 import noBtnImg from "../../assets/img/images/noBtn.webp";
 import siBtnImg from "../../assets/img/images/SiBtn.webp";
@@ -31,7 +27,6 @@ import noSelect from "../../assets/img/images/transparent.webp";
 import golden from "../../assets/img/images/golden.webp";
 import pauseImg from "../../assets/img/images/pause.webp";
 import stopImg from "../../assets/img/images/stop.webp";
-import directoryImg from "../../assets/img/images/directory.webp";
 import RepasoNotDone from "../../assets/img/images/Iconorepaso.webp";
 import RepasoDone from "../../assets/img/images/repasouncompleted.webp";
 import { getLocalUserdata } from "../../services/auth/localStorageData";
@@ -40,11 +35,10 @@ import Modal from "@mui/material/Modal";
 import tick from "../../assets/img/images/tick.webp";
 import cross from "../../assets/img/images/cross.webp";
 import TextField from '@mui/material/TextField';
-import useStyles from "./styles";
+import useStyles from "./style";
 import "./style.css";
 import rejectIcon from "../../assets/img/images/Icono app Impugnar preguntas.webp";
 import iosRejectIcon from "../../assets/img/images/Icono app Impugnar preguntas.png";
-import iosDirectoryImg from "../../assets/img/images/directory.png";
 import iosAnsSelectImg from "../../assets/img/images/Flecha.png";
 import iosRevisar from "../../assets/img/images/revisar.png";
 import iosSalir from "../../assets/img/images/salirExamenes.png";
@@ -68,7 +62,7 @@ import iosCross from "../../assets/img/images/cross.png";
 import iosRepasoNotDone from "../../assets/img/images/Iconorepaso.png";
 import iosRepasoDone from "../../assets/img/images/repasouncompleted.png";
 
-function Repaso(props) {
+function Entrevista(props) {
   const Styles = useStyles();
   const [reason, setReason] = useState('');
   const [rejectQuestion, setRejectQuestion] = useState(false);
@@ -89,7 +83,6 @@ function Repaso(props) {
   const [loading, setLoading] = useState(true);
   const [listLoading, setListLoading] = useState(true);
   const [secondsRemaining, setSecondsRemaining] = useState(0);
-  const [studentAnswer, setStudentAnswered] = useState(null);
   const [ansCheck, setAnsCheck] = useState(0);
   const [examStatusCheck, setExamStatusCheck] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -139,11 +132,13 @@ function Repaso(props) {
 
   useEffect(() => {
     axios
-      .post(`https://neoestudio.net/api/getAllReviewFolders`, getExamData)
+      .post(`https://neoestudio.net/api/getAllPersonalityExams`, getExamData)
       .then((response) => {
         setFolderData(response.data.data);
         setShowScreen(true);
         setLoading(false);
+        setFilesData(response.data.data);
+        setListLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -151,26 +146,6 @@ function Repaso(props) {
         alert("Exams List Not Available, Please Refresh The Page");
       });
   }, [stateRend]);
-
-  // GET ALL EXAM FILES API
-  const handleExamId = (id) => {
-    setListLoading(true);
-    const getExamFiles = {
-      studentId: student_id,
-      studentType: student_type,
-      folderId: id,
-      isRestart: "no",
-    };
-    axios
-      .post(`https://neoestudio.net/api/getReviewFolderExams`, getExamFiles)
-      .then((response) => {
-        setFilesData(response.data.data);
-        setListLoading(false);
-      })
-      .catch((error) => {
-        console.log(error, "Error Loading, Please Try Again !");
-      });
-  };
 
   const resetRepasoExam = () => {
     setListLoading(true);
@@ -582,29 +557,6 @@ function Repaso(props) {
                     const panel = data.name;
                     return (
                       <div className={Styles.folderWrapper}>
-                        <Accordion
-                          TransitionProps={{ unmountOnExit: true }}
-                          expanded={expanded === data.name}
-                          onChange={handleChange(panel)}
-                          className={Styles.BoxWrapper1212}
-                          id={data.id}
-                          onClick={() => handleExamId(data.id, index)}
-                        >
-                          <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            className={Styles.BoxWrapper1212}
-                          >
-                            <div>
-                              <img
-                                src={directoryImg}
-                                srcSet={iosDirectoryImg}
-                                alt=""
-                                className={Styles.headingImg}
-                              />
-                            </div>
-                            <div className={Styles.heading}>{data.name}</div>
-                          </AccordionSummary>
-                          <AccordionDetails>
                             {listLoading ? (
                               <div className="w-100 text-center">
                                 <CircularProgress
@@ -728,8 +680,6 @@ function Repaso(props) {
                                 })}
                               </>
                             )}
-                          </AccordionDetails>
-                        </Accordion>
                       </div>
                     );
                   })}
@@ -894,10 +844,10 @@ function Repaso(props) {
                     <button className={Styles.answerLinks}>
                       <div className={Styles.answerLinksInner3}>
                         {examReviewData[currentQuestion].status == "correct" &&
-                        examReviewData[currentQuestion].correct == "a" ? (
+                        examReviewData[currentQuestion].correct.includes("a") ? (
                           <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
-                          examReviewData[currentQuestion].correct == "a" ? (
+                          examReviewData[currentQuestion].correct.includes("a") ? (
                           <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].studentAnswered ==
@@ -905,7 +855,7 @@ function Repaso(props) {
                           <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status ==
                             "notAttempted" &&
-                          examReviewData[currentQuestion].correct == "a" ? (
+                          examReviewData[currentQuestion].correct.includes("a") ? (
                           <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].studentAnswered ==
@@ -925,10 +875,10 @@ function Repaso(props) {
                     <button className={Styles.answerLinks}>
                       <div className={Styles.answerLinksInner3}>
                         {examReviewData[currentQuestion].status == "correct" &&
-                        examReviewData[currentQuestion].correct == "b" ? (
+                        examReviewData[currentQuestion].correct.includes("b") ? (
                           <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
-                          examReviewData[currentQuestion].correct == "b" ? (
+                          examReviewData[currentQuestion].correct.includes("b") ? (
                           <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].studentAnswered ==
@@ -936,7 +886,7 @@ function Repaso(props) {
                           <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status ==
                             "notAttempted" &&
-                          examReviewData[currentQuestion].correct == "b" ? (
+                          examReviewData[currentQuestion].correct.includes("b") ? (
                           <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].studentAnswered ==
@@ -955,10 +905,10 @@ function Repaso(props) {
                     <button className={Styles.answerLinks}>
                       <div className={Styles.answerLinksInner3}>
                         {examReviewData[currentQuestion].status == "correct" &&
-                        examReviewData[currentQuestion].correct == "c" ? (
+                        examReviewData[currentQuestion].correct.includes("c") ? (
                           <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
-                          examReviewData[currentQuestion].correct == "c" ? (
+                          examReviewData[currentQuestion].correct.includes("c") ? (
                           <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].studentAnswered ==
@@ -966,7 +916,7 @@ function Repaso(props) {
                           <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status ==
                             "notAttempted" &&
-                          examReviewData[currentQuestion].correct == "c" ? (
+                          examReviewData[currentQuestion].correct.includes("c") ? (
                           <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].studentAnswered ==
@@ -985,10 +935,10 @@ function Repaso(props) {
                     <button className={Styles.answerLinks}>
                       <div className={Styles.answerLinksInner3}>
                         {examReviewData[currentQuestion].status == "correct" &&
-                        examReviewData[currentQuestion].correct == "d" ? (
+                        examReviewData[currentQuestion].correct.includes("d") ? (
                           <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
-                          examReviewData[currentQuestion].correct == "d" ? (
+                          examReviewData[currentQuestion].correct.includes("d") ? (
                           <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].studentAnswered ==
@@ -996,7 +946,7 @@ function Repaso(props) {
                           <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status ==
                             "notAttempted" &&
-                          examReviewData[currentQuestion].correct == "d" ? (
+                          examReviewData[currentQuestion].correct.includes("d") ? (
                           <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                         ) : examReviewData[currentQuestion].status == "wrong" &&
                           examReviewData[currentQuestion].studentAnswered ==
@@ -1198,7 +1148,7 @@ function Repaso(props) {
                   <div className={Styles.timerWrapper}>
                     {/* Timer STARTS HERE                      */}
                     <div className={Styles.timerWrapper}>
-                      <div className="flex mx-5">
+                      <div className="flex">
                         <img
                           src={pauseImg}
                           srcSet={iosPauseImg}
@@ -1221,13 +1171,13 @@ function Repaso(props) {
                           onClick={() => {
                             ansArry.splice(ansCheck, 1, {
                               answer:
-                                examData[currentQuestion].correct === "a"
+                                examData[currentQuestion].correct.includes("a")
                                   ? "answer1"
-                                  : examData[currentQuestion].correct === "b"
+                                  : examData[currentQuestion].correct.includes("b")
                                   ? "answer2"
-                                  : examData[currentQuestion].correct === "c"
+                                  : examData[currentQuestion].correct.includes("c")
                                   ? "answer3"
-                                  : examData[currentQuestion].correct === "d"
+                                  : examData[currentQuestion].correct.includes("d")
                                   ? "answer4"
                                   : answerClicked,
                               showDescript: true,
@@ -1236,7 +1186,7 @@ function Repaso(props) {
                           }}
                         />
                       </div>
-                      <div className="flex text-xl">
+                      <div className="flex text-xl timer-text">
                         Tiempo:
                         <h2
                           className={Styles.timerHeading}
@@ -1296,12 +1246,12 @@ function Repaso(props) {
                           ansArry[currentQuestion].showDescript != true ? (
                             <img src={ansSelectImg} srcSet={iosAnsSelectImg} alt='' width={"80%"} />
                           ) : ansArry[currentQuestion].showDescript === true &&
-                            examData[currentQuestion].correct == "a" ? (
+                            examData[currentQuestion].correct.includes("a") ? (
                             <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                           ) : ansArry[currentQuestion].showDescript === true &&
                             examData[currentQuestion].studentAnswered ==
                               "answer1" &&
-                            examData[currentQuestion].correct != "a" ? (
+                            !examData[currentQuestion].correct.includes("a") ? (
                             <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
@@ -1342,12 +1292,12 @@ function Repaso(props) {
                           ansArry[currentQuestion].showDescript != true ? (
                             <img src={ansSelectImg} srcSet={iosAnsSelectImg} alt='' width={"80%"} />
                           ) : ansArry[currentQuestion].showDescript === true &&
-                            examData[currentQuestion].correct == "b" ? (
+                            examData[currentQuestion].correct.includes("b") ? (
                             <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                           ) : ansArry[currentQuestion].showDescript === true &&
                             examData[currentQuestion].studentAnswered ==
                               "answer2" &&
-                            examData[currentQuestion].correct != "b" ? (
+                            !examData[currentQuestion].correct.includes("b") ? (
                             <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
@@ -1385,12 +1335,12 @@ function Repaso(props) {
                           ansArry[currentQuestion].showDescript != true ? (
                             <img src={ansSelectImg} srcSet={iosAnsSelectImg} alt="" width={"80%"} />
                           ) : ansArry[currentQuestion].showDescript === true &&
-                            examData[currentQuestion].correct == "c" ? (
+                            examData[currentQuestion].correct.includes("c") ? (
                             <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                           ) : ansArry[currentQuestion].showDescript === true &&
                             examData[currentQuestion].studentAnswered ==
                               "answer3" &&
-                            examData[currentQuestion].correct != "c" ? (
+                            !examData[currentQuestion].correct.includes("c") ? (
                             <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
@@ -1428,12 +1378,12 @@ function Repaso(props) {
                           ansArry[currentQuestion].showDescript != true ? (
                             <img src={ansSelectImg} srcSet={iosAnsSelectImg} alt='' width={"80%"} />
                           ) : ansArry[currentQuestion].showDescript === true &&
-                            examData[currentQuestion].correct == "d" ? (
+                            examData[currentQuestion].correct.includes("d") ? (
                             <img src={tick} srcSet={iosTick} alt="" style={{ width: "40px" }} />
                           ) : ansArry[currentQuestion].showDescript === true &&
                             examData[currentQuestion].studentAnswered ==
                               "answer4" &&
-                            examData[currentQuestion].correct != "d" ? (
+                            !examData[currentQuestion].correct.includes("d") ? (
                             <img src={cross} srcSet={iosCross} alt="" style={{ width: "40px" }} />
                           ) : (
                             ""
@@ -1523,4 +1473,4 @@ function Repaso(props) {
     </>
   );
 }
-export default Repaso;
+export default Entrevista;

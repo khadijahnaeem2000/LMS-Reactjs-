@@ -59,10 +59,6 @@ function LoginTypeTrue() {
   });
 
   useEffect (() => {
-    console.log(navigator.userAgent);
-    console.log(navigator.connection);
-    console.log(navigator.hardwareConcurrency);
-
     checkDevice();
   },[])
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useReducer } from "react";
+import { toast } from "react-toastify";
 import axios from "axios";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
@@ -10,6 +11,7 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import TextField from '@mui/material/TextField';
 import Typography from "@mui/material/Typography";
 import ansSelectImg from "../../assets/img/images/Flecha.webp";
 import Revisar from "../../assets/img/images/revisar.webp";
@@ -39,6 +41,8 @@ import cross from "../../assets/img/images/cross.webp";
 import useStyles from "./styles";
 import "./style.css";
 import { display } from "@mui/system";
+import rejectIcon from "../../assets/img/images/Icono app Impugnar preguntas.webp";
+import iosRejectIcon from "../../assets/img/images/Icono app Impugnar preguntas.png";
 import iosDirectoryImg from "../../assets/img/images/directory.png";
 import iosAnsSelectImg from "../../assets/img/images/Flecha.png";
 import iosRevisar from "../../assets/img/images/revisar.png";
@@ -65,6 +69,11 @@ function Examenes1(props) {
   let triggerTime;
 
   const Styles = useStyles();
+  const [reason, setReason] = useState('');
+  const [rejectQuestion, setRejectQuestion] = useState(false);
+  const [rejectionData, setRejectionData] = useState([]);
+  const [rejectionOption, setRejectionOption] = useState("");
+  const [submission, setSubmission] = useState(false);
   const [showScreen, setShowScreen] = useState(true);
   const [showScreen2, setShowScreen2] = useState(false);
   const [resetExam, setResetExam] = useState(false);
@@ -159,6 +168,7 @@ function Examenes1(props) {
         }
       }
     }
+    rejectOptions();
   }, []);
 
   useEffect(() => {
@@ -193,6 +203,16 @@ function Examenes1(props) {
         });
     }
   }, [stateRend]);
+
+  const rejectOptions = () => {
+    axios.get(`https://neoestudio.net/api/rejectionoptions`)
+      .then(res => {
+        setRejectionData(res.data.data[0]);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+  }
 
   // GET ALL EXAM FILES API
   const handleExamId = (id) => {
@@ -514,7 +534,6 @@ function Examenes1(props) {
       Restart: "no",
       examId: localStorage.getItem("examID"),
     };
-    console.log(ansArry, "answerRRy");
     setSecondsRemaining(secondsRemaining);
     axios
       .post(`https://neoestudio.net/api/startExam`, startData)
@@ -530,6 +549,37 @@ function Examenes1(props) {
         console.log(error, "Error Loading, Please Try Again !");
       });
   };
+
+  const sendRejection = (currentQuestion, rejectionOption) => {
+    if(rejectionOption==="") {
+      setSubmission(true);
+    }
+    else {
+      const rejectionData = {
+        description:reason,
+        studentId:data.id,
+        qaId:currentQuestion.qaId,
+        selectedoption:rejectionOption,
+      }
+      axios
+        .post(`https://neoestudio.net/api/questionqueries`, rejectionData)
+        .then((response) => {
+          toast.success("La impugnación ha sido enviada con éxito. Muchas gracias por tu colabración.");
+        })
+        .catch((error) => {
+          console.log(error, "Error sending rejection");
+          toast.error('Error al enviar en este momento, inténtalo de nuevo más tarde.');
+        });
+        closeRejectionForm();
+    }
+  }
+
+  const closeRejectionForm = () => {
+    setRejectQuestion(false);
+    setRejectionOption('');
+    setSubmission(false);
+  }
+
   return (
     <>
       {showScreen ? (
@@ -604,6 +654,7 @@ function Examenes1(props) {
                 <>
                   <div>
                     {folderData2.map((data) => {
+                      console.log(data);
                       return (
                         <div className={Styles.folderWrapper}>
                           <Accordion
@@ -1399,7 +1450,141 @@ function Examenes1(props) {
           <main className="flex">
             <Container maxWidth="xlg">
               <div className={Styles.quizEndWrapperInner}>
+                <div className={Styles.timerWrapper}>
+                  <div className="flex">
+                    <img
+                      alt=""
+                      src={rejectIcon}
+                      srcSet={iosRejectIcon}
+                      className={Styles.timerIcons}
+                      onClick={() => {setRejectQuestion(true)}}
+                    />
+                  </div>
+                </div>
                 <div>
+                  <Modal
+                    open={rejectQuestion}
+                    onClose={closeRejectionForm}
+                    aria-labelledby="reject-question-modal"
+                    aria-describedby="reject-question-description"
+                  >
+                    <Box className={Styles.modalStyle} style={{width:'auto',height:'auto'}}>
+                        <div>
+                          <div style={{ fontFamily: "ProximaSoft-bold" }}>
+                            <Markup content={rejectionData.Description} />
+                          </div>
+                          <div className={Styles.Options}>
+                          {
+                            rejectionData.Option1!==null?
+                            <button
+                              id="a"
+                              value="a"
+                              onClick={(e) => {
+                                setRejectionOption("option1");
+                              }}
+                              className={Styles.answerLinks}
+                            >
+                              <div className={Styles.answerLinksInner1}>
+                                {rejectionOption === "option1" ? (
+                                  <img src={ansSelectImg} srcSet={iosAnsSelectImg} alt="" width={"80%"} />
+                                ) : (
+                                  ""
+                                )}
+                              </div>
+                              <div className={Styles.answerLinksInner2}>
+                                <Markup
+                                  content={rejectionData.Option1}
+                                  width="90%"
+                                />
+                              </div>
+                            </button>:<></>
+                          }
+                          {
+                            rejectionData.Option2!==null?
+                              <button
+                                onClick={(e) => {
+                                  setRejectionOption("option2");
+                                }}
+                                className={Styles.answerLinks}
+                              >
+                                <div className={Styles.answerLinksInner1}>
+                                  {rejectionOption === "option2" ? (
+                                    <img src={ansSelectImg} srcSet={iosAnsSelectImg} alt='' width={"80%"} />
+                                  ) : (
+                                    ""
+                                  )}
+                                </div>
+                                <div className={Styles.answerLinksInner2}>
+                                  <Markup content={rejectionData.Option2} />
+                                </div>
+                              </button>:<></>
+                          }
+                          {
+                            rejectionData.Option3!==null?
+                              <button
+                                onClick={(e) => {
+                                  setRejectionOption("option3")
+                                }}
+                                className={Styles.answerLinks}
+                              >
+                                <div className={Styles.answerLinksInner1}>
+                                  {rejectionOption === "option3" ? (
+                                    <img src={ansSelectImg} srcSet={iosAnsSelectImg} alt='' width={"80%"} />
+                                  ) : (
+                                    ""
+                                  )}
+                                </div>
+                                <div className={Styles.answerLinksInner2}>
+                                  <Markup content={rejectionData.Option3} />
+                                </div>
+                              </button>:<></>
+                          }
+                          {
+                            rejectionData.Option4!==null?
+                              <button
+                                onClick={(e) => {
+                                  setRejectionOption("option4");
+                                }}
+                                className={Styles.answerLinks}
+                              >
+                                <div className={Styles.answerLinksInner1}>
+                                  { rejectionOption === "option4" ? (
+                                    <img src={ansSelectImg} srcSet={iosAnsSelectImg} alt="" width={"80%"} />
+                                  )  : (
+                                    ""
+                                  )}
+                                </div>
+                                <div className={Styles.answerLinksInner2}>
+                                  <Markup content={rejectionData.Option4} />
+                                </div>
+                              </button>:<></>
+                          }
+                          </div>
+                          <div className='text-red-600 text-xs'>
+                            {submission&&rejectionOption===""?"¡Por favor selecciona una opcion!":""}
+                          </div>
+                          <div className="flex justify-center">
+                            <TextField
+                              id="outlined-multiline-static"
+                              multiline
+                              rows={4}
+                              label="Explica con detalle qué es lo que se debe corregir."
+                              className={Styles.answerLinksInner2}
+                              onChange={(event) => {setReason(event.target.value)}} //whenever the text field change, you save the value in state
+                            />
+                          </div>
+                        </div>
+                        <br/>
+                        <div className="flex justify-between w-full">
+                          <Button variant="contained" size="medium" onClick={closeRejectionForm}>
+                            Cancelar
+                          </Button>
+                          <Button variant="contained" size="medium" onClick={() => sendRejection(examReviewData[currentQuestion],rejectionOption)}>
+                            Enviar
+                          </Button>
+                        </div>
+                    </Box>
+                  </Modal>
                   <div style={{ fontFamily: "ProximaSoft-bold" }}>
                     <Markup
                       content={examReviewData[currentQuestion].question}

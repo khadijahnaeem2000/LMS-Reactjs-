@@ -40,7 +40,7 @@ const Homepage = () => {
         }
         else {
           if(response.data.data.smartcount>=3) {
-            toast.error('¡Se han registrado 3 o más dispositivos! Si más de una persona usa la cuenta, su cuenta puede ser prohibida.');
+            toast.error('¡Se han registrado 3 o más dispositivos! Si más de una persona usa la cuenta, su cuenta será bloqueada.');
           }
 
           if(response.data.data.expiry_date!==null){
