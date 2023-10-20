@@ -10,7 +10,7 @@ const AudioPlayer = (props) => {
     const [isMobile, setIsMobile] = useState(window.innerWidth < 1000);
 
     const addToSchedule = () => {
-      userServices.commonPostService('/SendSchedule',{"studentId":props.userId, "task":`Audio: ${props.title}`, "type":'audio'})
+      userServices.commonPostService('/SendSchedule',{"studentId":props.userId, "task":`Audio: ${props.title}`, "type":'audio','folderId':props.folderId,'sub_Id':props.subId})
       .then((response) => {
         if(response.status===200) {
           if(response.data.status==='Successfull') {

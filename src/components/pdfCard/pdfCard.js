@@ -14,8 +14,9 @@ const PdfCard = (props) => {
     const inputval=useRef();
 
     const addToSchedule = () => {
-        userServices.commonPostService('/SendSchedule',{"studentId":data.id, "task":`Temario: ${title}`, "type":'pdf'})
+        userServices.commonPostService('/SendSchedule',{"studentId":data.id, "task":`Temario: ${title}`, "type":'pdf','folderId':props.pdf.folderId,'sub_Id':props.pdf.fileId})
         .then((response) => {
+            console.log(response);
           if(response.status===200) {
             if(response.data.status==='Successfull') {
               console.log('added to schedule');

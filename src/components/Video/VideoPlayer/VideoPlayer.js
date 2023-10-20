@@ -10,8 +10,9 @@ const VideoPlayer = (props) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1000);
 
   const addToSchedule = () => {
-    userServices.commonPostService('/SendSchedule',{"studentId":props.userId, "task":`Video: ${props.title}`, "type":'video'})
+    userServices.commonPostService('/SendSchedule',{"studentId":props.userId, "task":`Video: ${props.title}`, "type":'video','folderId':props.folderId,'sub_Id':props.subId})
     .then((response) => {
+      console.log(response);
       if(response.status===200) {
         if(response.data.status==='Successfull') {
           console.log('added to schedule');

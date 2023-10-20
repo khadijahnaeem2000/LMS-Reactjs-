@@ -5,7 +5,6 @@ export default makeStyles((theme) => ({
         paddingTop:'4%',
     },
     wrapper : {
-        display:'flex',
         justifyContent:'space-evenly',
         alignItems:'baseline',
     },

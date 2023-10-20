@@ -42,8 +42,8 @@ import cross from "../../assets/img/images/cross.webp";
 import TextField from '@mui/material/TextField';
 import useStyles from "./styles";
 import "./style.css";
-import rejectIcon from "../../assets/img/images/Icono app Impugnar preguntas.webp";
-import iosRejectIcon from "../../assets/img/images/Icono app Impugnar preguntas.png";
+import rejectIcon from "../../assets/img/images/rejectIcon.webp";
+import iosRejectIcon from "../../assets/img/images/rejectIcon.png";
 import iosDirectoryImg from "../../assets/img/images/directory.png";
 import iosAnsSelectImg from "../../assets/img/images/Flecha.png";
 import iosRevisar from "../../assets/img/images/revisar.png";
@@ -99,6 +99,7 @@ function Repaso(props) {
   const [studentExamRecId, setStudentExamRecId] = useState(0);
   const [folderId, setFolderId] = useState(0);
   const [resetExam, setResetExam] = useState(false);
+  const [temp, setTemp] = useState(""); 
 
   const handleModalClose = () => setResetExam(false);
   let triggerTime;
@@ -155,6 +156,7 @@ function Repaso(props) {
   // GET ALL EXAM FILES API
   const handleExamId = (id) => {
     setListLoading(true);
+    setTemp(id);
     const getExamFiles = {
       studentId: student_id,
       studentType: student_type,
@@ -286,8 +288,9 @@ function Repaso(props) {
         setEndExam(response.data);
         setShowScore(true);
         axios
-          .post(`https://neoestudio.net/api/SendSchedule`,{"studentId":data.id,"task":`Repaso: ${response.data.examName}`,"type":"repaso"})
+          .post(`https://neoestudio.net/api/SendSchedule`,{"studentId":data.id,"task":`Repaso: ${response.data.examName}`,"type":"repaso", "folderId":temp,"sub_Id":localStorage.getItem("examID")})
           .then((response) => {
+            console.log(response)
             if(response.data.status==='Successfull') {
               console.log('added to schedule');
             }
@@ -512,7 +515,7 @@ function Repaso(props) {
         <div>
           <main className={Styles.courseWrapper}>
             <Container maxWidth="lg">
-              <Grid container spacing={2}>
+              {/*<Grid container spacing={2}>
                 <Grid item xs={3} md={3} className={Styles.topImgHeadWrapper}>
                   <img src={Conocimientos} srcSet={iosConocimientos} alt="" height={150} />
                   <div className={Styles.headingText}>Conocimientos</div>
@@ -529,7 +532,7 @@ function Repaso(props) {
                   <img src={ortoImg} srcSet={iosOrtoImg} alt="" height={150} />
                   <div className={Styles.headingText}>Ortografia</div>
                 </Grid>
-              </Grid>
+      </Grid>*/}
               <Modal
                 open={resetExam}
                 onClose={handleModalClose}
@@ -1457,7 +1460,7 @@ function Repaso(props) {
                   ) : (
                     ""
                   )}
-                  <div style={{display:'grid', justifyContent:'center'}}>
+                  <div>
                     <div className={Styles.resultBtnWrapper}>
                       {ansArry.map((data, index) => {
                         return (

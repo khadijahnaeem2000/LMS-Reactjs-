@@ -293,9 +293,6 @@ export default makeStyles(() => ({
   resultBtnWrapper: {
     margin: "10px auto",
     display: "flex",
-    justifyContent: "flex-start",
-    justifySelf:"center",
-    alignItems: "center",
     width: "100%",
     overflowX: "auto",
     "&::-webkit-scrollbar": {

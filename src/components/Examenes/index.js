@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef, useReducer } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
+import Tooltip from '@mui/material/Tooltip';
 import axios from "axios";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
@@ -26,6 +27,10 @@ import ortoImg from "../../assets/img/images/ortografia.webp";
 import correctImg from "../../assets/img/images/green.webp";
 import wrongImg from "../../assets/img/images/red.webp";
 import nullImg from "../../assets/img/images/grey.webp";
+import iosAtras from "../../assets/img/images/atras.png"
+import atras from "../../assets/img/images/atras.webp";
+import sigiuiente from "../../assets/img/images/siguiente.webp";
+import iosSiguiente from "../../assets/img/images/siguiente.png";
 import answerImg1 from "../../assets/img/images/blue.webp";
 import noSelect from "../../assets/img/images/transparent.webp";
 import golden from "../../assets/img/images/golden.webp";
@@ -40,9 +45,10 @@ import tick from "../../assets/img/images/tick.webp";
 import cross from "../../assets/img/images/cross.webp";
 import useStyles from "./styles";
 import "./style.css";
-import { display } from "@mui/system";
-import rejectIcon from "../../assets/img/images/Icono app Impugnar preguntas.webp";
-import iosRejectIcon from "../../assets/img/images/Icono app Impugnar preguntas.png";
+import volverButton from "../../assets/img/images/Botón Volver a exámenes.webp";
+import iosVolverButton from "../../assets/img/images/Botón Volver a exámenes.png";
+import rejectIcon from "../../assets/img/images/rejectIcon.webp";
+import iosRejectIcon from "../../assets/img/images/rejectIcon.png";
 import iosDirectoryImg from "../../assets/img/images/directory.png";
 import iosAnsSelectImg from "../../assets/img/images/Flecha.png";
 import iosRevisar from "../../assets/img/images/revisar.png";
@@ -70,6 +76,7 @@ function Examenes1(props) {
 
   const Styles = useStyles();
   const [reason, setReason] = useState('');
+  const [scheduleData, setScheduleData] = useState(""); 
   const [rejectQuestion, setRejectQuestion] = useState(false);
   const [rejectionData, setRejectionData] = useState([]);
   const [rejectionOption, setRejectionOption] = useState("");
@@ -288,6 +295,14 @@ function Examenes1(props) {
       : Ortografía
       ? Ortografía.id
       : Psicotécnicos.id;
+    const folderId = Conocimientos
+      ? Conocimientos.folderId
+      : Inglés
+      ? Inglés.folderId
+      : Ortografía
+      ? Ortografía.folderId
+      : Psicotécnicos.folderId;
+    setScheduleData({folderId:folderId,sub_Id:ExamNO});
     localStorage.setItem("examID", ExamNO);
     setLoading(true);
     const startData = {
@@ -334,6 +349,7 @@ function Examenes1(props) {
     axios
       .post(`https://neoestudio.net/api/startExam`, startData)
       .then((response) => {
+        console.log('start exam', response);
         setAnsArry([]);
         for (let i = 0; i < response.data.data.length; i++) {
           setAnsArry((prevState) => [
@@ -369,8 +385,9 @@ function Examenes1(props) {
         setEndExam(response.data);
         setShowScore(true);
         axios
-          .post(`https://neoestudio.net/api/SendSchedule`,{"studentId":data.id,"task":`Examen: ${response.data.examName}`,"type":"exam"})
+          .post(`https://neoestudio.net/api/SendSchedule`,{"studentId":data.id,"task":`Examen: ${response.data.examName}`,"type":"exam","folderId":scheduleData.folderId,"sub_Id":scheduleData.sub_Id})
           .then((response) => {
+            console.log('schedule reponse', response);
             if(response.data.status==='Successfull') {
               console.log('added to schedule');
             }
@@ -654,7 +671,6 @@ function Examenes1(props) {
                 <>
                   <div>
                     {folderData2.map((data) => {
-                      console.log(data);
                       return (
                         <div className={Styles.folderWrapper}>
                           <Accordion
@@ -1068,7 +1084,7 @@ function Examenes1(props) {
                                   return (
                                     <div className={Styles.dataWrapper}>
                                       <div>
-                                        {files.Conocimientos.map(
+                                        {files?.Conocimientos?.map(
                                           (Conocimientos) => {
                                             return (
                                               <div className={Styles.examLinks}>
@@ -1164,7 +1180,7 @@ function Examenes1(props) {
                                         )}
                                       </div>
                                       <div>
-                                        {files.Inglés.map((Inglés) => {
+                                        {files?.Inglés?.map((Inglés) => {
                                           return (
                                             <div className={Styles.examLinks}>
                                               {Inglés.studentExamStatus ===
@@ -1251,7 +1267,7 @@ function Examenes1(props) {
                                         })}
                                       </div>
                                       <div>
-                                        {files.Psicotécnicos.map(
+                                        {files?.Psicotécnicos?.map(
                                           (Psicotécnicos) => {
                                             return (
                                               <div className={Styles.examLinks}>
@@ -1343,7 +1359,7 @@ function Examenes1(props) {
                                         )}
                                       </div>
                                       <div>
-                                        {files.Ortografía.map((Ortografía) => {
+                                        {files?.Ortografía?.map((Ortografía) => {
                                           return (
                                             <div className={Styles.examLinks}>
                                               {Ortografía.studentExamStatus ===
@@ -1731,23 +1747,26 @@ function Examenes1(props) {
                       content={examReviewData[currentQuestion].description}
                     />
                   </div>
-                  <div className="w-50 text-center m-auto">
+                  <div className="flex justify-center">
                     <Button
-                      variant="contained"
                       onClick={() => {
-                        if (props.showExam === "true") {
-                          props.updateView();
-                        } else {
-                          setShowScreen(true);
-                          setExamStatusCheck(false);
+                        if(currentQuestion!==0) {
+                          setCurrentQuestion(prevQuestion => prevQuestion - 1);
                         }
-                        setShowResult(false);
-                        setShowScore(false);
                       }}
                     >
-                      Volver a Exámenes
+                      <img className="lg:h-16 lg:w-44 md:h-12 md:w-36 sm:h-8 sm:w-24 h-4 w-16" src={atras} srcSet={iosAtras} alt="Atras Button"/>
                     </Button>
-                  </div>
+                    <Button
+                      onClick={() => {
+                        if(currentQuestion<examReviewData.length-1) {
+                          setCurrentQuestion(prevQuestion => prevQuestion + 1);
+                        }
+                      }}
+                    >
+                      <img className="lg:h-16 lg:w-44 md:h-12 md:w-36 sm:h-8 sm:w-24 h-4 w-16" src={sigiuiente} srcSet={iosSiguiente} alt="Siguiente Button"/>
+                    </Button>
+                    </div>
                 </div>
                 <div className={Styles.resultBtnWrapper}>
                   {examReviewData.map((data, index) => {
@@ -1779,6 +1798,22 @@ function Examenes1(props) {
                     );
                   })}
                 </div>
+                <div className="flex justify-center">
+                  <Button
+                      onClick={() => {
+                        if (props.showExam === "true") {
+                          props.updateView();
+                        } else {
+                          setShowScreen(true);
+                          setExamStatusCheck(false);
+                        }
+                        setShowResult(false);
+                        setShowScore(false);
+                      }}
+                    >
+                      <img className="lg:h-16 lg:w-44 md:h-12 md:w-36 sm:h-8 sm:w-24 h-4 w-16" src={volverButton} srcSet={iosVolverButton} alt="Salir Button"/>
+                    </Button>
+                  </div>
               </div>
             </Container>
           </main>
@@ -1907,42 +1942,81 @@ function Examenes1(props) {
                     {/* Timer STARTS HERE                      */}
                     <div className={Styles.timerWrapper}>
                       <div className="flex">
-                        <img
-                          alt=""
-                          src={pauseImg}
-                          srcSet={iosPauseImg}
-                          className={Styles.timerIcons}
-                          onClick={handleStart}
-                        />
-                        <img
-                          src={stopImg}
-                          srcSet={iosStopImg}
-                          className={Styles.timerIcons}
-                          onClick={endQuiz}
-                          alt=""
-                        />
-                        <img
-                          alt=""
-                          src={correctAnswerImg}
-                          srcSet={iosCorrectAnswerImg}
-                          className={Styles.timerIcons}
-                          onClick={() => {
-                            ansArry.splice(ansCheck, 1, {
-                              answer:
-                                examData[currentQuestion].correct === "a"
-                                  ? "answer1"
-                                  : examData[currentQuestion].correct === "b"
-                                  ? "answer2"
-                                  : examData[currentQuestion].correct === "c"
-                                  ? "answer3"
-                                  : examData[currentQuestion].correct === "d"
-                                  ? "answer4"
-                                  : answerClicked,
-                              showDescript: true,
-                            });
-                            return handleSetAnswer();
+                        <Tooltip 
+                          title="Pausar el examen temporalmente" 
+                          placement="bottom" 
+                          arrow
+                          componentsProps={{
+                            tooltip: {
+                              sx: {
+                                bgcolor: '5c5c5c'
+                              },
+                            },
                           }}
-                        />
+                        >
+                          <img
+                            alt=""
+                            src={pauseImg}
+                            srcSet={iosPauseImg}
+                            className={Styles.timerIcons}
+                            onClick={handleStart}
+                          />
+                        </Tooltip>
+                        <Tooltip 
+                          title="Finalizar el examen" 
+                          placement="top" 
+                          arrow
+                          componentsProps={{
+                            tooltip: {
+                              sx: {
+                                bgcolor: '#050e94'
+                              },
+                            },
+                          }}
+                        >
+                          <img
+                            src={stopImg}
+                            srcSet={iosStopImg}
+                            className={Styles.timerIcons}
+                            onClick={endQuiz}
+                            alt=""
+                          />
+                        </Tooltip>
+                        <Tooltip 
+                          title="Corregir pregunta" 
+                          placement="right" 
+                          arrow
+                          componentsProps={{
+                            tooltip: {
+                              sx: {
+                                bgcolor: '#c2a824'
+                              },
+                            },
+                          }}
+                        >
+                          <img
+                            alt=""
+                            src={correctAnswerImg}
+                            srcSet={iosCorrectAnswerImg}
+                            className={Styles.timerIcons}
+                            onClick={() => {
+                              ansArry.splice(ansCheck, 1, {
+                                answer:
+                                  examData[currentQuestion].correct === "a"
+                                    ? "answer1"
+                                    : examData[currentQuestion].correct === "b"
+                                    ? "answer2"
+                                    : examData[currentQuestion].correct === "c"
+                                    ? "answer3"
+                                    : examData[currentQuestion].correct === "d"
+                                    ? "answer4"
+                                    : answerClicked,
+                                showDescript: true,
+                              });
+                              return handleSetAnswer();
+                            }}
+                          />
+                        </Tooltip>
                       </div>
                       <div className="flex text-xl timer-text">
                         Tiempo:
@@ -2162,7 +2236,7 @@ function Examenes1(props) {
                   ) : (
                     ""
                   )}
-                  <div style={{display:'grid', justifyContent:'center'}}>
+                  <div>
                     <div className={Styles.resultBtnWrapper}>
                       {ansArry.map((data, index) => {
                         return (

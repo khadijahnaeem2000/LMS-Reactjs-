@@ -11,37 +11,41 @@ const FolderList = (props) => {
     const classes = useStyles();
     const [folders, setFolders] = useState([]);
     let count=0;
+    const data=getLocalUserdata();
+
+    const getFilesOfFolder = async (folderData) => {
+        for (let folder of folderData) {
+            await userServices.commonPostService('/getDownloadPdfFiles',{"folderId":folder.id,"studentId":data.id})
+            .then(response => {
+                if(response.data.message==='success') { 
+                    setFolders(oldArray => [...oldArray, {
+                        id:folder.id,
+                        name:folder.name===null? '-': folder.name,
+                        files: response.data.files.map((file)=>{
+                            const temp={
+                                id:file.id,
+                                name:file.title===null ? file.name : file.title,
+                            }
+                            return temp;
+                        })
+                    }]);
+                }
+                else{
+                    toast.error("Error fetching files.");
+                }
+            })
+            .catch((err) => {
+                toast.error("Error fetching files.");
+            })
+        }
+    }
 
     useEffect (() => {
         setFolders([]);
-        const data=getLocalUserdata();
         userServices.commonPostService('/getDownloadPdfFolders',{"studentType":data.type,"studentId":data.id})
         .then(response=>{
             if(response.data.status==='Successfull') {
-                response.data.folders.map(async (folder) => {
-                    await userServices.commonPostService('/getDownloadPdfFiles',{"folderId":folder.id,"studentId":data.id})
-                    .then(response => {
-                        if(response.data.message==='success') { 
-                            setFolders(oldArray => [...oldArray, {
-                                id:folder.id,
-                                name:folder.name===null? '-': folder.name,
-                                files: response.data.files.map((file)=>{
-                                    const temp={
-                                        id:file.id,
-                                        name:file.title===null ? file.name : file.title,
-                                    }
-                                    return temp;
-                                })
-                            }]);
-                        }
-                        else{
-                            toast.error("Error fetching files.");
-                        }
-                    })
-                    .catch((err) => {
-                        toast.error("Error fetching files.");
-                    })
-                })
+                getFilesOfFolder(response.data.folders);
             }
             else {
                 toast.error("Error fetching folders.");

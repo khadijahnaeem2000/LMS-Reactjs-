@@ -1,6 +1,10 @@
 import { makeStyles } from "@material-ui/core/styles";
 
 export default makeStyles((theme) => ({
+  tooltip: {
+    color: "lightblue",
+    backgroundColor: "green"
+  },
   courseWrapper: {
     padding: "30px 0px",
     overflow: "hidden",
@@ -294,11 +298,9 @@ export default makeStyles((theme) => ({
   resultBtnWrapper: {
     margin: "10px auto",
     display: "flex",
-    justifyContent: "flex-start",
-    justifySelf:"center",
-    alignItems: "center",
     width: "100%",
     overflowX: "auto",
+    justifyContent: "space-between",
     "&::-webkit-scrollbar": {
       height: "10px",
     },

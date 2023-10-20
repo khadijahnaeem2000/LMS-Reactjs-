@@ -10,7 +10,7 @@ const ClassesPlayer = (props) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1000);
 
   const addToSchedule = () => {
-    userServices.commonPostService('/SendSchedule',{"studentId":props.userId, "task":`Clase: ${props.title}`, "type":'class'})
+    userServices.commonPostService('/SendSchedule',{"studentId":props.userId, "task":`Clase: ${props.title}`, "type":'class','folderId':props.folderId,'sub_Id':props.subId})
     .then((response) => {
       if(response.status===200) {
         if(response.data.status==='Successfull') {

@@ -59,7 +59,7 @@ const Files = (props) => {
         files.length>0 ? 
         files.map((item) => {
           return (
-            <ListItemButton className='listItem' onClick={()=>{props.updateUrl(item.material,item.name,data.id); updatelocalData('openedClasses',{'title':item.name, 'timeStamp':0})}}>
+            <ListItemButton className='listItem' onClick={()=>{props.updateUrl(item.material,item.name,data.id,props.folderId,item.id); updatelocalData('openedClasses',{'title':item.name, 'timeStamp':0})}}>
               <ListItemAvatar>
                 <Avatar className='avatarStyles' alt="videofile" src={icon} srcSet={ios_icon} variant="square"/>
               </ListItemAvatar>

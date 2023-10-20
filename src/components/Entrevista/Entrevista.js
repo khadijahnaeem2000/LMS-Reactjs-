@@ -15,10 +15,6 @@ import ansSelectImg from "../../assets/img/images/Flecha.webp";
 import Revisar from "../../assets/img/images/revisar.webp";
 import Salir from "../../assets/img/images/salirExamenes.webp";
 import Progressbar from "../ExamenesHelpers/Progressbar";
-import Conocimientos from "../../assets/img/images/conocimientos.webp";
-import inglesImg from "../../assets/img/images/ingles.webp";
-import psicoImg from "../../assets/img/images/psicotecnicos.webp";
-import ortoImg from "../../assets/img/images/ortografia.webp";
 import correctImg from "../../assets/img/images/green.webp";
 import wrongImg from "../../assets/img/images/red.webp";
 import nullImg from "../../assets/img/images/grey.webp";
@@ -37,17 +33,13 @@ import cross from "../../assets/img/images/cross.webp";
 import TextField from '@mui/material/TextField';
 import useStyles from "./style";
 import "./style.css";
-import rejectIcon from "../../assets/img/images/Icono app Impugnar preguntas.webp";
-import iosRejectIcon from "../../assets/img/images/Icono app Impugnar preguntas.png";
+import rejectIcon from "../../assets/img/images/rejectIcon.webp";
+import iosRejectIcon from "../../assets/img/images/rejectIcon.png";
 import iosAnsSelectImg from "../../assets/img/images/Flecha.png";
 import iosRevisar from "../../assets/img/images/revisar.png";
 import iosSalir from "../../assets/img/images/salirExamenes.png";
-import iosConocimientos from "../../assets/img/images/conocimientos.png";
-import iosInglesImg from "../../assets/img/images/ingles.png";
 import iosNoBtnImg from "../../assets/img/images/noBtn.png";
 import iosSiBtnImg from "../../assets/img/images/SiBtn.png";
-import iosPsicoImg from "../../assets/img/images/psicotecnicos.png";
-import iosOrtoImg from "../../assets/img/images/ortografia.png";
 import iosCorrectImg from "../../assets/img/images/green.png";
 import iosWrongImg from "../../assets/img/images/red.png";
 import iosNullImg from "../../assets/img/images/grey.png";
@@ -261,7 +253,7 @@ function Entrevista(props) {
         setEndExam(response.data);
         setShowScore(true);
         axios
-          .post(`https://neoestudio.net/api/SendSchedule`,{"studentId":data.id,"task":`Repaso: ${response.data.examName}`,"type":"repaso"})
+          .post(`https://neoestudio.net/api/SendSchedule`,{"studentId":data.id,"task":`Entrevista: ${response.data.examName}`,"type":"Entrevista"})
           .then((response) => {
             if(response.data.status==='Successfull') {
               console.log('added to schedule');
@@ -487,7 +479,7 @@ function Entrevista(props) {
         <div>
           <main className={Styles.courseWrapper}>
             <Container maxWidth="lg">
-              <Grid container spacing={2}>
+              {/*<Grid container spacing={2}>
                 <Grid item xs={3} md={3} className={Styles.topImgHeadWrapper}>
                   <img src={Conocimientos} srcSet={iosConocimientos} alt="" height={150} />
                   <div className={Styles.headingText}>Conocimientos</div>
@@ -504,7 +496,7 @@ function Entrevista(props) {
                   <img src={ortoImg} srcSet={iosOrtoImg} alt="" height={150} />
                   <div className={Styles.headingText}>Ortografia</div>
                 </Grid>
-              </Grid>
+      </Grid>*/}
               <Modal
                 open={resetExam}
                 onClose={handleModalClose}
@@ -1407,7 +1399,7 @@ function Entrevista(props) {
                   ) : (
                     ""
                   )}
-                  <div style={{display:'grid', justifyContent:'center'}}>
+                  <div>
                     <div className={Styles.resultBtnWrapper}>
                       {ansArry.map((data, index) => {
                         return (

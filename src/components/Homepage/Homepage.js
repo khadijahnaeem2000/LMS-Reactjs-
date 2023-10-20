@@ -107,11 +107,8 @@ const Homepage = () => {
         </div>:
         <></>
       }
-      <div className={`${classes.wrapper} flex justify-between`}>
-        <div
-          style={{ marginLeft: "0" }}
-          className="mr-1 w-1/4 lg:w-2/12 h-2/5 lg:ml-24"
-        >
+      <div className={`${classes.wrapper} flex`}>
+        <div style={{flex:'1 1 0px'}} className="grow flex flex-column items-center">
           <img
             id="profile_pic"
             alt="Profile_picture"
@@ -120,10 +117,11 @@ const Homepage = () => {
                 ? `https://neoestudio.net/userImage/${data.photo}`
                 : profilepic
             }
+            className="lg:h-40 md:h-36 sm:h-32 h-28"
           />
           <div className={`text-center fontSize`} style={{marginTop:'2%'}}><SelectButton/></div>
         </div>
-        <div className="imgWidth3 mr-1">
+        <div style={{flex:'1 1 0px'}} className="grow flex flex-column items-center">
           <img
             alt="Rank_image"
             src={
@@ -131,62 +129,69 @@ const Homepage = () => {
                 ? `https://neoestudio.net/${data.rank_image}`
                 : defaultrank
             }
+            className="lg:h-40 md:h-36 sm:h-32 h-28"
           />
           <h2 className={`${classes.font} text-center fontSize`}>
             {userInfo?.data?.rank_name != null ? userInfo.data.rank_name : "-"}
           </h2>
-          <p className="text-center fontSize">
+          <div className="text-center fontSize">
             {userInfo?.data?.userName != null ? userInfo.data.userName : "-"}
-          </p>
+          </div>
         </div>
-        <div className="mr-1 imgWidth2">
+        <div style={{flex:'1 1 0px'}} className="grow flex flex-column items-center">
           <img
             alt="Tiempo"
             src={require("assets/img/images/Tiempo.webp").default}
             srcSet={tiempo}
+            className="lg:h-40 md:h-36 sm:h-32 h-28"
           />
           <h2 className={`${classes.font} text-center fontSize`}>
             {time != null ? time : 0} h
           </h2>
-          <p className="text-center fontSize">Tiempo</p>
+          <div className="text-center fontSize">Tiempo</div>
         </div>
-        <div className="mr-1 imgWidth">
+        <div style={{flex:'1 1 0px'}} className="grow flex flex-column items-center">
           <img
             alt="Medellas"
             src={require("assets/img/images/Medallas.webp").default}
             srcSet={medallas}
+            className="lg:h-40 md:h-36 sm:h-32 h-28"
+
           />
           <h2 className={`${classes.font} text-center fontSize`}>
             {userInfo?.data?.aptos != null ? userInfo.data.aptos : 0}
           </h2>
-          <p className="text-center fontSize">Aptos</p>
+          <div className="text-center fontSize">Aptos</div>
         </div>
-        <div className="mr-1 imgWidth">
+        <div style={{flex:'1 1 0px'}} className="grow flex flex-column items-center">
           <img
-            style={{ paddingBottom: "25%" }}
+            style={{ paddingBottom: "5%" }}
             alt="Puntos"
             src={require("assets/img/images/Recurso3Pestaaprueba.webp").default}
             srcSet={puntos}
+            className="lg:h-40 md:h-36 sm:h-32 h-28"
           />
           <h2 className={`${classes.font} text-center fontSize`}>
             {userInfo?.data?.points != null ? userInfo.data.points : 0}
           </h2>
-          <p className="text-center fontSize">Puntos</p>
+          <div className="text-center fontSize">Puntos</div>
         </div>
-        <div className="mr-1 imgWidth">
+        <div style={{flex:'1 1 0px'}} className="grow flex flex-column items-center">
           <img
-            style={{ paddingBottom: "25%" }}
+            style={{ paddingBottom: "5%" }}
             alt="Percentil"
             src={require("assets/img/images/Porcentaje2.webp").default}
             srcSet={percentil}
+            className="lg:h-36 md:h-32 sm:h-28 h-24"
           />
           <h2 className={`${classes.font} text-center fontSize`}>
             {userInfo?.data?.percentage != null ? userInfo.data.percentage : 0}
           </h2>
-          <p className="text-center fontSize">Percentil</p>
+          <div className="text-center fontSize">Percentil</div>
         </div>
       </div>
       {logout ? <Navigate to="/" /> : null}
+      
       <MyCalendar />
     </div>
   );

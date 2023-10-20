@@ -58,7 +58,7 @@ export default makeStyles((theme) => ({
   },
   dataWrapper: {
     display: "flex",
-    margin: "1% 10%",
+    margin: "1%",
   },
   modalStyle: {
     position: "absolute",
@@ -296,9 +296,6 @@ export default makeStyles((theme) => ({
   resultBtnWrapper: {
     margin: "10px auto",
     display: "flex",
-    justifyContent: "flex-start",
-    justifySelf:"center",
-    alignItems: "center",
     width: "100%",
     overflowX: "auto",
     "&::-webkit-scrollbar": {
